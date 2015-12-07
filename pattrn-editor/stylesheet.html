@@ -1,0 +1,384 @@
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/blitzer/jquery-ui.css">
+
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<style>
+
+
+fieldset {
+    border: 0;
+}
+
+
+@keyframes spin {
+	to { transform: rotate(1turn); }
+}
+
+.progress {
+	position: relative;
+	display: inline-block;
+	width: 5em;
+	height: 5em;
+	margin: 0 .5em;
+	font-size: 12px;
+	text-indent: 999em;
+	overflow: hidden;
+	animation: spin 1s infinite steps(8);
+}
+
+.small.progress {
+	font-size: 6px;
+}
+
+.large.progress {
+	font-size: 24px;
+}
+
+.progress:before,
+.progress:after,
+.progress > div:before,
+.progress > div:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 2.25em; /* (container width - part width)/2  */
+	width: .5em;
+	height: 1.5em;
+	border-radius: .2em;
+	background: #eee;
+	box-shadow: 0 3.5em #eee; /* container height - part height */
+	transform-origin: 50% 2.5em; /* container height / 2 */
+}
+
+.progress:before {
+	background: #555;
+}
+
+.progress:after {
+	transform: rotate(-45deg);
+	background: #777;
+}
+
+.progress > div:before {
+	transform: rotate(-90deg);
+	background: #999;
+}
+
+.progress > div:after {
+	transform: rotate(-135deg);
+	background: #bbb;
+}
+
+
+
+.ui-tabs.ui-widget-content {
+    border: none;
+}
+
+
+ .ui-tabs .ui-tabs-nav {
+            text-align: center;
+    }
+
+    .ui-tabs .ui-tabs-nav li {
+            float: none !important;
+            display: inline-block;
+    }
+    
+    
+   .centerme {
+    width:100%;
+    position:absolute;
+    left:30%;
+    
+}
+  
+ .centerme2 {
+    width:100%;
+    position:absolute;
+    left:37%;
+    
+}
+    
+
+    
+* {
+ font-size: 98%;
+  font-family: 'Roboto';
+}    
+    
+    input[type="text"]
+{
+    font-size: 98%;
+  font-family: 'Roboto';
+}
+    
+    
+
+    
+    
+    
+del{background:#FFE6E6}
+ins{background:#E6FFE6}
+
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      width: 100px;
+      height: 30px;
+      background: #999;
+      cursor: pointer;
+     
+    }
+
+    input[type="checkbox"]:before,
+    input[type="checkbox"]:checked:before {
+      display: block;
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 23px;
+      padding-top: 7px;
+      background: #777;
+      text-align: center;
+      color: #FFF;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input[type="checkbox"]:before {
+      background: red;
+      content: 'Reject';
+      left: 0;
+    }
+
+    input[type="checkbox"]:checked:before {
+      background: green;
+      content: 'Accept';
+      left: 50%;
+    }
+
+
+
+
+
+
+
+
+
+table.ffotos
+{
+border: 1px solid black;
+margin-right: 0px;
+border-collapse: collapse;
+table-layout: fixed;
+overflow: auto; 
+}
+
+.limited2 {
+max-height: 100px;
+max-width: 200px;
+overflow: auto;
+
+}
+
+table.ffotos td
+{
+border: 1px solid black;
+border-collapse: collapse;
+vertical-align: top;
+text-align: left;
+}
+
+.ffotos tbody tr:hover {
+background-color: #CCE7E7;
+}
+
+.ffotos th {
+vertical-align:  middle;
+text-align: center;
+font-weight: bold;
+}
+
+
+.ffotos td:nth-of-type(1), 
+.ffotos td:nth-of-type(2), 
+.ffotos td:nth-of-type(3) 
+{
+
+display: none;
+
+}
+.ffotos th:nth-of-type(1), 
+.ffotos th:nth-of-type(2),
+.ffotos th:nth-of-type(3)
+{
+
+display: none;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#wrapper {
+     width: 804px;
+     height: 220px;
+     
+    
+}
+#Nombrons, #Boulons {
+    float: left;
+ 
+}
+
+
+
+#Nombrons {
+     width: 300px;
+     height: 260px;
+}
+
+#Boulons {
+     width: 300px;
+     height: 260px;     
+}
+
+
+.inputContainer {
+    width: 600px;
+    height: 275px;
+    border: 1px dashed 
+    
+}
+
+.inputContainer2 {
+    width: 300px;
+    height: 275px;
+    border: 1px dashed 
+    
+}
+.inputContainer label {
+    float: left;
+    margin-right: 5px;
+   padding-left: 1%;
+    
+}
+.inputContainer div {
+    overflow: hidden;
+}
+.inputContainer input {
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block
+}
+
+
+
+.commentos {
+    width: 600px;
+    height: 75px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 5px;
+    max-height: 100px;
+    overflow: auto;
+}
+
+.summaros {
+    width: 600px;
+    height: 250px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 5px;
+    max-height: 100px;
+    overflow: auto;
+}
+
+
+.commentos[placeholder]:empty:before {
+    content: attr(placeholder);
+    color: #555; 
+}
+
+.commentos[placeholder]:empty:focus:before {
+content: "";
+}
+
+.ui-dialog-content 
+{
+font-size: 10pt;
+}
+
+.hidden {display:none;}
+
+.table-wrapper
+{
+border: 1px solid ;
+width: 100%;
+height: 500px;
+overflow: auto;
+}
+
+.zui-table-highlight tbody tr:hover {
+background-color: #CCE7E7;        
+}
+
+table.zui-table
+{
+border: 1px solid black;
+margin-right: 20px;
+border-collapse: collapse;
+table-layout: fixed;
+width: 200px;
+height:50px
+overflow: auto; 
+}
+
+table.zui-table td
+{
+border: 1px solid black;
+border-collapse: collapse;
+vertical-align: top;
+text-align: left;
+font-size:12pt;
+ font-family: 'Roboto';
+}
+
+.zui-table tr:first-child td {
+vertical-align:  middle;
+text-align: center;
+height:20px;
+font-weight: bold;
+}
+
+
+.limited {
+max-height: 70px;
+overflow: auto;
+}
+
+
+
+</style>

@@ -1,0 +1,5054 @@
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&sensor=false"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+<script>
+var precision; 
+var country; 
+var url;
+var zoomi; 
+var InitialLat;
+var InitialLong;
+var maxilati;
+var minilati;
+var maxilongi;
+var minilongi;
+var availableTags;
+var Longi = document.getElementById("Long");
+var Lati = document.getElementById("Lat");
+var hourii = document.getElementById("Hori");
+var minutii = document.getElementById("Mini");
+var map;
+var map2;
+var geocoder;
+var valueofsheet;
+var locationi; 
+var marker;
+var  loadingos;
+var currentpart=500;
+var switchos= "NO";
+var sourceTags;
+var availableTags1
+var availableTags2
+var availableTags3
+var availableTags4
+var availableTags5
+var lodingos;
+//var lodingos2;
+function initialize(){
+google.script.run.withSuccessHandler(CreateDom).LoadsSettings();
+}
+
+function CreateDom(info) { 
+var paramitos = JSON.parse(info);
+var lastElement = paramitos.reverse()[0];
+
+
+if (lastElement== "editor"){
+$("#tabs").tabs(); 
+checkfornewcontri();
+$("#logon").css('visibility', 'visible');
+$("#logon").dialog({
+title:"PATTRN Editor v1",
+autoOpen:true, 
+maxHeight:false,
+width: 260,
+  });
+
+} else if (lastElement== "new") {
+//new
+var ventosname= document.getElementById("yyyy");
+ventosname.value= "donotloadtable";
+Load_from_Master_Sheet();
+$("#tabs-3").hide();
+$("#tabs-1").hide();
+$("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+$("#titreul").hide();
+$("#meni").hide();
+$("#meni_dupli").hide();
+$("#commentos2").hide();
+$("#disclaimeranony").show();
+create_event();
+} else {
+var ventosname= document.getElementById("yyyy");
+ventosname.value= "donotloadtable";
+Load_from_Master_Sheet();
+$("#tabs-3").hide();
+$("#tabs-1").hide();
+$("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+$("#titreul").hide();
+$("#meni").hide();
+$("#meni_dupli").hide();
+$("#commentos2").hide();
+$("#disclaimeranony").show();
+google.script.run.withSuccessHandler(onSuccessEventrecovdraft).Get_event_data(lastElement);
+}
+
+$('#precision').val(paramitos[10]);
+$('#country').val(paramitos[11]);
+$('#url').val(paramitos[12]);
+$('#InitialLat').val(paramitos[9]);
+$('#maxilati').val(paramitos[8]);
+$('#minilati').val(paramitos[7]);
+$('#InitialLong').val(paramitos[6]);
+$('#maxilongi').val(paramitos[5]);
+$('#minilongi').val(paramitos[4]);
+$("#bigtitle1").text(paramitos[1]);
+$('#zoomi').val(paramitos[3]);
+InitialLat = parseFloat($('#InitialLat').val());
+InitialLong = parseFloat($('#InitialLong').val());
+maxilati = parseFloat($('#maxilati').val());
+minilati = parseFloat($('#minilati').val());
+maxilongi = parseFloat($('#maxilongi').val());
+minilongi = parseFloat($('#minilongi').val());
+zoomi= parseInt($('#zoomi').val());
+precision= parseInt($('#precision').val());
+country= $('#country').val();
+url= $('#url').val();
+var options = {
+componentRestrictions: {country: country}
+ };
+ locationi = new google.maps.LatLng(InitialLat,InitialLong);
+ map = new google.maps.Map(document.getElementById("Map"),
+{
+zoom: zoomi,
+center:   locationi,
+mapTypeId: google.maps.MapTypeId.HYBRID
+}
+);
+geocoder = new google.maps.Geocoder();
+marker = new google.maps.Marker(
+{
+position: locationi,
+draggable:true,
+map: map,
+});
+var input = document.getElementById('address');
+var autocomplete = new google.maps.places.Autocomplete(input, options);
+jQuery('#StartLoad').hide();
+}
+
+
+
+function CheckPass() {
+document.getElementById("Validate_Pass").disabled = true;
+var usernami=$('#Username').val();
+var passwordi= $('#Pass').val();
+$('#yyyy').val(usernami);
+$('#xxxx').val(passwordi);
+
+if (usernami != "" && passwordi!= ""){
+google.script.run.withSuccessHandler(PassToken).PassConfirm(usernami,passwordi);
+}else{
+alert("please input username and password");
+jQuery('#logon').dialog('close');
+document.getElementById("Validate_Pass").disabled = false;
+}
+
+}
+// 
+
+function PassToken(t) { 
+//save username somehwere
+
+if (t.indexOf("invalid") == -1){
+
+Load_from_Master_Sheet();
+jQuery('#logon').dialog('close');
+jQuery('#StartLoad').show();
+//document.getElementById("StartLoad").style.display = "visible";
+$('#tabs ul:first li:eq(0) a').text("Editor "+ t);
+//Load_from_Master_Sheet();
+}
+
+if (t.indexOf("invalid") > -1){
+alert(t);
+jQuery('#logon').dialog('close');
+}
+
+document.getElementById("Validate_Pass").disabled = false;
+}
+
+
+function checkfornewcontri(){
+google.script.run.withSuccessHandler(onSuccesslala).AssignIDcontri();
+  }
+  
+  function onSuccesslala(nt) { 
+  //alert("on sucess lala");
+  var  nt= nt.map(function(value,index) { return value[0]; });
+  var dropdown = document.getElementById("selectcontributionNumber");
+  // Loop through the array
+  $("#selectcontributionNumber").find('option').remove();
+  
+  for (var i = 0; i < nt.length-1; ++i) {
+  // Append the element to the end of Array list
+  dropdown[dropdown.length] = new Option(nt[i], nt[i]);
+  }
+ 
+  if (nt.length>1){
+  $('#tabs ul:first li:eq(1) a').text("You have contributions");
+  //$("#tabs").tabs("select", "#firstTabSelector");
+ // alert(lodingos);
+
+  if (lodingos =="goit"){
+  $('#tabs').tabs('select', '#tabs-2');
+      
+      google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(Lati.value,Longi.value);
+map.setCenter(centermap);
+placeMarker(centermap);
+      
+      
+      
+      
+      
+      
+      
+      
+  }else{
+   //alert(lodingos);
+  $('#tabs').tabs('select', '#tabs-1');
+  }
+//  var indexok2 = $('#tabs a[href="#tabs-2"]').parent().index();
+//  $("#tabs").tabs("option", "active", indexok2);
+//  alert("should show contri, there is one");
+  }else{
+  $('#tabs ul:first li:eq(1) a').text("No contribution");
+  $('#tabs').tabs('select', '#tabs-2');
+//  var indexok2 = $('#tabs a[href="#tabs-2"]').parent().index();
+//  $("#tabs").tabs("option", "active", indexok2);
+//  alert("should not show contri, none");
+  }
+  lodingos="";
+  $("#refreshmain2").prop("disabled",false);
+  }
+  
+
+
+function Load_from_Master_Sheet(){
+//$("#filtons").hide();
+google.script.run.withSuccessHandler(onSuccesstags).Populate_Data();
+}
+
+function onSuccesstags(N) { 
+valueofsheet= JSON.parse(N);
+var ventosnami= document.getElementById("yyyy");
+if (ventosnami.value != "donotloadtable"){
+populate_event_table(currentpart);
+
+ if (valueofsheet.length <=2001){
+ $("#Part_2001").hide();
+ }else{
+ $("#Part_2001").show();
+ }
+
+ if (valueofsheet.length <=1501){
+ $("#Part_1500_2000").hide();
+ }else{
+ $("#Part_1500_2000").show();
+ }
+ 
+  if (valueofsheet.length <=1001){
+ $("#Part_1000_1500").hide();
+ }else{
+ $("#Part_1000_1500").show();
+ }
+
+ if (valueofsheet.length <=501){
+ $("#Part_500_1000").hide();
+ }else{
+  $("#Part_500_1000").show();
+ }
+}else{
+$("#tabs").show(); 
+$("#tabs").tabs(); 
+google.maps.event.trigger(map, 'resize');
+}
+ 
+  availableTags1= valueofsheet.map(function(value,index) { return value[13]; });
+  availableTags1.shift();
+  var temporarytags1 = availableTags1.join([separator = ',']);
+  var Finaltags1 = temporarytags1.split([separator = ',']);
+  availableTags1= uniq_fast(Finaltags1);
+  
+  availableTags2= valueofsheet.map(function(value,index) { return value[14]; });
+  availableTags2.shift();
+  var temporarytags2 = availableTags2.join([separator = ',']);
+  var Finaltags2 = temporarytags2.split([separator = ',']);
+  availableTags2= uniq_fast(Finaltags2);
+  
+  availableTags3= valueofsheet.map(function(value,index) { return value[15]; });
+  availableTags3.shift();
+  var temporarytags3 = availableTags3.join([separator = ',']);
+  var Finaltags3 = temporarytags3.split([separator = ',']);
+  availableTags3= uniq_fast(Finaltags3);
+  
+  
+  availableTags4= valueofsheet.map(function(value,index) { return value[16]; });
+  availableTags4.shift();
+  var temporarytags4 = availableTags4.join([separator = ',']);
+  var Finaltags4 = temporarytags4.split([separator = ',']);
+  availableTags4= uniq_fast(Finaltags4);
+  
+  availableTags5= valueofsheet.map(function(value,index) { return value[17]; });
+  availableTags5.shift();
+  var temporarytags5 = availableTags5.join([separator = ',']);
+  var Finaltags5 = temporarytags5.split([separator = ',']);
+  availableTags5= uniq_fast(Finaltags5);
+  
+  sourceTags= valueofsheet.map(function(value,index) { return value[7]; });
+  sourceTags.shift();
+  var temporarysourceTags = sourceTags.join([separator = ',']);
+  var FinalsourceTags = temporarysourceTags.split([separator = ',']);
+  sourceTags= uniq_fast(FinalsourceTags);
+  
+ 
+
+
+  
+  if (valueofsheet[0][18].toString().indexOf('RENAME') == -1 ) {
+ 
+      $('#labelquestion1').text(valueofsheet[0][18]);
+      $("#labelquestion1").css('visibility', 'visible');
+      $("#question1").css('visibility', 'visible');
+      $('#labelquestion1_comp').text(valueofsheet[0][18]);
+      $("#labelquestion1_comp").css('visibility', 'visible');
+      $("#question1_comp").css('visibility', 'visible');
+    }
+    
+    if (valueofsheet[0][19].toString().indexOf('RENAME') == -1 ) {
+      $('#labelquestion2').text(valueofsheet[0][19]);
+      $("#labelquestion2").css('visibility', 'visible');
+      $("#question2").css('visibility', 'visible');
+      $('#labelquestion2_comp').text(valueofsheet[0][19]);
+      $("#labelquestion2_comp").css('visibility', 'visible');
+      $("#question2_comp").css('visibility', 'visible');
+    }
+    if (valueofsheet[0][20].toString().indexOf('RENAME') == -1 ) {
+      $('#labelquestion3').text(valueofsheet[0][20]);
+      $("#labelquestion3").css('visibility', 'visible');
+      $("#question3").css('visibility', 'visible');
+      $('#labelquestion3_comp').text(valueofsheet[0][20]);
+      $("#labelquestion3_comp").css('visibility', 'visible');
+      $("#question3_comp").css('visibility', 'visible');
+    }
+    if (valueofsheet[0][21].toString().indexOf('RENAME') == -1 ) {
+      $('#labelquestion4').text(valueofsheet[0][21]);
+      $("#labelquestion4").css('visibility', 'visible');
+      $("#question4").css('visibility', 'visible');
+      $('#labelquestion4_comp').text(valueofsheet[0][21]);
+      $("#labelquestion4_comp").css('visibility', 'visible');
+      $("#question4_comp").css('visibility', 'visible');
+    }
+    if (valueofsheet[0][22].toString().indexOf('RENAME') == -1 ) {
+      $('#labelquestion5').text(valueofsheet[0][22]);
+      $("#labelquestion5").css('visibility', 'visible');
+      $("#question5").css('visibility', 'visible');
+      $('#labelquestion5_comp').text(valueofsheet[0][22]);
+      $("#labelquestion5_comp").css('visibility', 'visible');
+      $("#question5_comp").css('visibility', 'visible');
+    }
+  
+   if (valueofsheet[0][13].toString().indexOf('RENAME') == -1 ) {
+    $("#tags1").resizable({
+        grid: [1, 10000]
+}); 
+  $('#labeltag1').text(valueofsheet[0][13]);
+  $("#labeltag1").css('visibility', 'visible');
+  $("#tags1").css('visibility', 'visible');
+  $('#labeltag1_comp').text(valueofsheet[0][13]);
+  $("#labeltag1_comp").css('visibility', 'visible');
+  $("#tags1_comp").css('visibility', 'visible');
+  
+}
+if (valueofsheet[0][14].toString().indexOf('RENAME') == -1 ) {
+$("#tags2").resizable({
+        grid: [1, 10000]
+}); 
+  $('#labeltag2').text(valueofsheet[0][14]);
+  $("#labeltag2").css('visibility', 'visible');
+  $("#tags2").css('visibility', 'visible');
+  $('#labeltag2_comp').text(valueofsheet[0][14]);
+  $("#labeltag2_comp").css('visibility', 'visible');
+  $("#tags2_comp").css('visibility', 'visible');
+  
+}
+if (valueofsheet[0][15].toString().indexOf('RENAME') == -1 ) {
+$("#tags3").resizable({
+        grid: [1, 10000]
+});
+  $('#labeltag3').text(valueofsheet[0][15]);
+  $("#labeltag3").css('visibility', 'visible');
+  $("#tags3").css('visibility', 'visible');
+  $('#labeltag3_comp').text(valueofsheet[0][15]);
+  $("#labeltag3_comp").css('visibility', 'visible');
+  $("#tags3_comp").css('visibility', 'visible');
+  
+}
+if (valueofsheet[0][16].toString().indexOf('RENAME') == -1 ) {
+$("#tags4").resizable({
+        grid: [1, 10000]
+});
+  $('#labeltag4').text(valueofsheet[0][16]);
+  $("#labeltag4").css('visibility', 'visible');
+  $("#tags4").css('visibility', 'visible')
+  $('#labeltag4_comp').text(valueofsheet[0][16]);
+  $("#labeltag4_comp").css('visibility', 'visible');
+  $("#tags4_comp").css('visibility', 'visible');
+  
+}
+if (valueofsheet[0][17].toString().indexOf('RENAME') == -1 ) {
+$("#tags5").resizable({
+        grid: [1, 10000]
+});
+  $('#labeltag5').text(valueofsheet[0][17]);
+  $("#labeltag5").css('visibility', 'visible');
+  $("#tags5").css('visibility', 'visible');
+  $('#labeltag5_comp').text(valueofsheet[0][17]);
+  $("#labeltag5_comp").css('visibility', 'visible');
+  $("#tags5_comp").css('visibility', 'visible');
+  
+}
+  
+  if (valueofsheet[0][8].toString().indexOf('RENAME') == -1 ) {
+  $( '#nombre1' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 10000,
+  min: 0  
+});
+$("#nombre1").spinner({
+  change: function (event, ui) {
+    var testno= document.getElementById("nombre1");
+    validatechangeons3(testno,1);
+  },
+  stop: function (event, ui) {
+  },
+});
+
+  $('#labelnombre1').text(valueofsheet[0][8]);
+  $("#labelnombre1").css('visibility', 'visible');
+  $("#nombre1").css('visibility', 'visible');
+  $('#labelnombre1_comp').text(valueofsheet[0][8]);
+  $("#labelnombre1_comp").css('visibility', 'visible');
+  $("#nombre1_comp").css('visibility', 'visible');
+  }
+  
+  if (valueofsheet[0][09].toString().indexOf('RENAME') == -1 ) {
+  $( '#nombre2' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 10000,
+  min: 0  
+});
+$("#nombre2").spinner({
+  change: function (event, ui) {
+    var testno= document.getElementById("nombre2");
+    validatechangeons3(testno,2);
+  },
+  stop: function (event, ui) {
+  },
+});
+  $('#labelnombre2').text(valueofsheet[0][09]);
+  $("#labelnombre2").css('visibility', 'visible');
+  $("#nombre2").css('visibility', 'visible');
+  $('#labelnombre2_comp').text(valueofsheet[0][09]);
+  $("#labelnombre2_comp").css('visibility', 'visible');
+  $("#nombre2_comp").css('visibility', 'visible');
+  }
+  
+  if (valueofsheet[0][10].toString().indexOf('RENAME') == -1 ) {
+  $( '#nombre3' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 10000,
+  min: 0  
+});
+
+$("#nombre3").spinner({
+  change: function (event, ui) {
+    var testno= document.getElementById("nombre3");
+    validatechangeons3(testno,3);
+  },
+  stop: function (event, ui) {
+  },
+});
+  $('#labelnombre3').text(valueofsheet[0][10]);
+  $("#labelnombre3").css('visibility', 'visible');
+  $("#nombre3").css('visibility', 'visible');
+  $('#labelnombre3_comp').text(valueofsheet[0][10]);
+  $("#labelnombre3_comp").css('visibility', 'visible');
+  $("#nombre3_comp").css('visibility', 'visible');
+  }
+  if (valueofsheet[0][11].toString().indexOf('RENAME') == -1 ) {
+  $( '#nombre4' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 10000,
+  min: 0  
+});
+$("#nombre4").spinner({
+  change: function (event, ui) {
+    var testno= document.getElementById("nombre4");
+    validatechangeons3(testno,4);
+  },
+  stop: function (event, ui) {
+  },
+});
+  $('#labelnombre4').text(valueofsheet[0][11]);
+  $("#labelnombre4").css('visibility', 'visible');
+  $("#nombre4").css('visibility', 'visible');
+  $('#labelnombre4_comp').text(valueofsheet[0][11]);
+  $("#labelnombre4_comp").css('visibility', 'visible');
+  $("#nombre4_comp").css('visibility', 'visible');
+  }
+  if (valueofsheet[0][12].toString().indexOf('RENAME') == -1 ) {
+  $( '#nombre5' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 10000,
+  min: 0  
+});
+
+$("#nombre5").spinner({
+  change: function (event, ui) {
+    var testno= document.getElementById("nombre5");
+    validatechangeons3(testno,5);
+  },
+  stop: function (event, ui) {
+  },
+});
+
+  $('#labelnombre5').text(valueofsheet[0][12]);
+  $("#labelnombre5").css('visibility', 'visible');
+  $("#nombre5").css('visibility', 'visible');
+  $('#labelnombre5_comp').text(valueofsheet[0][12]);
+  $("#labelnombre5_comp").css('visibility', 'visible');
+  $("#nombre5_comp").css('visibility', 'visible');
+  }
+  
+if (switchos=="YES"){
+alert("Table refreshed");
+switchos=="NO";
+$("#refreshmain").prop("disabled",false);
+}else{
+jQuery('#StartLoad').hide();
+$("#tabs").show();
+}
+
+
+}
+
+function populate_event_table(rowpiro){
+valueofsheet[0][0] = "ID";
+valueofsheet[0][2] = "longitude";
+valueofsheet[0][3] = "latitude";
+valueofsheet[0][4] = " accuracy ";
+var minrows;
+if (rowpiro== 500){
+rowpiro=501;
+minrows= 1;
+}
+if (rowpiro== 1000){
+rowpiro=1001;
+minrows= 500;
+}
+if (rowpiro== 1500){
+rowpiro=1501;
+minrows= 1000;
+}
+if (rowpiro== 2000){
+rowpiro=2001;
+minrows= 1500;
+}
+if (rowpiro== 2002){
+minrows= 2000;
+rowpiro= valueofsheet.length;
+} 
+var rows = Math.min(valueofsheet.length,rowpiro); 
+var cols = valueofsheet[0].length;
+var bigosgos= "Total number of events "+ (valueofsheet.length-1);
+$("#bigtitle2").text(bigosgos);
+var tableElementContainer1 = document.getElementById("employeeListContainer1"),
+temptableHolder  = '<table id="table1" border="1" ><thead></thead><tbody  class="searchable">';
+
+
+
+
+
+
+if (rowpiro!=33){
+temptableHolder  += '<tr><td>' + valueofsheet[0][0] + '</td><td><div class="limited"style="width:500px">'+ valueofsheet[0][1]+'</div></td><td>' 
++ valueofsheet[0][2]+ '</td><td>' + valueofsheet[0][3]
++ '</td><td>' + valueofsheet[0][4] + '</td><td>'  + valueofsheet[0][5] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[0][6] + '</div></td><td>'  + valueofsheet[0][7] +  '</td>'
++ '</td><td>'  + '&nbsp;' + valueofsheet[0][8]   + '&nbsp;'+  '</td><td>'   + '&nbsp;'+ valueofsheet[0][9]  + '&nbsp;'+   '</td>'
++ '</td><td>'  + '&nbsp;'+  valueofsheet[0][10]  + '&nbsp;'+  '</td><td>'   + '&nbsp;'+  valueofsheet[0][11]  + '&nbsp;'+  '</td>'
++ '</td><td>'  + '&nbsp;'+  valueofsheet[0][12]  + '&nbsp;'+  '</td><td>'   + '&nbsp;'+  valueofsheet[0][13]  + '&nbsp;'+   '</td>'
++ '</td><td>' + '&nbsp;'+ valueofsheet[0][14] + '&nbsp;'+ '</td><td>'  + '&nbsp;'+ valueofsheet[0][15] + '&nbsp;'+  '</td>'
++ '</td><td>' + '&nbsp;'+ valueofsheet[0][16] + '&nbsp;'+ '</td><td>'  + '&nbsp;'+ valueofsheet[0][17] + '&nbsp;'+  '</td>'
++ '</td><td>' + '&nbsp;'+ valueofsheet[0][18] + '&nbsp;'+ '</td><td>'  + '&nbsp;'+ valueofsheet[0][19] + '&nbsp;'+  '</td>'
++ '</td><td>' + '&nbsp;'+ valueofsheet[0][20] + '&nbsp;'+ '</td><td>'  + '&nbsp;'+ valueofsheet[0][21] + '&nbsp;'+  '</td>'
++ '</td><td>' + '&nbsp;'+ valueofsheet[0][22] + '&nbsp;'+ '</td><td><div class="limited"style="width:500px">'  + valueofsheet[0][23] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[0][24] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[0][25] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[0][26] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[0][27] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[0][28] +  '</td></tr>';
+
+for(var i=minrows,len=rows; i<len; i++){
+temptableHolder  += '<tr><td>' + '&nbsp;' + valueofsheet[i][0] + '</td><td><div class="limited"style="width:500px">'+ valueofsheet[i][1]+'</div></td><td>' 
++ valueofsheet[i][2]+ '</td><td>' + valueofsheet[i][3]
++ '</td><td>' + valueofsheet[i][4] + '</td><td>'  + valueofsheet[i][5] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[i][6] + '</div></td><td>'  + valueofsheet[i][7] +  '</td>'
++ '</td><td>' + valueofsheet[i][8] + '</td><td>'  + valueofsheet[i][9] +  '</td>'
++ '</td><td>' + valueofsheet[i][10] + '</td><td>'  + valueofsheet[i][11] +  '</td>'
++ '</td><td>' + valueofsheet[i][12] + '</td><td>'  + valueofsheet[i][13] +  '</td>'
++ '</td><td>' + valueofsheet[i][14] + '</td><td>'  + valueofsheet[i][15] +  '</td>'
++ '</td><td>' + valueofsheet[i][16] + '</td><td>'  + valueofsheet[i][17] +  '</td>'
++ '</td><td>' + valueofsheet[i][18] + '</td><td>'  + valueofsheet[i][19] +  '</td>'
++ '</td><td>' + valueofsheet[i][20] + '</td><td>'  + valueofsheet[i][21] +  '</td>'
++ '</td><td>' + valueofsheet[i][22] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[i][23] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[i][24] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[i][25] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[i][26] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[i][27] + '</td><td><div class="limited"style="width:500px">'  + valueofsheet[i][28] +  '</td></tr>';
+}
+
+}else{
+
+temptableHolder  += '<tr><td>' + valueofsheet[0][0] + '</td><td><div class="limited"style="width:500px">'+ valueofsheet[0][1]+'</div></td><td>' 
++ valueofsheet[0][2]+ '</td><td>' + valueofsheet[0][3]
++ '</td><td>' + valueofsheet[0][4] + '</td><td>'  + valueofsheet[0][5] +  '</td>'
++ '</td><td><div class="limited"style="width:500px">' + valueofsheet[0][6] +  '</td></tr>';
+
+     for(var i=1,len=valueofsheet.length; i<len; i++){
+           temptableHolder  += '<tr><td>' + valueofsheet[i][0] + '</td><td><div class="limited"style="width:500px">'+ valueofsheet[i][1]+'</div></td><td>' + valueofsheet[i][2]
+             + '</td><td>' + valueofsheet[i][3]
+            + '</td><td>' + valueofsheet[i][4] + '</td><td>'  + valueofsheet[i][5] +  '</td>'
+            + '</td><td><div class="limited" style="width:500px">' + valueofsheet[i][6] + '</div></td></tr>';
+                 }
+     
+   
+}
+temptableHolder += '</tbody></table>';
+tableElementContainer1.innerHTML  = temptableHolder ;
+
+
+
+var col = new Array();
+$('tr').eq('0').find('td').each(function() {
+if ($(this).text().toString().indexOf('RENAME') == -1 ) {
+col.push($(this).index());
+}
+});
+$('th,td').each(function() {
+if ($.inArray($(this).index(), col)==-1) $(this).hide();
+});
+
+$("#filtons").show();
+//$("#filtons").css('visibility', 'visible');
+$("#employeeListContainer1").addClass('zui-table zui-table-horizontal zui-table-highlight');
+$("#Part_1_500").prop("disabled",false);
+$("#Part_500_1000").prop("disabled",false);
+$("#Part_1000_1500").prop("disabled",false);
+$("#Part_1500_2000").prop("disabled",false);
+$("#Part_2001").prop("disabled",false);
+$("#Part_all").prop("disabled",false);
+}
+
+$('#filter').keyup(function (e) {
+if (e.keyCode == 13) {
+var rex = new RegExp($(this).val(), 'i');
+$('.searchable tr').hide();
+$('.searchable tr').filter(function () {
+return rex.test($(this).text());
+}).show();
+}
+})
+
+
+//$("#employeeListContainer1").find('tr').click( function(){
+//  alert("You clicked row "+ ($(this).index()+1) );
+//   var row2 = $(this).find('td:first').text();
+//  alert("You clicked " + row2);
+//});
+
+$('#employeeListContainer1').on('dblclick', 'tr', function () {
+var trValue = $(this).attr('value');
+var tdValue = $(this).children('td').map(function (index, val) {
+return $(this).text();
+}).toArray();
+//var selected_event= tdValue.slice(0,2);
+document.getElementById("media_available").value= "";
+var selected_index=$(this).index();
+
+if (currentpart== 1000){
+selected_index= selected_index*1+499;
+}
+if (currentpart== 1500){
+selected_index= selected_index*1+999;
+}
+if (currentpart== 2000){
+selected_index= selected_index*1+1499;
+}
+if (currentpart== 2002){
+selected_index= selected_index*1+1999;
+} 
+
+fast_fill(selected_index);
+//alert(valueofsheet[selected_index][0]);
+
+//document.getElementById("savos").disabled = true;
+//document.getElementById("savos_dupli").disabled = true;
+
+$("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+
+google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(Lati.value,Longi.value);
+map.setCenter(centermap);
+//google.script.run.withSuccessHandler(onSuccessEvent).Get_event_data(selected_event);
+//}
+
+});
+
+
+
+function Refreshtablesplit1(){
+currentpart=500;
+$("#Part_1_500").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+function Refreshtablesplit2(){
+currentpart=1000;
+$("#Part_500_1000").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+function Refreshtablesplit3(){
+currentpart=1500;
+$("#Part_1000_1500").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+function Refreshtablesplit4(){
+currentpart=2000;
+$("#Part_1500_2000").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+function Refreshtablesplit5(){
+currentpart=2002;
+$("#Part_2001").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+function RefreshtablesplitAll(){
+currentpart=33;
+$("#Part_all").prop("disabled",true);
+$("#employeeListContainer1").empty();
+populate_event_table(currentpart);
+}
+
+  
+     
+function refreshtable(){
+$("#refreshmain").prop("disabled",true);
+switchos= "YES";
+Load_from_Master_Sheet();
+}      
+
+function refreshtable2(){
+
+$("#refreshmain2").prop("disabled",true);
+checkfornewcontri();
+} 
+
+function NewCol() {
+
+ document.getElementById("NewCol").disabled = true;
+  var typeofcol=$(".my-chosen").val();
+  var nameofcol=$('#NewColumn').val();
+
+  if (nameofcol== ""){
+    alert("Please input column name");
+    jQuery('#dialog2').dialog('close');
+  }else{
+
+  google.script.run.withSuccessHandler(onSuccessCol).Rename_Col(typeofcol,nameofcol);
+
+    function onSuccessCol(N) { 
+     // refreshtable();
+      document.getElementById("NewCol").disabled = false;
+     if (N == "No Columns available" || N == "invalid column name characters, only letter/number and _ are allowed"){
+       jQuery('#dialog2').dialog('close');
+       alert(N);
+        
+       } else{
+         refreshtable();
+         jQuery('#dialog2').dialog('close');
+      }
+      
+    }
+
+  }
+
+  $('#NewColumn').val("");
+  document.getElementById("NewCol").disabled = false;
+  document.getElementById("create-col").disabled = false;
+}
+
+
+function createDialog() {
+//document.getElementById("create-col").disabled = true;
+$("#dialog2").css('visibility', 'visible');
+$("#dialog2").dialog({
+title:"Columns Manager",
+autoOpen:true, 
+maxHeight:false,
+});
+// Setup my chosen inputs
+$('.my-chosen').chosen({search_contains: true});
+// Prevent my chosen inputs from getting cut off by jquery ui dialogs
+$("body").on("chosen:showing_dropdown", ".my-chosen", function () {
+$(".ui-dialog .ui-dialog-content").css("overflow","visible");
+$(".ui-dialog").css("overflow","inherit");
+});
+}
+
+
+function deleteDialog() {
+
+var dropdown2 = document.getElementById("Column_Name");
+$("#Column_Name").find('option').remove();
+for (var i = 8; i < 23; ++i) {
+   if (valueofsheet[0][i].toString().indexOf('RENAME') == -1 ) {
+    // Append the element to the end of Array list
+    dropdown2[dropdown2.length] = new Option(valueofsheet[0][i], valueofsheet[0][i]);
+    }
+}
+
+$("#dialog3").css('visibility', 'visible');
+$("#dialog3").dialog({
+title:"Columns Manager",
+autoOpen:true, 
+maxHeight:false,
+});
+// Setup my chosen inputs
+$('.my-chosen2').chosen({search_contains: true});
+// Prevent my chosen inputs from getting cut off by jquery ui dialogs
+$("body").on("chosen:showing_dropdown", ".my-chosen", function () {
+$(".ui-dialog .ui-dialog-content").css("overflow","visible");
+$(".ui-dialog").css("overflow","inherit");
+});
+}
+
+
+function DeleteCol() {
+document.getElementById("DelCol").disabled = true;
+var typeofcol=$("#Column_Name").val();
+if (typeofcol== ""){
+alert("No Column Selected");
+jQuery('#dialog3').dialog('close');
+}else{
+if (confirm("Your are about to delete an entire column: Are you sure?") == true) {
+if (confirm("All data of the column will be deleted: Are you sure?") == true) {
+//        ///
+ google.script.run.withSuccessHandler(onSuccessCold).Deletion_Col(typeofcol);
+        
+ }
+ }
+}
+}
+
+
+function onSuccessCold(N) { 
+//alert(N);
+//refreshtable();
+$("#tabs").hide();
+alert("Please logout and login again on column deletion event");
+
+document.getElementById("DelCol").disabled = false;
+jQuery('#dialog3').dialog('close');
+//if (N == "No Columns available" || N == "invalid column name characters, only letter/number and _ are allowed"){
+//alert(N);
+}
+
+
+function create_event(){
+
+document.getElementById("create-event").disabled = true;
+document.getElementById("savos").disabled = true;
+document.getElementById("savos_dupli").disabled = true;
+document.getElementById("media_available").value= "";
+
+
+
+$("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+
+var ventosnami= document.getElementById("yyyy");
+if (ventosnami.value != "donotloadtable"){
+google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(Lati.value,Longi.value);
+map.setCenter(centermap);
+placeMarker(centermap);
+}else{
+
+//google.maps.event.trigger(map, 'resize');
+//var centermap = new google.maps.LatLng(Lati.value,Longi.value);
+//alert("need");
+}
+$("#commentos").html("");
+$("#ID_Event").val("NEW");
+
+
+document.getElementById("Date_Event").value ="";
+document.getElementById("Hori").value ="";
+document.getElementById("Mini").value ="";
+document.getElementById("address").value ="";
+document.getElementById("Long").value ="";
+document.getElementById("Lat").value ="";
+document.getElementById("accu").value ="";
+$("#summaros").html("");
+document.getElementById("nombre1").value ="";
+document.getElementById("nombre2").value ="";
+document.getElementById("nombre3").value ="";
+document.getElementById("nombre4").value ="";
+document.getElementById("nombre5").value ="";
+document.getElementById("tags1").value ="";
+document.getElementById("tags2").value ="";
+document.getElementById("tags3").value = "";
+document.getElementById("tags4").value ="";
+document.getElementById("tags5").value ="";
+document.getElementById("question1").value ="";
+document.getElementById("question2").value ="";
+document.getElementById("question3").value ="";
+document.getElementById("question4").value ="";
+document.getElementById("question5").value ="";
+document.getElementById("source").value ="";
+
+
+$( "#Date_Event" ).data( "carbon", "qawsedrf4" );
+$( "#commentos" ).data( "carbon", "qawsedrf4");
+$( "#Hori" ).data( "carbon", "qawsedrf4" );
+$( "#Mini" ).data( "carbon", "qawsedrf4"  );
+
+$( "#address" ).data( "carbon","qawsedrf4"  );
+$( "#Long" ).data( "carbon", "qawsedrf4"  );
+$( "#Lat" ).data( "carbon","qawsedrf4"  );
+$( "#accu" ).data( "carbon","qawsedrf4"  );
+
+
+$( "#summaros" ).data( "carbon", "qawsedrf4"  );
+$( "#source" ).data( "carbon", "qawsedrf4"  );
+
+
+$( "#nombre1" ).data( "carbon", "qawsedrf4"  );
+$( "#nombre2" ).data( "carbon", "qawsedrf4"  );
+$( "#nombre3" ).data( "carbon","qawsedrf4"  );
+$( "#nombre4" ).data( "carbon", "qawsedrf4"  );
+$( "#nombre5" ).data( "carbon", "qawsedrf4"  );
+
+$( "#tags1" ).data( "carbon","qawsedrf4"  );
+$( "#tags2" ).data( "carbon", "qawsedrf4"  );
+$( "#tags3" ).data( "carbon", "qawsedrf4"  );
+$( "#tags4" ).data( "carbon","qawsedrf4"  );
+$( "#tags5" ).data( "carbon", "qawsedrf4"  );
+
+$( "#question1" ).data( "carbon", "qawsedrf4"  );
+$( "#question2" ).data( "carbon", "qawsedrf4"  );
+$( "#question3" ).data( "carbon", "qawsedrf4"  );
+$( "#question4" ).data( "carbon", "qawsedrf4"  );
+$( "#question5" ).data( "carbon","qawsedrf4"  );
+$( "#photocarbon" ).data( "carbon", "qawsedrf4" );
+$( "#videocarbon" ).data( "carbon","qawsedrf4"  );
+$( "#filecarbon" ).data( "carbon", "qawsedrf4"  );
+$( "#linkcarbon" ).data( "carbon", "qawsedrf4"  );
+
+var json =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable(json);
+$('#1').remove();
+$('#photo_data').hide();
+
+var json2 =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable2(json2);
+$('#v1').remove();
+$('#video_data').hide();
+
+var json3 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable3(json3);
+$('#fil1').remove();
+$('#file_data').hide();
+
+var json4 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable4(json4);
+$('#lin1').remove();
+$('#link_data').hide();
+
+document.getElementById("savos").disabled =  false;
+document.getElementById("savos_dupli").disabled =  false;
+document.getElementById("create-event").disabled = false;
+}
+
+function backios(){
+$("#ecran2").hide();
+$("#footer1").show();
+$("#filtons").show();
+$("#photo_data").empty();
+$("#video_data").empty();
+$("#file_data").empty();
+$("#link_data").empty();
+
+document.getElementById("savos").disabled =  false;
+document.getElementById("savos_dupli").disabled =  false;
+document.getElementById("create-event").disabled = false;
+}
+
+
+$('#commentos').focusout(function(){
+  var element = $(this);        
+  if (!element.text().replace(" ", "").length) {
+    element.empty();
+  }
+});
+
+$('#summaros').focusout(function(){
+  var element = $(this);        
+  if (!element.text().replace(" ", "").length) {
+    element.empty();
+  }
+});
+
+
+
+$('.Lat_long').keyup(function(){
+  
+  if($(this).val().indexOf('.')!=-1){         
+    if($(this).val().split(".")[1].length > precision){                
+      if( isNaN( parseFloat( this.value ) ) ) return;
+      this.value = parseFloat(this.value).toFixed(precision);
+    }} 
+  
+  if ($(this).val()!= "-"){
+    if(!$.isNumeric($(this).val()) ){
+      $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+      if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+        event.preventDefault();
+      }}}
+  
+  return this; 
+});
+
+
+$( ".DatePicker" ).datepicker({
+  changeMonth: true,
+  changeYear: true,
+  yearRange: '1945:2020'
+});
+$( '#Lat' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 90,
+  min: -90  
+});
+$( '#Long' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 180,
+  min: -180
+});
+$( '#Hori' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 23,
+  min: 0  
+});
+$( '#Mini' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 59,
+  min: 0
+});
+$( '#Hori_foto' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 23,
+  min: 0  
+});
+$( '#Mini_foto' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 59,
+  min: 0
+});
+
+$( '#Lat_foto' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 90,
+  min: -90  
+});
+$( '#Long_foto' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 180,
+  min: -180
+});
+
+$( '#Hori_video' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 23,
+  min: 0  
+});
+$( '#Mini_video' ).spinner({
+  step: 1,
+  numberFormat: "n",
+  max: 59,
+  min: 0
+});
+
+$( '#Lat_video' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 90,
+  min: -90  
+});
+$( '#Long_video' ).spinner({
+  step: 0.00001,
+  numberFormat: "n",
+  max: 180,
+  min: -180
+});
+///////type validation//////////////////////////////////////////////////////////
+
+$('#Long').bind("enterKey",function(e){
+  validatechangeons($(this).val());
+});
+$('#Long').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+
+$('#Lat').bind("enterKey",function(e){
+  validatechangeons($(this).val());
+});
+
+$('#Lat').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+}); 
+
+/////////////////////////////////////////////////////
+$(".Hor_Min").on("keypress keyup blur",function (event) {    
+  $(this).val($(this).val().replace(/[^\d].+/, ""));
+  if ((event.which < 48 || event.which > 57)) {
+    event.preventDefault();
+  }
+});
+$('#Hori').bind("enterKey",function(e){
+  validatechangeons2($(this).val(),"h");
+});
+$('#Hori').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+$('#Mini').bind("enterKey",function(e){
+  validatechangeons2($(this).val(),"m");
+});
+$('#Mini').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+
+///////change validation////////////////////////////////////////////////////////////////////
+$("#Lat").spinner({
+  change: function (event, ui) {
+    validatechangeons(Lati.value);
+  },
+  stop: function (event, ui) {
+    var newPosio = new google.maps.LatLng(Lati.value,Longi.value );
+    marker.setPosition( newPosio );
+  },
+});
+$("#Long").spinner({
+  change: function (event, ui) {
+    validatechangeons(Longi.value);
+  },
+  stop: function (event, ui) {
+    var newPosio = new google.maps.LatLng(Lati.value,Longi.value );
+    marker.setPosition( newPosio );
+  },
+});
+
+function validatechangeons(text){
+  var testio= $.isNumeric(text);
+  if (testio == true){
+    
+    if (Lati.value > maxilati){
+      Lati.value= maxilati;
+    }
+    if (Lati.value < minilati){
+      Lati.value= minilati;
+    }
+    if (Longi.value > maxilongi){
+      Longi.value= maxilongi;
+    }
+    if (Longi.value < minilongi){
+      Longi.value= minilongi;
+    }
+    var newPosio = new google.maps.LatLng(Lati.value,Longi.value );
+    marker.setPosition( newPosio );
+    var needmovemap= map.getBounds().contains(marker.getPosition());
+    
+    if (needmovemap == false){
+      map.setCenter(newPosio);
+    }
+    
+  } else {
+    Lati.value =  marker.getPosition().lat();
+    Longi.value = marker.getPosition().lng();
+  }
+  
+}
+//////////////////////////////////////////////////////////////////////////////////
+$("#Hori").spinner({
+  change: function (event, ui) {
+    validatechangeons2(hourii.value,"h");
+  },
+  stop: function (event, ui) {
+  },
+});
+$("#Mini").spinner({
+  change: function (event, ui) {
+    validatechangeons2(minutii.value,"m");
+  },
+  stop: function (event, ui) {
+  },
+});
+function validatechangeons2(text,t){
+  var testio= $.isNumeric(text);
+  if (testio == true){
+    if (hourii.value > 23){
+      hourii.value= 23;
+    }
+    if (hourii.value < 0){
+      hourii.value= 0;
+    }
+    if ( minutii.value > 59){
+      minutii.value= 59;
+    }
+    if ( minutii.value < 0){
+      minutii.value= 0;
+    }
+  }else{
+    if (t=="h"){
+      hourii.value =  12;
+    }
+    if (t=="m"){
+      minutii.value = 30;
+    }
+    
+    
+  }
+  if (hourii.value.length == 1){
+    hourii.value= "0"+hourii.value
+  }
+  if (minutii.value.length == 1){
+    minutii.value= "0"+minutii.value
+  }
+}
+///////paste validation//////////////////////////////////////////////////////////////
+$('#Lat').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons(text );
+  }, 100);
+});
+$('#Long').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons(text );
+  }, 100);
+});
+
+$('#Hori').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons2(text,"h" );
+  }, 100);
+});
+
+$('#Mini').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons2(text ,"m");
+  }, 100);
+});
+
+
+$( "#tags1" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        availableTags1, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+
+
+
+$( "#tags2" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        availableTags2, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+  
+  $( "#tags3" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        availableTags3, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+  
+  $( "#tags4" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        availableTags4, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+  
+  $( "#tags5" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        availableTags5, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+  
+  
+  $( "#source" )
+  .bind( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      response( $.ui.autocomplete.filter(
+        sourceTags, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      terms.pop();
+      terms.push( ui.item.value );
+      terms.push( "" );
+      this.value = terms.join( "," );
+      return false;
+    }
+  });
+
+
+   $("#tags1").focus(function() {
+    $(this).autocomplete("search");
+  });
+  $("#tags2").focus(function() {
+    $(this).autocomplete("search");
+  });
+  $("#tags3").focus(function() {
+    $(this).autocomplete("search");
+  });
+  $("#tags4").focus(function() {
+    $(this).autocomplete("search");
+  });
+  $("#tags5").focus(function() {
+    $(this).autocomplete("search");
+  });
+  $("#source").focus(function() {
+    $(this).autocomplete("search");
+  });
+
+
+
+
+$('#nombre1').bind("enterKey",function(e){
+  validatechangeons3($(this).val(),1);
+});
+
+$('#nombre1').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+
+$('#nombre1').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons3(text,1 );
+  }, 100);
+});
+
+
+  
+$(".nombres").on("keypress keyup blur",function (event) {    
+  $(this).val($(this).val().replace(/[^\d].+/, ""));
+  if ((event.which < 48 || event.which > 57)) {
+    event.preventDefault();
+  }
+});
+
+
+$('#nombre2').bind("enterKey",function(e){
+  validatechangeons3($(this).val(),2);
+});
+$('#nombre2').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+$('#nombre2').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons3(text,2 );
+  }, 100);
+});
+
+
+
+
+
+$('#nombre3').bind("enterKey",function(e){
+  validatechangeons3($(this).val(),3);
+});
+$('#nombre3').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+$('#nombre3').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons3(text,3 );
+  }, 100);
+});
+
+
+$('#nombre4').bind("enterKey",function(e){
+  validatechangeons3($(this).val(),4);
+});
+$('#nombre4').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+$('#nombre4').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons3(text,4 );
+  }, 100);
+});
+
+
+
+$('#nombre5').bind("enterKey",function(e){
+  validatechangeons3($(this).val(),5);
+});
+
+$('#nombre5').keyup(function(e){
+  if(e.keyCode == 13)
+  {
+    $(this).trigger("enterKey");
+  }
+});
+
+$('#nombre5').on('paste', function () {
+  var element = this;
+  setTimeout(function () {
+    var text = $(element).val();
+    validatechangeons3(text,5 );
+  }, 100);
+});
+
+function validatechangeons3(text,n){
+  var testio2= $.isNumeric(text);
+  if (testio2 != true){
+    var valuetochange =  document.getElementById('#nombre' + n); 
+    valuetochange.value= 0;
+  }
+}
+
+
+$('#mediafoto').hide();
+$('.clickme').each(function() {
+$(this).show(0).on('click', function(e) {
+// This is only needed if your using an anchor to target the "box" elements
+e.preventDefault();
+// Find the next "box" element in the DOM
+$(this).next('#mediafoto').slideToggle('fast');
+});
+});
+
+$('#mediavideo').hide();
+$('.clickme').each(function() {
+$(this).show(0).on('click', function(e) {
+// This is only needed if your using an anchor to target the "box" elements
+e.preventDefault();
+// Find the next "box" element in the DOM
+$(this).next('#mediavideo').slideToggle('fast');
+});
+});
+
+$('#mediafiles').hide();
+$('.clickme').each(function() {
+$(this).show(0).on('click', function(e) {
+// This is only needed if your using an anchor to target the "box" elements
+e.preventDefault();
+// Find the next "box" element in the DOM
+$(this).next('#mediafiles').slideToggle('fast');
+});
+});
+
+$('#medialinks').hide();
+$('.clickme').each(function() {
+$(this).show(0).on('click', function(e) {
+// This is only needed if your using an anchor to target the "box" elements
+e.preventDefault();
+// Find the next "box" element in the DOM
+$(this).next('#medialinks').slideToggle('fast');
+});
+});
+
+
+
+
+
+
+///////////////////Function/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function Update_Map() {
+var accuu = document.getElementById("accu");
+var address = document.getElementById('address').value;
+geocoder.geocode({
+'address': address}, function (results, status) {
+if (status == google.maps.GeocoderStatus.OK) {
+map.setCenter(results[0].geometry.location);
+Longi.value = results[0].geometry.location.lng().toFixed(precision);
+Lati.value = results[0].geometry.location.lat().toFixed(precision);
+accuu.value = results[0].geometry.location_type;
+var NewLatlng = new google.maps.LatLng(Lati.value,Longi.value);
+placeMarker(NewLatlng);
+} else {
+alert('Geocode was not successful for the following reason: ' + status);
+accuu.value = "INVALID";
+}});
+
+}
+
+
+
+function placeMarker(location){
+marker.setPosition( location );
+google.maps.event.addListener(marker, 'dragend', function()
+{
+var latmarker=  marker.getPosition().lat();
+var longmarker= marker.getPosition().lng();
+Longi.value = longmarker.toFixed(precision);
+Lati.value = latmarker.toFixed(precision);
+})
+;}
+function split( val ) {
+return val.split( /,\s*/ );
+}
+function extractLast( term ) {
+return split( term ).pop();
+}
+
+function round_number(num, dec) {
+return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+}
+
+function uniq_fast(a) {
+var seen = {};
+var out = [];
+var len = a.length;
+var j = 0;
+for(var i = 0; i < len; i++) {
+var item = a[i];
+if(seen[item] !== 1) {
+seen[item] = 1;
+out[j++] = item;
+}
+}
+return out;
+}
+
+function fast_fill(selected_index){
+  
+  $("#commentos").html(valueofsheet[selected_index][28]);
+  $( "#commentos" ).data( "carbon", valueofsheet[selected_index][28]);
+  
+  $("#ID_Event").val(valueofsheet[selected_index][0]);
+  document.getElementById("Date_Event").value =valueofsheet[selected_index][5].substring(5, 7)+'/'+valueofsheet[selected_index][5].substring(8, 10)+'/'+valueofsheet[selected_index][5].substring(0, 4);
+  document.getElementById("Hori").value =valueofsheet[selected_index][5].substring(11, 13);
+  document.getElementById("Mini").value =valueofsheet[selected_index][5].substring(14, 16);
+  
+  document.getElementById("address").value =valueofsheet[selected_index][1];
+  document.getElementById("Long").value =valueofsheet[selected_index][2];
+  document.getElementById("Lat").value =valueofsheet[selected_index][3];
+  google.maps.event.trigger(map, 'resize');
+  var centermap = new google.maps.LatLng(valueofsheet[selected_index][3],valueofsheet[selected_index][2]);
+
+
+
+
+
+
+placeMarker(centermap);
+map.setCenter(centermap);
+ //google.maps.event.trigger(map, 'resize');
+
+  document.getElementById("accu").value =valueofsheet[selected_index][4];
+  
+  $( "#Date_Event" ).data( "carbon", valueofsheet[selected_index][5].substring(5, 7)+'/'+valueofsheet[selected_index][5].substring(8, 10)+'/'+valueofsheet[selected_index][5].substring(0, 4) );
+  $( "#Hori" ).data( "carbon", valueofsheet[selected_index][5].substring(11, 13));
+  $( "#Mini" ).data( "carbon", valueofsheet[selected_index][5].substring(14, 16) );
+  
+  $( "#address" ).data( "carbon", valueofsheet[selected_index][1] );
+  $( "#Long" ).data( "carbon", valueofsheet[selected_index][2] );
+  $( "#Lat" ).data( "carbon", valueofsheet[selected_index][3] );
+  $( "#accu" ).data( "carbon", valueofsheet[selected_index][4] );
+  
+  
+  $("#summaros").html(valueofsheet[selected_index][6]);
+  $( "#summaros" ).data( "carbon", valueofsheet[selected_index][6] );
+  document.getElementById("source").value =valueofsheet[selected_index][7];
+  $( "#source" ).data( "carbon", valueofsheet[selected_index][7] );
+  
+  document.getElementById("nombre1").value =valueofsheet[selected_index][8];
+  document.getElementById("nombre2").value =valueofsheet[selected_index][9];
+  document.getElementById("nombre3").value =valueofsheet[selected_index][10];
+  document.getElementById("nombre4").value =valueofsheet[selected_index][11];
+  document.getElementById("nombre5").value =valueofsheet[selected_index][12];
+  
+  document.getElementById("tags1").value =valueofsheet[selected_index][13];
+  document.getElementById("tags2").value =valueofsheet[selected_index][14];
+  document.getElementById("tags3").value =valueofsheet[selected_index][15];
+  document.getElementById("tags4").value =valueofsheet[selected_index][16];
+  document.getElementById("tags5").value =valueofsheet[selected_index][17];
+  
+  document.getElementById("question1").value =valueofsheet[selected_index][18];
+  document.getElementById("question2").value =valueofsheet[selected_index][19];
+  document.getElementById("question3").value =valueofsheet[selected_index][20];
+  document.getElementById("question4").value =valueofsheet[selected_index][21];
+  document.getElementById("question5").value =valueofsheet[selected_index][22];
+  
+  //alert($( "#nombre1" ).data( "carbon" ));
+  $( "#nombre1" ).data( "carbon", valueofsheet[selected_index][8] );
+  $( "#nombre2" ).data( "carbon", valueofsheet[selected_index][9] );
+  $( "#nombre3" ).data( "carbon", valueofsheet[selected_index][10] );
+  $( "#nombre4" ).data( "carbon", valueofsheet[selected_index][11] );
+  $( "#nombre5" ).data( "carbon", valueofsheet[selected_index][12] );
+  
+  $( "#tags1" ).data( "carbon", valueofsheet[selected_index][13] );
+  $( "#tags2" ).data( "carbon", valueofsheet[selected_index][14] );
+  $( "#tags3" ).data( "carbon", valueofsheet[selected_index][15] );
+  $( "#tags4" ).data( "carbon", valueofsheet[selected_index][16] );
+  $( "#tags5" ).data( "carbon", valueofsheet[selected_index][17] );
+  
+  $( "#question1" ).data( "carbon", valueofsheet[selected_index][18] );
+  $( "#question2" ).data( "carbon", valueofsheet[selected_index][19] );
+  $( "#question3" ).data( "carbon", valueofsheet[selected_index][20] );
+  $( "#question4" ).data( "carbon", valueofsheet[selected_index][21] );
+  $( "#question5" ).data( "carbon", valueofsheet[selected_index][22] );
+  $( "#photocarbon" ).data( "carbon", valueofsheet[selected_index][23] );
+  $( "#videocarbon" ).data( "carbon", valueofsheet[selected_index][24] );
+  $( "#filecarbon" ).data( "carbon", valueofsheet[selected_index][25] );
+  $( "#linkcarbon" ).data( "carbon", valueofsheet[selected_index][26] );
+  
+ 
+  if (valueofsheet[selected_index][23]!= ""){
+    document.getElementById("media_available").value = "photos";
+    var myString = '[' + valueofsheet[selected_index][23] +']'
+    var json = $.parseJSON(myString)
+    buildHtmlTable(json);
+    $("#photo_data").show();
+  }else{
+    var json =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+    buildHtmlTable(json);
+    $('#1').remove();
+    $('#photo_data').hide();
+  }
+ 
+  if (valueofsheet[selected_index][24]!= ""){
+    var currentmedia= document.getElementById("media_available").value;
+    
+    if (currentmedia != ""){
+      document.getElementById("media_available").value= currentmedia+',embedded_videos';
+    }else{
+      document.getElementById("media_available").value = "embedded_videos";
+    }
+    
+    var myString2 = '[' + valueofsheet[selected_index][24] +']'
+    var json2 = $.parseJSON(myString2)
+    buildHtmlTable2(json2);
+    $("#video_data").show();
+  }else{
+    var json2 =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+    buildHtmlTable2(json2);
+    $('#v1').remove();
+    $('#video_data').hide();
+    
+  }
+  
+  if (valueofsheet[selected_index][25]!= ""){
+    var currentmedia= document.getElementById("media_available").value;
+    
+    if (currentmedia != ""){
+      document.getElementById("media_available").value= currentmedia+',files';
+    }else{
+      document.getElementById("media_available").value = "files";
+    }
+    
+    var myString3 = '[' + valueofsheet[selected_index][25] +']'
+    var json3 = $.parseJSON(myString3)
+    buildHtmlTable3(json3);
+    $("#file_data").show();
+  }else{
+    var json3 =[{"title":"","subtitle":"","url":""}];
+    buildHtmlTable3(json3);
+    $('#fil1').remove();
+    $('#file_data').hide();
+  }
+  
+  
+  if (valueofsheet[selected_index][26]!= ""){
+    var currentmedia= document.getElementById("media_available").value;
+    if (currentmedia != ""){
+      document.getElementById("media_available").value= currentmedia+',url_links';
+    }else{
+      document.getElementById("media_available").value = "url_links";
+    }
+    var myString4 = '[' + valueofsheet[selected_index][26] +']'
+    var json4 = $.parseJSON(myString4)
+    buildHtmlTable4(json4);
+    $("#link_data").show();
+  }else{
+    var json4 =[{"title":"","subtitle":"","url":""}];
+    buildHtmlTable4(json4);
+    $('#lin1').remove();
+    $('#link_data').hide();
+  }
+  document.getElementById("savos").disabled = false;
+  document.getElementById("savos_dupli").disabled = false;
+  document.getElementById("Accept_review").disabled =  false;
+
+if (lodingos=="goit"){
+loadaccepted_data();
+}
+  
+}
+
+function buildHtmlTable(myList) {
+  var columns = addAllColumnHeaders(myList);
+  for (var i = 0 ; i < myList.length ; i++) {
+    var j= i+1;
+    var row$ = $('<tr id="'+j+'"/>');
+    for (var colIndex = 0 ; colIndex < columns.length+1 ; colIndex++) {
+      var cellValue = myList[i][columns[colIndex]];
+      if (cellValue == null) { cellValue = ""; }
+      if (colIndex==columns.length ){
+        cellValue = myList[i][columns[1]];
+        row$.append($('<td><div ><img src="'+ cellValue+ '" id="image'+j+'" height="100px" width="100px" /></div></td>'));
+      } else if (colIndex==2) {
+        row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      }else{
+        row$.append($('<td><div class="limited2">'+ cellValue +'</div></td>'));
+      }
+    }
+    $("#photo_data").append(row$);
+  }
+  $("#photo_data").addClass('ffotos');
+}
+
+function addAllColumnHeaders(myList){
+  var columnSet = [];
+  var headerTr$ = $('<tr/>');
+  for (var i = 0 ; i < myList.length ; i++) {
+    var rowHash = myList[i];
+    for (var key in rowHash) {
+      if ($.inArray(key, columnSet) == -1){
+        columnSet.push(key);
+        headerTr$.append($('<th/>').html(key));
+        //headerTr$.css('width', "40px");
+      }
+    }
+    $("#newfo").css('visibility', 'visible');
+  }
+  $("#photo_data").append(headerTr$);
+  return columnSet;
+}
+
+$('#photo_data').on('dblclick', 'tr', function () {
+  var trValue = $(this).attr('value');
+  var tdValue = $(this).children('td').map(function (index, val) {
+    return $(this).text();
+  }).toArray();
+  var selected_photo= $('#photo_data tr').index(this);
+  document.getElementById("findex").value =selected_photo ;
+  var numero=selected_photo*1;
+  document.getElementById("src").value = tdValue[0];
+  document.getElementById("thumb").value =tdValue[1];
+  document.getElementById("subhtml").value =tdValue[2];
+  document.getElementById("title").value =tdValue[3];
+  document.getElementById("author").value =tdValue[4];
+  ////////////function to populate date time
+  document.getElementById("Date_Event_foto").value =tdValue[5].substring(5, 7)+'/'+tdValue[5].substring(8, 10)+'/'+tdValue[5].substring(0, 4);
+  document.getElementById("Hori_foto").value =tdValue[5].substring(11, 13);
+  document.getElementById("Mini_foto").value =tdValue[5].substring(14, 16);
+  ///////////////////////////////////////////////////
+  document.getElementById("location_name").value =tdValue[6];
+  document.getElementById("Lat_foto").value =tdValue[7];
+  document.getElementById("Long_foto").value =tdValue[8];
+  document.getElementById("caption").value =tdValue[9];
+  document.getElementById("sourcef").value =tdValue[10];
+  
+  document.getElementById('imagos').src=  tdValue[0];
+  $("#fotoeditor").css('visibility', 'visible');
+  $("#newfo").css('visibility', 'hidden');
+  $('#photo_data').hide();
+  $('#imagos').show();
+})
+
+function buildHtmlTable2(myList) {
+var columns = addAllColumnHeaders2(myList);
+for (var i = 0 ; i < myList.length ; i++) {
+var j= i+1;
+var row$ = $('<tr id="v'+j+'"/>');
+for (var colIndex = 0 ; colIndex < columns.length+1 ; colIndex++) {
+var cellValue = myList[i][columns[colIndex]];
+if (cellValue == null) { cellValue = ""; }
+if (colIndex==columns.length ){
+cellValue = myList[i][columns[1]];
+row$.append($('<td><div ><img src="'+ cellValue+ '" id="imagev'+j+'" height="100px" width="100px" /></div></td>'));
+} else if (colIndex==2) {
+row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+}else{
+row$.append($('<td><div class="limited2">'+ cellValue +'</div></td>'));
+}
+}
+$("#video_data").append(row$);
+}
+$("#video_data").addClass('ffotos');
+}
+function addAllColumnHeaders2(myList)
+{
+var columnSet = [];
+var headerTr$ = $('<tr/>');
+for (var i = 0 ; i < myList.length ; i++) {
+var rowHash = myList[i];
+for (var key in rowHash) {
+if ($.inArray(key, columnSet) == -1){
+columnSet.push(key);
+headerTr$.append($('<th/>').html(key));
+//headerTr$.css('width', "40px");
+}
+}
+$("#newvo").css('visibility', 'visible');
+}
+$("#video_data").append(headerTr$);
+return columnSet;
+}
+
+$('#video_data').on('dblclick', 'tr', function () {
+var trValue = $(this).attr('value');
+var tdValue = $(this).children('td').map(function (index, val) {
+return $(this).text();
+}).toArray();
+var selected_photo= $('#video_data tr').index(this);
+document.getElementById("vindex").value =selected_photo ;
+var numero=selected_photo*1;
+document.getElementById("srcv").value = tdValue[0];
+document.getElementById("thumbv").value =tdValue[1];
+document.getElementById("subhtmlv").value =tdValue[2];
+document.getElementById("titlev").value =tdValue[3];
+document.getElementById("authorv").value =tdValue[4];
+////////////function to populate date time
+document.getElementById("Date_Event_video").value =tdValue[5].substring(5, 7)+'/'+tdValue[5].substring(8, 10)+'/'+tdValue[5].substring(0, 4);
+document.getElementById("Hori_video").value =tdValue[5].substring(11, 13);
+document.getElementById("Mini_video").value =tdValue[5].substring(14, 16);
+///////////////////////////////////////////////////
+document.getElementById("location_namev").value =tdValue[6];
+document.getElementById("Lat_video").value =tdValue[7];
+document.getElementById("Long_video").value =tdValue[8];
+document.getElementById("captionv").value =tdValue[9];
+document.getElementById("sourcev").value =tdValue[10];
+document.getElementById('vidagos').src=  tdValue[0];
+
+$("#videoeditor").css('visibility', 'visible');
+$("#newvo").css('visibility', 'hidden');
+$('#video_data').hide();
+$('#vidagos').show();
+})
+
+
+function buildHtmlTable3(myList) {
+  var columns = addAllColumnHeaders3(myList);
+  for (var i = 0 ; i < myList.length ; i++) {
+    var j= i+1;
+    var row$ = $('<tr id="fil'+j+'"/>');
+    for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
+      var cellValue = myList[i][columns[colIndex]];
+      if (cellValue == null) { cellValue = ""; }
+      //if (colIndex==columns.length ){
+      //cellValue = myList[i][columns[1]];
+      //row$.append($('<td><div ><img src="'+ cellValue+ '" id="imagefil'+j+'" height="100px" width="100px" /></div></td>'));
+      ////} else if (colIndex==2) {
+      //row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      //}else{
+      row$.append($('<td><div class="limited2">'+ cellValue +'</div></td>'));
+      //}
+    }
+    $("#file_data").append(row$);
+  }
+  //$("#file_data").addClass('ffotos');
+}
+function addAllColumnHeaders3(myList)
+{
+  var columnSet = [];
+  var headerTr$ = $('<tr/>');
+  for (var i = 0 ; i < myList.length ; i++) {
+    var rowHash = myList[i];
+    for (var key in rowHash) {
+      if ($.inArray(key, columnSet) == -1){
+        columnSet.push(key);
+        headerTr$.append($('<th/>').html(key));
+        //headerTr$.css('width', "40px");
+      }
+    }
+    $("#newfi").css('visibility', 'visible');
+  }
+  $("#file_data").append(headerTr$);
+  return columnSet;
+}
+
+$('#file_data').on('dblclick', 'tr', function () {
+  var trValue = $(this).attr('value');
+  var tdValue = $(this).children('td').map(function (index, val) {
+    return $(this).text();
+  }).toArray();
+  var selected_photo= $('#file_data tr').index(this);
+  document.getElementById("filindex").value =selected_photo ;
+  var numero=selected_photo*1;
+  document.getElementById("titlefil").value = tdValue[0];
+  document.getElementById("subtitlefil").value =tdValue[1];
+  document.getElementById("urlfil").value =tdValue[2];
+  
+  $("#fileeditor").css('visibility', 'visible');
+  $("#newfi").css('visibility', 'hidden');
+  $('#file_data').hide();
+})
+function buildHtmlTable4(myList) {
+  var columns = addAllColumnHeaders4(myList);
+  for (var i = 0 ; i < myList.length ; i++) {
+    var j= i+1;
+    var row$ = $('<tr id="lin'+j+'"/>');
+    for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
+      var cellValue = myList[i][columns[colIndex]];
+      if (cellValue == null) { cellValue = ""; }
+      //if (colIndex==columns.length ){
+      //cellValue = myList[i][columns[1]];
+      //row$.append($('<td><div ><img src="'+ cellValue+ '" id="imagefil'+j+'" height="100px" width="100px" /></div></td>'));
+      ////} else if (colIndex==2) {
+      //row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      //}else{
+      row$.append($('<td><div class="limited2">'+ cellValue +'</div></td>'));
+      //}
+    }
+    $("#link_data").append(row$);
+  }
+  //$("#file_data").addClass('ffotos');
+}
+function addAllColumnHeaders4(myList)
+{
+  var columnSet = [];
+  var headerTr$ = $('<tr/>');
+  for (var i = 0 ; i < myList.length ; i++) {
+    var rowHash = myList[i];
+    for (var key in rowHash) {
+      if ($.inArray(key, columnSet) == -1){
+        columnSet.push(key);
+        headerTr$.append($('<th/>').html(key));
+        //headerTr$.css('width', "40px");
+      }
+    }
+    $("#newli").css('visibility', 'visible');
+  }
+  $("#link_data").append(headerTr$);
+  return columnSet;
+}
+
+$('#link_data').on('dblclick', 'tr', function () {
+  var trValue = $(this).attr('value');
+  var tdValue = $(this).children('td').map(function (index, val) {
+    return $(this).text();
+  }).toArray();
+  var selected_photo= $('#link_data tr').index(this);
+  document.getElementById("linkindex").value =selected_photo ;
+  var numero=selected_photo*1;
+  document.getElementById("titlelin").value = tdValue[0];
+  document.getElementById("subtitlelin").value =tdValue[1];
+  document.getElementById("urllin").value =tdValue[2];
+  
+  $("#linkeditor").css('visibility', 'visible');
+  $("#newli").css('visibility', 'hidden');
+  $('#link_data').hide();
+})
+////////////////////////////////////////////////////////////////////////
+function backioslin(){
+  $("#linkeditor").css('visibility', 'hidden');
+  var newmaxid= $("#link_data > tbody > tr").length;
+  if (newmaxid!=1){
+    $('#link_data').show();
+  }
+  
+  //$('#table-wrapper2').show();
+  $("#newli").css('visibility', 'visible');
+}
+
+function newlik(){
+  var maxid= $("#link_data > tbody > tr").length;
+  if (maxid>1){
+    var idi = $('#link_data tr:last').attr('id').substring(3);
+    var newphoto= idi*1+1;
+  }else{
+    var newphoto= 1;
+  }
+  
+  $("#linkeditor").css('visibility', 'visible');
+  $("#newli").css('visibility', 'hidden');
+  $('#link_data').hide();
+  
+  document.getElementById("linkindex").value =newphoto ;
+  
+  document.getElementById("titlelin").value = "";
+  document.getElementById("subtitlelin").value ="";
+  document.getElementById("urllin").value ="";
+  
+  
+}
+function deletioslin(){
+  document.getElementById("deletoslinks").disabled = true;
+  var maxid= $("#link_data > tbody > tr").length;
+  maxid= maxid*1-1;
+  var indexok= document.getElementById("linkindex");
+  var todelete= indexok.value*1;
+  $('#lin'+todelete).remove();
+  //not sure
+  if (todelete != maxid) {
+    for(var rt=1; rt<=maxid; rt++){
+      if (rt> todelete){
+        $('#lin'+rt).attr('id','lin'+rt-1);
+      }
+    }
+  }
+  document.getElementById("deletoslinks").disabled = false;
+  backioslin();
+}
+
+function savioslin(){
+  // seperate new from old
+  $('#link_data').show();
+  backioslin();
+  var cellValue;
+  var fcreation = document.getElementById("linkindex");
+  var maxid= $("#link_data > tbody > tr").length;
+  if (fcreation.value == maxid){
+    
+    var row$ = $('<tr id="lin'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("titlelin").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("subtitlelin").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        cellValue= document.getElementById("urllin").value;
+ cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      
+      
+    }
+    $("#link_data").append(row$);
+  }else{
+    
+    
+    var row$ = $('<tr id="lin'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("titlelin").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("subtitlelin").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        cellValue= document.getElementById("urllin").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+    }
+    $('#lin'+fcreation.value).replaceWith(row$);
+  }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function backiosfil(){
+  $("#fileeditor").css('visibility', 'hidden');
+  var newmaxid= $("#file_data > tbody > tr").length;
+  if (newmaxid!=1){
+    $('#file_data').show();
+  }
+  
+  //$('#table-wrapper2').show();
+  $("#newfi").css('visibility', 'visible');
+}
+
+function newfil(){
+  var maxid= $("#file_data > tbody > tr").length;
+  if (maxid>1){
+    var idi = $('#file_data tr:last').attr('id').substring(3);
+    var newphoto= idi*1+1;
+  }else{
+    var newphoto= 1;
+  }
+  
+  $("#fileeditor").css('visibility', 'visible');
+  $("#newfi").css('visibility', 'hidden');
+  $('#file_data').hide();
+  
+  document.getElementById("filindex").value =newphoto ;
+  
+  document.getElementById("titlefil").value = "";
+  document.getElementById("subtitlefil").value ="";
+  document.getElementById("urlfil").value ="";
+  
+  
+}
+function deletiosfil(){
+  document.getElementById("deletosfiles").disabled = true;
+  var maxid= $("#file_data > tbody > tr").length;
+  maxid= maxid*1-1;
+  var indexok= document.getElementById("filindex");
+  var todelete= indexok.value*1;
+  $('#fil'+todelete).remove();
+  //not sure
+  if (todelete != maxid) {
+    for(var rt=1; rt<=maxid; rt++){
+      if (rt> todelete){
+        $('#fil'+rt).attr('id','fil'+rt-1);
+      }
+    }
+  }
+  document.getElementById("deletosfiles").disabled = false;
+  backiosfil();
+}
+
+function saviosfil(){
+  // seperate new from old
+  $('#file_data').show();
+  backiosfil();
+  var cellValue;
+  var fcreation = document.getElementById("filindex");
+  var maxid= $("#file_data > tbody > tr").length;
+  if (fcreation.value == maxid){
+    
+    var row$ = $('<tr id="fil'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("titlefil").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("subtitlefil").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        cellValue= document.getElementById("urlfil").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      
+      
+    }
+    $("#file_data").append(row$);
+  }else{
+    
+    
+    var row$ = $('<tr id="v'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("titlefil").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("subtitlefil").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        cellValue= document.getElementById("urlfil").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+    }
+    $('#fil'+fcreation.value).replaceWith(row$);
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function backiosv(){
+  $("#videoeditor").css('visibility', 'hidden');
+  var newmaxid= $("#video_data > tbody > tr").length;
+  if (newmaxid!=1){
+    $('#video_data').show();
+  }
+  $('#vidaos').hide();
+  //$('#table-wrapper2').show();
+  $("#newvo").css('visibility', 'visible');
+}
+
+function newv(){
+  var maxid= $("#video_data > tbody > tr").length;
+  if (maxid>1){
+    var idi = $('#video_data tr:last').attr('id').substring(1);
+    var newphoto= idi*1+1;
+  }else{
+    var newphoto= 1;
+  }
+  
+  $("#videoeditor").css('visibility', 'visible');
+  $("#newvo").css('visibility', 'hidden');
+  $('#video_data').hide();
+  $('#vidagos').hide();
+  
+  document.getElementById("vindex").value =newphoto ;
+  
+  document.getElementById("srcv").value = "";
+  document.getElementById("thumbv").value ="";
+  document.getElementById("subhtmlv").value ="";
+  document.getElementById("titlev").value ="";
+  document.getElementById("authorv").value ="";
+  ////////////function to populate date time
+  document.getElementById("Date_Event_video").value ="";
+  document.getElementById("Hori_video").value ="";
+  document.getElementById("Mini_video").value ="";
+  ///////////////////////////////////////////////////
+  document.getElementById("location_namev").value ="";
+  document.getElementById("Lat_video").value ="";
+  document.getElementById("Long_video").value ="";
+  document.getElementById("captionv").value ="";
+  document.getElementById("sourcev").value ="";
+  document.getElementById('vidagos').src= "";
+  
+}
+function deletiosv(){
+  document.getElementById("deletosvideos").disabled = true;
+  var maxid= $("#video_data > tbody > tr").length;
+  maxid= maxid*1-1;
+  var indexok= document.getElementById("vindex");
+  var todelete= indexok.value*1;
+  $('#v'+todelete).remove();
+  //not sure
+  if (todelete != maxid) {
+    for(var rt=1; rt<=maxid; rt++){
+      if (rt> todelete){
+        $('#imagev'+rt).attr('id','imagev'+rt-1);
+        $('#v'+rt).attr('id','v'+rt-1);
+      }
+    }
+  }
+  document.getElementById("deletosvideos").disabled = false;
+  backiosv();
+}
+
+function saviosv(){
+  // seperate new from old
+  $('#video_data').show();
+  backiosv();
+  var cellValue;
+  var fcreation = document.getElementById("vindex");
+  var maxid= $("#video_data > tbody > tr").length;
+  if (fcreation.value == maxid){
+    
+    var row$ = $('<tr id="v'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("srcv").value;
+cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("thumbv").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+      if (document.getElementById("Hori_video").value.length <2){
+      var horal = parseInt(document.getElementById("Hori_video").value) || 0;
+      horal= "0"+horal;
+      }
+      if (document.getElementById("Hori_video").value.length >1){
+      var horal = parseInt(document.getElementById("Hori_video").value) || 0;
+      if  (horal<10){
+      horal= "0"+horal;
+      }
+      if (horal>23 || horal<=0){
+      horal= "00";
+      }
+      }
+      if (document.getElementById("Mini_video").value.length <2){
+      var minal = parseInt(document.getElementById("Mini_video").value) || 0;
+      minal= "0"+minal;
+      }
+      if (document.getElementById("Mini_video").value.length >1){
+      var minal = parseInt(document.getElementById("Mini_video").value) || 0;
+      if  (minal<10){
+      minal= "0"+minal;
+      }
+      if (minal>59 || minal<=0){
+      minal= "00";
+      }
+      }
+
+        if (minal!="" && horal!="" && document.getElementById("Date_Event_video").value!= "") {
+          var datos= document.getElementById("Date_Event_video").value.substring(6, 10)+'-'+document.getElementById("Date_Event_video").value.substring(0, 2)+'-'+document.getElementById("Date_Event_video").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        }else{
+          var datos= "";
+        }
+        cellValue= "<div class='custom-html'><h4>" + document.getElementById("titlev").value +"</h4><p>"+document.getElementById("captionv").value + "</p></div>" ;
+        row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      }
+      
+      if (colIndex==3){
+        cellValue= document.getElementById("titlev").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==4){
+        cellValue= document.getElementById("authorv").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==5){
+        cellValue= datos;
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==6){
+        cellValue= document.getElementById("location_namev").value;
+     cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==7){
+        cellValue= document.getElementById("Lat_video").value;
+       cellValue= parseFloat(document.getElementById("Lat_video").value) || 0;
+if (cellValue<-90 || cellValue>90){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+        
+      }
+      if (colIndex==8){
+        cellValue= document.getElementById("Long_video").value;
+        cellValue= parseFloat(document.getElementById("Long_video").value) || 0;
+if (cellValue<-180 || cellValue>180){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==9){
+        cellValue= document.getElementById("captionv").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==10){
+        cellValue= document.getElementById("sourcev").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==11){
+        cellValue= document.getElementById("thumbv").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div ><img src="'+ cellValue+ '" id="imagev'+fcreation.value+'" height="100px" width="100px" /></div></td>'))
+      }
+      
+      
+    }
+    $("#video_data").append(row$);
+  }else{
+    
+    
+    var row$ = $('<tr id="v'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("srcv").value;
+      cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("thumbv").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        if (document.getElementById("Hori_video").value.length <2){
+      var horal = parseInt(document.getElementById("Hori_video").value) || 0;
+      horal= "0"+horal;
+      }
+      if (document.getElementById("Hori_video").value.length >1){
+      var horal = parseInt(document.getElementById("Hori_video").value) || 0;
+      if  (horal<10){
+      horal= "0"+horal;
+      }
+      if (horal>23 || horal<=0){
+      horal= "00";
+      }
+      }
+      if (document.getElementById("Mini_video").value.length <2){
+      var minal = parseInt(document.getElementById("Mini_video").value) || 0;
+      minal= "0"+minal;
+      }
+      if (document.getElementById("Mini_video").value.length >1){
+      var minal = parseInt(document.getElementById("Mini_video").value) || 0;
+      if  (minal<10){
+      minal= "0"+minal;
+      }
+      if (minal>59 || minal<=0){
+      minal= "00";
+      }
+      }
+        if (minal!="" && horal!="" && document.getElementById("Date_Event_video").value!= "") {
+          var datos= document.getElementById("Date_Event_video").value.substring(6, 10)+'-'+document.getElementById("Date_Event_video").value.substring(0, 2)+'-'+document.getElementById("Date_Event_video").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        }else{
+          var datos= "";
+        }
+        //var datos= document.getElementById("Date_Event_foto").value.substring(6, 10)+'-'+document.getElementById("Date_Event_foto").value.substring(0, 2)+'-'+document.getElementById("Date_Event_foto").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        cellValue= "<div class='custom-html'><h4>" + document.getElementById("titlev").value +"</h4><p>"+document.getElementById("captionv").value + "</p></div>" ;
+        row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      }
+      
+      if (colIndex==3){
+        cellValue= document.getElementById("titlev").value;
+     cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==4){
+        cellValue= document.getElementById("authorv").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==5){
+        cellValue= datos;
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==6){
+        cellValue= document.getElementById("location_namev").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==7){
+        cellValue= document.getElementById("Lat_video").value;
+     cellValue= parseFloat(document.getElementById("Lat_video").value) || 0;
+if (cellValue<-90 || cellValue>90){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==8){
+        cellValue= document.getElementById("Long_video").value;
+  cellValue= parseFloat(document.getElementById("Long_video").value) || 0;
+if (cellValue<-180 || cellValue>180){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==9){
+        cellValue= document.getElementById("captionv").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==10){
+        cellValue= document.getElementById("sourcev").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==11){
+        cellValue= document.getElementById("thumbv").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div ><img src="'+ cellValue+ '" id="imagev'+fcreation.value+'" height="100px" width="100px" /></div></td>'))
+      }
+    }
+    $('#v'+fcreation.value).replaceWith(row$);
+  }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function backiosf(){
+  $("#fotoeditor").css('visibility', 'hidden');
+  var newmaxid= $("#photo_data > tbody > tr").length;
+  if (newmaxid!=1){
+    $('#photo_data').show();
+  }
+  
+  //$('#table-wrapper2').show();
+  $("#newfo").css('visibility', 'visible');
+}
+
+function newf(){
+  var maxid= $("#photo_data > tbody > tr").length;
+  if (maxid>1){
+    var idi = $('#photo_data tr:last').attr('id');
+    var newphoto= idi*1+1;
+  }else{
+    var newphoto= 1;
+  }
+  
+  $("#fotoeditor").css('visibility', 'visible');
+  $("#newfo").css('visibility', 'hidden');
+  $('#photo_data').hide();
+  //$('#table-wrapper2').hide();
+  $('#imagos').hide();
+  document.getElementById("findex").value =newphoto ;
+  
+  document.getElementById("src").value = "";
+  document.getElementById("thumb").value ="";
+  document.getElementById("subhtml").value ="";
+  document.getElementById("title").value ="";
+  document.getElementById("author").value ="";
+  ////////////function to populate date time
+  document.getElementById("Date_Event_foto").value ="";
+  document.getElementById("Hori_foto").value ="";
+  document.getElementById("Mini_foto").value ="";
+  ///////////////////////////////////////////////////
+  document.getElementById("location_name").value ="";
+  document.getElementById("Lat_foto").value ="";
+  document.getElementById("Long_foto").value ="";
+  document.getElementById("caption").value ="";
+  document.getElementById("sourcef").value ="";
+  document.getElementById('imagos').src= "";
+  
+}
+function deletiosf(){
+  document.getElementById("deletosfotos").disabled = true;
+  var maxid= $("#photo_data > tbody > tr").length;
+  maxid= maxid*1-1;
+  var indexok= document.getElementById("findex");
+  var todelete= indexok.value*1;
+  $('#'+todelete).remove();
+  //not sure
+  if (todelete != maxid) {
+    for(var rt=1; rt<=maxid; rt++){
+      if (rt> todelete){
+        $('#image'+rt).attr('id','image'+rt-1);
+        $('#'+rt).attr('id',rt-1);
+      }
+    }
+  }
+  document.getElementById("deletosfotos").disabled = false;
+  backiosf();
+}
+
+function saviosf(){
+  // seperate new from old
+  $('#photo_data').show();
+  backiosf();
+  var cellValue;
+  var fcreation = document.getElementById("findex");
+  var maxid= $("#photo_data > tbody > tr").length;
+  if (fcreation.value == maxid){
+    
+    var row$ = $('<tr id="'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("src").value;
+         cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("thumb").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+        
+        if (document.getElementById("Hori_foto").value.length <2){
+        var horal = parseInt(document.getElementById("Hori_foto").value) || 0;
+          horal= "0"+horal;
+          }
+          
+          
+       if (document.getElementById("Hori_foto").value.length >1){
+          var horal = parseInt(document.getElementById("Hori_foto").value) || 0;
+//           alert(horal);
+         if  (horal<10){
+         horal= "0"+horal;
+         }
+         if (horal>23 || horal<=0){
+          horal= "00";
+          }
+//       
+       //  horal= horal.substring(0, 2);
+        }
+        
+     if (document.getElementById("Mini_foto").value.length <2){
+  var minal = parseInt(document.getElementById("Mini_foto").value) || 0;
+  minal= "0"+minal;
+}
+if (document.getElementById("Mini_foto").value.length >1){
+  var minal = parseInt(document.getElementById("Mini_foto").value) || 0;
+  if  (minal<10){
+         minal= "0"+minal;
+         }
+  if (minal>59 || minal<=0){
+    minal= "00";
+  }
+}
+        if (minal!="" && horal!="" && document.getElementById("Date_Event_foto").value!= "") {
+          var datos= document.getElementById("Date_Event_foto").value.substring(6, 10)+'-'+document.getElementById("Date_Event_foto").value.substring(0, 2)+'-'+document.getElementById("Date_Event_foto").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        }else{
+          var datos= "";
+        }
+       
+        cellValue= "<div class='custom-html'><h4>" + document.getElementById("title").value +"</h4><p>"+document.getElementById("caption").value + "</p></div>" ;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+       
+        row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      }
+      
+      if (colIndex==3){
+        cellValue= document.getElementById("title").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==4){
+        cellValue= document.getElementById("author").value;
+        //speciall
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+       
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==5){
+        cellValue= datos;
+      cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==6){
+        cellValue= document.getElementById("location_name").value;
+   cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+          if (colIndex==7){
+        cellValue= document.getElementById("Lat_foto").value;
+cellValue= parseFloat(document.getElementById("Lat_foto").value) || 0;
+if (cellValue<-90 || cellValue>90){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==8){
+      cellValue= document.getElementById("Long_foto").value;
+cellValue= parseFloat(document.getElementById("Long_foto").value) || 0;
+if (cellValue<-180 || cellValue>180){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==9){
+        cellValue= document.getElementById("caption").value;
+      cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==10){
+        cellValue= document.getElementById("sourcef").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==11){
+        cellValue= document.getElementById("thumb").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div ><img src="'+ cellValue+ '" id="image'+fcreation.value+'" height="100px" width="100px" /></div></td>'))
+      }
+      
+      
+    }
+    $("#photo_data").append(row$);
+  }else{
+    
+    
+    var row$ = $('<tr id="'+fcreation.value+'"/>');
+    for (var colIndex = 0 ; colIndex < 12 ; colIndex++) {
+      
+      if (colIndex==0){
+        cellValue= document.getElementById("src").value;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==1){
+        cellValue= document.getElementById("thumb").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==2){
+       
+       
+       if (document.getElementById("Hori_foto").value.length <2){
+        var horal = parseInt(document.getElementById("Hori_foto").value) || 0;
+          horal= "0"+horal;
+          }
+          
+          
+       if (document.getElementById("Hori_foto").value.length >1){
+          var horal = parseInt(document.getElementById("Hori_foto").value) || 0;
+//           alert(horal);
+         if  (horal<10){
+         horal= "0"+horal;
+         }
+         if (horal>23 || horal<=0){
+          horal= "00";
+          }
+//       
+        // horal= horal.substring(0, 2);
+        }
+        
+        
+        
+        if (document.getElementById("Mini_foto").value.length <2){
+  var minal = parseInt(document.getElementById("Mini_foto").value) || 0;
+  minal= "0"+minal;
+}
+if (document.getElementById("Mini_foto").value.length >1){
+  var minal = parseInt(document.getElementById("Mini_foto").value) || 0;
+  if  (minal<10){
+         minal= "0"+minal;
+         }
+  if (minal>59 || minal<=0){
+    minal= "00";
+  }
+}
+        if (minal!="" && horal!="" && document.getElementById("Date_Event_foto").value!= "") {
+          var datos= document.getElementById("Date_Event_foto").value.substring(6, 10)+'-'+document.getElementById("Date_Event_foto").value.substring(0, 2)+'-'+document.getElementById("Date_Event_foto").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        }else{
+          var datos= "";
+        }
+        //var datos= document.getElementById("Date_Event_foto").value.substring(6, 10)+'-'+document.getElementById("Date_Event_foto").value.substring(0, 2)+'-'+document.getElementById("Date_Event_foto").value.substring(3, 5)+"T"+horal+":"+minal+":00";
+        cellValue= "<div class='custom-html'><h4>" + document.getElementById("title").value +"</h4><p>"+document.getElementById("caption").value + "</p></div>" ;
+       cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+       row$.append($('<td ><div class="limited2"><textarea disabled readonly>'+ cellValue +'</textarea></div></td>'));
+      }
+      
+      if (colIndex==3){
+        cellValue= document.getElementById("title").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      
+      if (colIndex==4){
+        cellValue= document.getElementById("author").value;
+          cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==5){
+        cellValue= datos;
+      cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==6){
+        cellValue= document.getElementById("location_name").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==7){
+        cellValue= document.getElementById("Lat_foto").value;
+cellValue= parseFloat(document.getElementById("Lat_foto").value) || 0;
+if (cellValue<-90 || cellValue>90){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==8){
+      cellValue= document.getElementById("Long_foto").value;
+cellValue= parseFloat(document.getElementById("Long_foto").value) || 0;
+if (cellValue<-180 || cellValue>180){
+cellValue= 0
+}
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==9){
+        cellValue= document.getElementById("caption").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==10){
+        cellValue= document.getElementById("sourcef").value;
+          cellValue =   cellValue.replace(/[{]/gi, '[');
+        cellValue =   cellValue.replace(/[}]/gi, ']');
+        cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div "class="limited2">'+ cellValue +'</div></td>'));
+      }
+      if (colIndex==11){
+        cellValue= document.getElementById("thumb").value;
+        cellValue =   cellValue.replace(/[{]/gi, '[');
+cellValue =   cellValue.replace(/[}]/gi, ']');
+cellValue = cellValue.replace(/"/g, "'");
+        row$.append($('<td><div ><img src="'+ cellValue+ '" id="image'+fcreation.value+'" height="100px" width="100px" /></div></td>'))
+      }
+    }
+    $('#'+fcreation.value).replaceWith(row$);
+  }
+}
+
+
+
+$("#Uploadsource").change(function() {
+  var val = $(this).val();
+  switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
+      
+    case 'gif': case 'jpg': case 'png': case 'bmp': case 'jpeg':
+      //google.script.run.withFailureHandler(onFailure).withSuccessHandler(updateImage).uploadImage(this.parentNode); 
+      break;
+    default:
+      $(this).val('');
+      alert("Sorry, let's choose an image file: jpg/jpeg, png, bmp, gif/jif ");
+      break;
+  }
+});
+var reader = new FileReader();
+var files;
+var fileCounter = 0;
+reader.onloadend = function () {
+  
+  google.script.run
+  .withSuccessHandler(onsucc).saveFile(reader.result,files[fileCounter].name);
+}
+
+$("#Uploadthumb").change(function() {
+  var val = $(this).val();
+  switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
+    case 'gif': case 'jpg': case 'png': case 'bmp': case 'jpeg':
+      //google.script.run.withFailureHandler(onFailure).withSuccessHandler(updateImage).uploadImage(this.parentNode); 
+      break;
+    default:
+      $(this).val('');
+      alert("Sorry, let's choose an image file: jpg/jpeg, png, bmp, gif/jif ");
+      break;
+  }
+});
+
+
+var reader2 = new FileReader();
+reader2.onloadend = function () {
+  google.script.run
+  .withSuccessHandler(onsucc2).saveFile(reader2.result,files[fileCounter].name);
+}
+
+function onsucc(nameid){
+  fileCounter++;      
+  postNextFile();
+  var reso= document.getElementById("src");
+  reso.value= "https://drive.google.com/uc?export=download&id="+nameid;
+  var reso2= document.getElementById("thumb");
+  reso2.value= "https://drive.google.com/uc?export=download&id="+nameid;
+  document.getElementById("Uploadsourcebutton").disabled = false;
+}
+
+function onsucc2(nameid){
+  fileCounter++;      
+  postNextFile();
+  var reso= document.getElementById("thumb");
+  reso.value= "https://drive.google.com/uc?export=download&id="+nameid;
+  document.getElementById("Uploadthumbuttonv").disabled = false;
+}
+
+function SaveFiles(){
+  document.getElementById("Uploadsourcebutton").disabled = true;
+  files = document.getElementById("Uploadsource").files;  
+  postNextFile();
+  
+}
+
+function SaveFiles2(){
+  document.getElementById("Uploadthumbutton").disabled = true;
+  files = document.getElementById("Uploadthumb").files;  
+  postNextFile2();
+  //
+}
+
+function postNextFile(){
+  if(fileCounter < files.length){reader.readAsDataURL(files[fileCounter]);
+                                }else{
+                                  fileCounter=0;alert("upload done");
+                                }}
+
+function postNextFile2(){
+  if(fileCounter < files.length){reader2.readAsDataURL(files[fileCounter]);
+                                }else{
+                                  fileCounter=0;alert("upload done");
+                                  
+                                }}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$("#Uploadthumbv").change(function() {
+  var val = $(this).val();
+  switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
+    case 'gif': case 'jpg': case 'png': case 'bmp': case 'jpeg':
+      //google.script.run.withFailureHandler(onFailure).withSuccessHandler(updateImage).uploadImage(this.parentNode); 
+      break;
+    default:
+      $(this).val('');
+      alert("Sorry, let's choose an image file: jpg/jpeg, png, bmp, gif/jif ");
+      break;
+  }
+});
+
+
+var reader3 = new FileReader();
+reader3.onloadend = function () {
+  google.script.run
+  .withSuccessHandler(onsucc3).saveFile(reader3.result,files[fileCounter].name);
+}
+
+function postNextFile3(){
+  if(fileCounter < files.length){reader3.readAsDataURL(files[fileCounter]);
+                                }else{
+                                  fileCounter=0;alert("upload done");
+                                  
+                                }}
+
+
+function onsucc3(nameid){
+  fileCounter++;      
+  postNextFile3();
+  var reso= document.getElementById("thumbv");
+  reso.value= "https://drive.google.com/uc?export=download&id="+nameid;
+  document.getElementById("Uploadthumbuttonv").disabled = false;
+}
+
+
+
+
+function SaveFiles3(){
+  document.getElementById("Uploadthumbuttonv").disabled = true;
+  files = document.getElementById("Uploadthumbv").files;  
+  postNextFile3();
+  //
+}
+
+
+
+function savios(liu){
+  document.getElementById("savos").disabled = true;
+  document.getElementById("savos_dupli").disabled = true;
+  document.getElementById("draftos").disabled = true;
+  document.getElementById("draftos_dupli").disabled = true;
+  if (liu=="tyu" || liu=="tyu2"){
+    $( "#Date_Event" ).data( "carbon", "qawsedrf4" );
+    $( "#commentos" ).data( "carbon", "qawsedrf4");
+    $( "#Hori" ).data( "carbon", "qawsedrf4" );
+    $( "#Mini" ).data( "carbon", "qawsedrf4"  );
+    $( "#address" ).data( "carbon","qawsedrf4"  );
+    $( "#Long" ).data( "carbon", "qawsedrf4"  );
+    $( "#Lat" ).data( "carbon","qawsedrf4"  );
+    $( "#accu" ).data( "carbon","qawsedrf4"  );
+    $( "#summaros" ).data( "carbon", "qawsedrf4"  );
+    $( "#source" ).data( "carbon", "qawsedrf4"  );
+    $( "#nombre1" ).data( "carbon", "qawsedrf4"  );
+    $( "#nombre2" ).data( "carbon", "qawsedrf4"  );
+    $( "#nombre3" ).data( "carbon","qawsedrf4"  );
+    $( "#nombre4" ).data( "carbon", "qawsedrf4"  );
+    $( "#nombre5" ).data( "carbon", "qawsedrf4"  );
+    $( "#tags1" ).data( "carbon","qawsedrf4"  );
+    $( "#tags2" ).data( "carbon", "qawsedrf4"  );
+    $( "#tags3" ).data( "carbon", "qawsedrf4"  );
+    $( "#tags4" ).data( "carbon","qawsedrf4"  );
+    $( "#tags5" ).data( "carbon", "qawsedrf4"  );
+    $( "#question1" ).data( "carbon", "qawsedrf4"  );
+    $( "#question2" ).data( "carbon", "qawsedrf4"  );
+    $( "#question3" ).data( "carbon", "qawsedrf4"  );
+    $( "#question4" ).data( "carbon", "qawsedrf4"  );
+    $( "#question5" ).data( "carbon","qawsedrf4"  );
+    $( "#photocarbon" ).data( "carbon", "qawsedrf4" );
+    $( "#videocarbon" ).data( "carbon","qawsedrf4"  );
+    $( "#filecarbon" ).data( "carbon", "qawsedrf4"  );
+    $( "#linkcarbon" ).data( "carbon", "qawsedrf4"  );
+    
+  }
+  
+  
+  if (document.getElementById("Date_Event").value != "" && document.getElementById("Long").value != ""&& document.getElementById("Lat").value != "" && document.getElementById("Hori").value != "" && document.getElementById("Mini").value != ""){
+    
+    var ventos0 = document.getElementById("ID_Event").value;
+    
+    
+    var ventos1;
+    if (document.getElementById("address").value != $( "#address" ).data( "carbon" )){
+      ventos1 = document.getElementById("address").value;
+    }else{
+      ventos1= "q1w2e3r4t5y5";
+    }
+    
+    var ventos2;
+    if (document.getElementById("Long").value != $( "#Long" ).data( "carbon" )){
+      ventos2 = document.getElementById("Long").value;
+    }else{
+      ventos2= "q1w2e3r4t5y5";
+    }
+    
+    var ventos3;
+    if (document.getElementById("Lat").value != $( "#Lat" ).data( "carbon" )){
+      ventos3 = document.getElementById("Lat").value;
+    }else{
+      ventos3= "q1w2e3r4t5y5";
+    }
+    
+    var ventos4;
+    if (document.getElementById("accu").value != $( "#accu" ).data( "carbon" )){
+      ventos4 = document.getElementById("accu").value
+    }else{
+      ventos4= "q1w2e3r4t5y5"
+    }
+    
+    var ventos5;
+    if (document.getElementById("Date_Event").value != $( "#Date_Event" ).data( "carbon" ) || document.getElementById("Hori").value != $( "#Hori" ).data( "carbon" ) || document.getElementById("Mini").value != $( "#Mini" ).data( "carbon" )){
+      var ventos5= document.getElementById("Date_Event").value.substring(6, 10)+'-'+document.getElementById("Date_Event").value.substring(0, 2)+'-'+document.getElementById("Date_Event").value.substring(3, 5)+"T"+document.getElementById("Hori").value+":"+document.getElementById("Mini").value+":00";
+    }else{
+      ventos5= "q1w2e3r4t5y5"
+    }
+    
+    var ventos6;
+    if ($("#summaros").html() != $( "#summaros" ).data( "carbon" )){
+      ventos6 =$("#summaros").text(); 
+    }else{
+      ventos6= "q1w2e3r4t5y5"
+    }
+    
+    var ventos7;
+    if (document.getElementById("source").value != $( "#source" ).data( "carbon" )){
+      ventos7 = document.getElementById("source").value
+    }else{
+      ventos7= "q1w2e3r4t5y5"
+    }
+    
+    var ventos8;
+    if (document.getElementById("nombre1").value != $( "#nombre1" ).data( "carbon" )){
+      ventos8 = document.getElementById("nombre1").value
+    }else{
+      ventos8= "q1w2e3r4t5y5"
+    }
+    
+    var ventos9;
+    if (document.getElementById("nombre2").value != $( "#nombre2" ).data( "carbon" )){
+      ventos9 = document.getElementById("nombre2").value
+    }else{
+      ventos9= "q1w2e3r4t5y5"
+    }
+    
+    var ventos10;
+    if (document.getElementById("nombre3").value != $( "#nombre3" ).data( "carbon" )){
+      ventos10 = document.getElementById("nombre3").value
+    }else{
+      ventos10= "q1w2e3r4t5y5"
+    }
+    
+    var ventos11;
+    if (document.getElementById("nombre4").value != $( "#nombre4" ).data( "carbon" )){
+      ventos11 = document.getElementById("nombre4").value
+    }else{
+      ventos11= "q1w2e3r4t5y5"
+    }
+    
+    var ventos12;
+    if (document.getElementById("nombre5").value != $( "#nombre5" ).data( "carbon" )){
+      ventos12 = document.getElementById("nombre5").value
+    }else{
+      ventos12= "q1w2e3r4t5y5"
+    }
+    
+    
+    
+    
+    var ventos13;
+    if (document.getElementById("tags1").value != $( "#tags1" ).data( "carbon" )){
+      ventos13 = document.getElementById("tags1").value
+    }else{
+      ventos13= "q1w2e3r4t5y5"
+    }
+    
+    var ventos14;
+    if (document.getElementById("tags2").value != $( "#tags2" ).data( "carbon" )){
+      ventos14 = document.getElementById("tags2").value
+    }else{
+      ventos14= "q1w2e3r4t5y5"
+    }
+    
+    var ventos15;
+    if (document.getElementById("tags3").value != $( "#tags3" ).data( "carbon" )){
+      ventos15 = document.getElementById("tags3").value
+    }else{
+      ventos15= "q1w2e3r4t5y5"
+    }
+    
+    var ventos16;
+    if (document.getElementById("tags4").value != $( "#tags4" ).data( "carbon" )){
+      ventos16 = document.getElementById("tags4").value
+    }else{
+      ventos16= "q1w2e3r4t5y5"
+    }
+    
+    var ventos17;
+    if (document.getElementById("tags5").value != $( "#tags5" ).data( "carbon" )){
+      ventos17 = document.getElementById("tags5").value
+    }else{
+      ventos17= "q1w2e3r4t5y5"
+    }
+    
+    
+    
+    var ventos18;
+    if (document.getElementById("question1").value != $( "#question1" ).data( "carbon" )){
+      ventos18 = document.getElementById("question1").value
+    }else{
+      ventos18= "q1w2e3r4t5y5"
+    }
+    var ventos19;
+    if (document.getElementById("question2").value != $( "#question2" ).data( "carbon" )){
+      ventos19 = document.getElementById("question2").value
+    }else{
+      ventos19= "q1w2e3r4t5y5"
+    }
+    var ventos20;
+    if (document.getElementById("question3").value != $( "#question3" ).data( "carbon" )){
+      ventos20 = document.getElementById("question3").value
+    }else{
+      ventos20= "q1w2e3r4t5y5"
+    }
+    var ventos21;
+    if (document.getElementById("question4").value != $( "#question4" ).data( "carbon" )){
+      ventos21 = document.getElementById("question4").value
+    }else{
+      ventos21= "q1w2e3r4t5y5"
+    }
+    var ventos22;
+    if (document.getElementById("question5").value != $( "#question5" ).data( "carbon" )){
+      ventos22 = document.getElementById("question5").value
+    }else{
+      ventos22= "q1w2e3r4t5y5"
+    }
+    
+    var ventos231;
+    $('#mediafoto').show();
+    var tableleto = $('#photo_data').tableToJSON(); // Convert the table into a javascript object
+    ventos231 = JSON.stringify(tableleto);
+    ventos231 =ventos231.slice(1, -1)
+    $('#mediafoto').hide();
+    var ventos232;
+    ventos232=$( "#photocarbon" ).data( "carbon" );
+    
+    var ventos23;
+    if (ventos231!=ventos232){
+      ventos23 = ventos231;
+    }else{
+      ventos23= "q1w2e3r4t5y5";
+    }
+    
+    var ventos241;
+    $('#mediavideo').show();
+    var tableleto = $('#video_data').tableToJSON(); // Convert the table into a javascript object
+    ventos241 = JSON.stringify(tableleto);
+    ventos241 =ventos241.slice(1, -1)
+    $('#mediavideo').hide();
+    var ventos242;
+    ventos242=$( "#videocarbon" ).data( "carbon" );
+    
+    var ventos24;
+    if (ventos241!=ventos242){
+      ventos24 = ventos241;
+    }else{
+      ventos24= "q1w2e3r4t5y5";
+    }
+    
+    var ventos251;
+    $('#mediafiles').show();
+    var tableleto = $('#file_data').tableToJSON(); // Convert the table into a javascript object
+    ventos251 = JSON.stringify(tableleto);
+    ventos251 =ventos251.slice(1, -1)
+    $('#mediafiles').hide();
+    var ventos252;
+    ventos252=$( "#filecarbon" ).data( "carbon" );
+    
+    var ventos25;
+    if (ventos251!=ventos252){
+      ventos25 = ventos251;
+    }else{
+      ventos25= "q1w2e3r4t5y5";
+    }
+    
+    
+    
+    var ventos261;
+    $('#medialinks').show();
+    var tableleto = $('#link_data').tableToJSON(); // Convert the table into a javascript object
+    ventos261 = JSON.stringify(tableleto);
+    ventos261 =ventos261.slice(1, -1)
+    $('#medialinks').hide();
+    var ventos262;
+    ventos262=$( "#linkcarbon" ).data( "carbon" );
+    
+    var ventos26;
+    if (ventos261!=ventos262){
+      ventos26 = ventos261;
+    }else{
+      ventos26= "q1w2e3r4t5y5";
+    }
+    
+    
+    // populate media available////////////////////////////////
+    var ventos27;
+    
+    if ((ventos23!= "" && ventos23!= "q1w2e3r4t5y5" )||(ventos23== "q1w2e3r4t5y5" && ventos232 != "" )) {
+      ventos27= 'photos';
+    }else{
+      ventos27="";
+    }
+    
+    if ((ventos24!= "" && ventos24!= "q1w2e3r4t5y5" )||(ventos24== "q1w2e3r4t5y5" && ventos242 != "" )) {
+      if (ventos27== ""){
+        ventos27= 'embedded_videos'
+      }else{
+        ventos27=ventos27+ ',embedded_videos'
+      }
+    }
+    
+    if ((ventos25!= "" && ventos25!= "q1w2e3r4t5y5" )||(ventos25== "q1w2e3r4t5y5" && ventos252 != "" )) {
+      if (ventos27== ""){
+        ventos27= 'files'
+      }else{
+        ventos27= ventos27+ ',files'
+      }
+    }
+    
+    if ((ventos26!= "" && ventos26!= "q1w2e3r4t5y5" )||(ventos26== "q1w2e3r4t5y5" && ventos262 != "" )) {
+      if (ventos27== ""){
+        ventos27= 'url_links'
+      }else{
+        ventos27= ventos27+',url_links'
+      }
+    }
+    
+    
+    ////////////////////////////////////////////////
+    
+    var ventos28;
+    if ($("#commentos").html() != $( "#commentos" ).data( "carbon" )){
+      ventos28 = $("#commentos").text();
+    }else{
+      ventos28= "q1w2e3r4t5y5"
+    }
+    
+    var ventostype= "previous version";
+    var ventosaction= "overwritten";
+    var ventosname= document.getElementById("yyyy").value
+    
+    if (ventos0!= "NEW" && liu!="tyu"&& liu!="tyu2"){
+      google.script.run
+      .withSuccessHandler(eventloaded).load_event_data(ventostype,ventosaction,ventosname,ventos0,ventos1,ventos2,ventos3,ventos4,ventos5,ventos6,ventos7,ventos8,ventos9,ventos10,ventos11,ventos12,ventos13,ventos14,ventos15,ventos16,ventos17,ventos18,ventos19,ventos20,ventos21,ventos22,ventos23,ventos24,ventos25,ventos26,ventos27,ventos28);
+    } else if (liu=="tyu" || liu=="tyu2") {
+      if (liu == "tyu2"){
+        ventostype= "contribution";
+        ventosname= document.getElementById("contact_details").value
+      }
+      google.script.run
+      .withSuccessHandler(eventloaded_draft).draft_event_data(ventostype,ventosaction,ventosname,ventos0,ventos1,ventos2,ventos3,ventos4,ventos5,ventos6,ventos7,ventos8,ventos9,ventos10,ventos11,ventos12,ventos13,ventos14,ventos15,ventos16,ventos17,ventos18,ventos19,ventos20,ventos21,ventos22,ventos23,ventos24,ventos25,ventos26,ventos27,ventos28);
+      
+    } else if (ventos0== "NEW") {
+      google.script.run
+      .withSuccessHandler(eventloaded).new_load_event_data(ventostype,ventosaction,ventosname,ventos0,ventos1,ventos2,ventos3,ventos4,ventos5,ventos6,ventos7,ventos8,ventos9,ventos10,ventos11,ventos12,ventos13,ventos14,ventos15,ventos16,ventos17,ventos18,ventos19,ventos20,ventos21,ventos22,ventos23,ventos24,ventos25,ventos26,ventos27,ventos28);
+    }
+    
+  }else{
+    alert("Event minimum requirements are date, time, longitude and latitude");
+    document.getElementById("savos").disabled = false;
+    document.getElementById("savos_dupli").disabled = false;
+    document.getElementById("draftos").disabled = false;
+    document.getElementById("draftos_dupli").disabled = false;
+    document.getElementById("savosanony").disabled =  false;
+  }
+}
+
+function eventloaded(riri){
+  backios();
+  refreshtable();
+  document.getElementById("savos").disabled = false;
+  document.getElementById("savos_dupli").disabled = false;
+  document.getElementById("draftos").disabled = false;
+  document.getElementById("draftos_dupli").disabled = false;
+  document.getElementById("savosanony").disabled = false;
+}
+
+function eventloaded_draft(riri){
+var ventosname= document.getElementById("yyyy");
+if (ventosname.value!= "donotloadtable"){
+  backios();
+  document.getElementById("savos").disabled = false;
+  document.getElementById("savos_dupli").disabled = false;
+  document.getElementById("draftos").disabled = false;
+  document.getElementById("draftos_dupli").disabled = false;
+  document.getElementById("savosanony").disabled = false;
+  }else{
+$("#tabs").hide(); 
+alert("Your contribution will be reviewed");
+ }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function ($) {
+  'use strict';
+  
+  $.fn.tableToJSON = function (opts) {
+    
+    // Set options
+    var defaults = {
+      ignoreColumns: [],
+      onlyColumns: null,
+      ignoreHiddenRows: true,
+      headings: null,
+      allowHTML: false
+    };
+    opts = $.extend(defaults, opts);
+    
+    var notNull = function (value) {
+      return value !== undefined && value !== null;
+    };
+    
+    var ignoredColumn = function (index) {
+      if (notNull(opts.onlyColumns)) {
+        return $.inArray(index, opts.onlyColumns) === -1;
+      }
+      return $.inArray(index, opts.ignoreColumns) !== -1;
+    };
+    
+    var arraysToHash = function (keys, values) {
+      var result = {}, index = 0;
+      $.each(values, function (i, value) {
+        // when ignoring columns, the header option still starts
+        // with the first defined column
+        if (index < keys.length && notNull(value)) {
+          result[keys[index]] = value;
+          index++;
+        }
+      });
+      return result;
+    };
+    
+    var cellValues = function (cellIndex, cell) {
+      var value, result;
+      if (!ignoredColumn(cellIndex)) {
+        var override = $(cell).data('override');
+        if (opts.allowHTML) {
+          value = $.trim($(cell).html());
+        } else {
+          value = $.trim($(cell).text());
+        }
+        result = notNull(override) ? override : value;
+      }
+      return result;
+    };
+    
+    var rowValues = function (row) {
+      var result = [];
+      $(row).children('td,th').each(function (cellIndex, cell) {
+        if (!ignoredColumn(cellIndex)) {
+          result.push(cellValues(cellIndex, cell));
+        }
+      });
+      return result;
+    };
+    
+    var getHeadings = function (table) {
+      var firstRow = table.find('tr:first').first();
+      return notNull(opts.headings) ? opts.headings : rowValues(firstRow);
+    };
+    
+    var construct = function (table, headings) {
+      var i, j, len, len2, txt, $row, $cell,
+          tmpArray = [],
+          cellIndex = 0,
+          result = [];
+      table.children('tbody,*').children('tr').each(function (rowIndex, row) {
+        if (rowIndex > 0 || notNull(opts.headings)) {
+          $row = $(row);
+          if ($row.is(':visible') || !opts.ignoreHiddenRows) {
+            if (!tmpArray[rowIndex]) {
+              tmpArray[rowIndex] = [];
+            }
+            cellIndex = 0;
+            $row.children().each(function () {
+              if (!ignoredColumn(cellIndex)) {
+                $cell = $(this);
+                
+                // process rowspans
+                if ($cell.filter('[rowspan]').length) {
+                  len = parseInt($cell.attr('rowspan'), 10) - 1;
+                  txt = cellValues(cellIndex, $cell, []);
+                  for (i = 1; i <= len; i++) {
+                    if (!tmpArray[rowIndex + i]) {
+                      tmpArray[rowIndex + i] = [];
+                    }
+                    tmpArray[rowIndex + i][cellIndex] = txt;
+                  }
+                }
+                // process colspans
+                if ($cell.filter('[colspan]').length) {
+                  len = parseInt($cell.attr('colspan'), 10) - 1;
+                  txt = cellValues(cellIndex, $cell, []);
+                  for (i = 1; i <= len; i++) {
+                    // cell has both col and row spans
+                    if ($cell.filter('[rowspan]').length) {
+                      len2 = parseInt($cell.attr('rowspan'), 10);
+                      for (j = 0; j < len2; j++) {
+                        tmpArray[rowIndex + j][cellIndex + i] = txt;
+                      }
+                    } else {
+                      tmpArray[rowIndex][cellIndex + i] = txt;
+                    }
+                  }
+                }
+                // skip column if already defined
+                while (tmpArray[rowIndex][cellIndex]) {
+                  cellIndex++;
+                }
+                if (!ignoredColumn(cellIndex)) {
+                  txt = tmpArray[rowIndex][cellIndex] || cellValues(cellIndex, $cell, []);
+                  if (notNull(txt)) {
+                    tmpArray[rowIndex][cellIndex] = txt;
+                  }
+                }
+              }
+              cellIndex++;
+            });
+          }
+        }
+      });
+      $.each(tmpArray, function (i, row) {
+        if (notNull(row)) {
+          txt = arraysToHash(headings, row);
+          result[result.length] = txt;
+        }
+      });
+      return result;
+    };
+    // Run
+    var headings = getHeadings(this);
+    return construct(this, headings);
+  };
+})(jQuery);
+
+
+
+
+function deletios(){
+  document.getElementById("deletos").disabled = true;
+  document.getElementById("deletos_dupli").disabled = true;
+  if (confirm("Warning, you are about to delete this event!") == true) {
+    var ventos0 = document.getElementById("ID_Event").value;
+    var ventostype= "previous version";
+    var ventosaction= "deleted";
+    var ventosname= document.getElementById("yyyy").value
+    google.script.run
+    .withSuccessHandler(eventdeleted).delete_event_data(ventostype,ventosaction,ventosname,ventos0);
+    
+  } else {
+    document.getElementById("deletos").disabled = false;
+    document.getElementById("deletos_dupli").disabled = false;
+  }
+  
+}
+
+
+function eventdeleted(jgj){
+  document.getElementById("deletos").disabled = false;
+  document.getElementById("deletos_dupli").disabled = false;
+  backios();
+  refreshtable();
+}
+
+function draftios(){
+
+var ret= "tyu";
+savios(ret);
+
+}
+
+
+function recoverios(){
+document.getElementById("recoveros").disabled =  true;
+document.getElementById("recoveros_dupli").disabled =  true;
+var ventosname= document.getElementById("yyyy").value;
+var ventos0 = document.getElementById("ID_Event").value;
+
+google.script.run.withSuccessHandler(onSuccessEventrecovdraft).recover_event_draft(ventos0,ventosname);
+
+//document.getElementById("recoveros").disabled =  false;
+}
+
+
+
+function onSuccessEventrecovdraft(pi){
+
+//
+if ( pi!= "No data" && pi!= "Event not found"  ){
+var recoo= JSON.parse(pi);
+$("#commentos").html(recoo[28]);
+
+$("#ID_Event").val(recoo[0]);
+document.getElementById("Date_Event").value =recoo[5].substring(5, 7)+'/'+recoo[5].substring(8, 10)+'/'+recoo[5].substring(0, 4);
+document.getElementById("Hori").value =recoo[5].substring(11, 13);
+document.getElementById("Mini").value =recoo[5].substring(14, 16);
+document.getElementById("address").value =recoo[1];
+document.getElementById("Long").value =recoo[2];
+document.getElementById("Lat").value =recoo[3];
+//////replace marker?
+google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(recoo[3],recoo[2]);
+map.setCenter(centermap);
+placeMarker(centermap);
+document.getElementById("accu").value =recoo[4];
+$("#summaros").html(recoo[6]);
+document.getElementById("source").value =recoo[7];
+document.getElementById("nombre1").value =recoo[8];
+document.getElementById("nombre2").value =recoo[9];
+document.getElementById("nombre3").value =recoo[10];
+document.getElementById("nombre4").value =recoo[11];
+document.getElementById("nombre5").value =recoo[12];
+document.getElementById("tags1").value =recoo[13];
+document.getElementById("tags2").value =recoo[14];
+document.getElementById("tags3").value =recoo[15];
+document.getElementById("tags4").value =recoo[16];
+document.getElementById("tags5").value =recoo[17];
+document.getElementById("question1").value =recoo[18];
+document.getElementById("question2").value =recoo[19];
+document.getElementById("question3").value =recoo[20];
+document.getElementById("question4").value =recoo[21];
+document.getElementById("question5").value =recoo[22];
+////////foto part
+$("#photo_data").empty();
+$("#video_data").empty();
+$("#file_data").empty();
+$("#link_data").empty();
+if (recoo[23]!= ""){
+document.getElementById("media_available").value = "photos";
+var myString = '[' + recoo[23] +']'
+var json = $.parseJSON(myString)
+buildHtmlTable(json);
+$("#photo_data").show();
+}else{
+var json =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable(json);
+$('#1').remove();
+$('#photo_data').hide();
+}
+
+
+
+//////
+if (recoo[24]!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',embedded_videos';
+}else{
+document.getElementById("media_available").value = "embedded_videos";
+}
+var myString2 = '[' + recoo[24] +']'
+var json2 = $.parseJSON(myString2)
+buildHtmlTable2(json2);
+$("#video_data").show();
+}else{
+var json2 =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable2(json2);
+$('#v1').remove();
+$('#video_data').hide();
+//
+}
+////
+if (recoo[25]!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',files';
+}else{
+document.getElementById("media_available").value = "files";
+}
+var myString3 = '[' + recoo[25] +']'
+var json3 = $.parseJSON(myString3)
+buildHtmlTable3(json3);
+$("#file_data").show();
+}else{
+var json3 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable3(json3);
+$('#fil1').remove();
+$('#file_data').hide();
+}
+//
+if (recoo[26]!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',url_links';
+}else{
+document.getElementById("media_available").value = "url_links";
+}
+var myString4 = '[' + recoo[26] +']'
+var json4 = $.parseJSON(myString4)
+buildHtmlTable4(json4);
+$("#link_data").show();
+}else{
+var json4 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable4(json4);
+$('#lin1').remove();
+$('#link_data').hide();
+}
+
+alert("event loaded");
+document.getElementById("recoveros").disabled =  false;
+document.getElementById("recoveros_dupli").disabled =  false;
+var ventosname= document.getElementById("yyyy");
+if (ventosname.value== "donotloadtable"){
+//"#accordion").show();
+$("#ecran2").show();
+$("#tabs").show(); 
+google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(recoo[3],recoo[2]);
+map.setCenter(centermap);
+placeMarker(centermap);
+}
+}else{
+
+alert(pi);
+
+document.getElementById("recoveros").disabled =  false;
+document.getElementById("recoveros_dupli").disabled =  false;
+}
+}
+
+function saviosanony(){
+document.getElementById("savosanony").disabled =  true;
+if (confirm("Do you want to submit your contribution for review!") == true) {
+var ret= "tyu2";
+savios(ret);
+}else{
+document.getElementById("savosanony").disabled =  false;
+
+}
+}
+
+function revieweros(){
+document.getElementById("launchreview").disabled =  true;
+document.getElementById("cancel_review").disabled =  false;
+
+var thecontri= document.getElementById("selectcontributionNumber");
+if (thecontri.value != "Choose" && thecontri.value != "" ){
+$('#cccc').val(thecontri.value);
+google.script.run.withSuccessHandler(compirons_contri).Loadfromcontri(thecontri.value);
+}else{
+setTimeout(explode, 2000);
+}
+
+function explode(){
+document.getElementById("launchreview").disabled =  false;
+}
+
+}
+
+
+
+function compirons_contri(info) { 
+if ( info!= "No data"){
+var contri= JSON.parse(info)
+document.getElementById('ID_Event_comp').value =contri[0]; 
+//icilala change if new
+
+if (contri[0]!="NEW"){
+document.getElementById('myAnchor').innerHTML= "Ctrl click to open the current data for "+ contri[0]; 
+document.getElementById('myAnchor').href= url + "?par="+ contri[0];
+$( "#myAnchor" ).show();
+}else{
+$( "#myAnchor" ).hide();
+}
+
+$( "#Date_Event_comp" ).data( "contri", contri[5]);
+$( "#address_comp" ).data( "contri", contri[1]);
+$( "#Long_comp" ).data( "contri", String(contri[2]));
+$( "#Lat_comp" ).data( "contri", String(contri[3]));
+$( "#summaros_comp" ).data( "contri", contri[6]);
+$( "#source_comp" ).data( "contri", contri[7]);
+$( "#nombre1_comp" ).data( "contri", String(contri[8]));
+$( "#nombre2_comp" ).data( "contri", String(contri[9]));
+$( "#nombre3_comp" ).data( "contri", String(contri[10]));
+$( "#nombre4_comp" ).data( "contri", String(contri[11]));
+$( "#nombre5_comp" ).data( "contri", String(contri[12]));
+$( "#tags1_comp" ).data( "contri", String(contri[13]));
+$( "#tags2_comp" ).data( "contri", String(contri[14]));
+$( "#tags3_comp" ).data( "contri", String(contri[15]));
+$( "#tags4_comp" ).data( "contri", String(contri[16]));
+$( "#tags5_comp" ).data( "contri", String(contri[17]));
+$( "#question1_comp" ).data( "contri", String(contri[18]));
+$( "#question2_comp" ).data( "contri", String(contri[19]));
+$( "#question3_comp" ).data( "contri", String(contri[20]));
+$( "#question4_comp" ).data( "contri", String(contri[21]));
+$( "#question5_comp" ).data( "contri", String(contri[22]));
+
+
+$( "#photo_comp" ).data( "contri", JSON.stringify(contri[23]));
+$( "#video_comp" ).data( "contri", JSON.stringify(contri[24]));
+$( "#file_comp" ).data( "contri", JSON.stringify(contri[25]));
+$( "#link_comp" ).data( "contri", JSON.stringify(contri[26]));
+
+
+
+}else{
+alert(contri);
+document.getElementById("launchreview").disabled =  false;
+}
+if (contri[0]!="NEW"){
+google.script.run.withSuccessHandler(compirons_real).Loadfromreal(contri[0]);
+}else{
+  
+  $("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+  
+
+// $('#tabs').tabs('select', '#tabs-2');
+create_event();
+//alert("this is a new");
+//alert("needs to load data");
+cancel_reviewos();
+onSuccessEventrecovdraft(info);
+document.getElementById("launchreview").disabled =  false;
+var laloli= $("#cccc").val();
+google.script.run.withSuccessHandler(onSuccessEventmovela).movela(laloli);
+lodingos ="goit";
+checkfornewcontri();
+$('#tabs').tabs('select', '#tabs-2');
+}
+}
+
+
+//
+//
+//
+function compirons_real(info2) { 
+if ( info2!= "No data"){
+var contri2= JSON.parse(info2)
+$( "#accu_comp" ).data( "real", contri2[4]);
+$( "#commentos_comp" ).data( "real", contri2[28]);
+var dateventcomp = document.getElementById('Date_Event_comp');
+$( "#Date_Event_comp" ).data( "real", contri2[5]);
+var dateventcompreal= $( "#Date_Event_comp" ).data( "contri" ) ;
+
+if (dateventcompreal!=contri2[5]){
+dateventcomp.innerHTML = diffString(
+ contri2[5],
+dateventcompreal 
+);
+$("#Date_Event_comp").append ( "<input id='Date_Event_comp_box' type='checkbox' value='1' />" );
+$( "#Date_Event_comp" ).show();
+}else{
+dateventcomp.innerHTML =dateventcompreal ;
+$( "#Date_Event_comp" ).hide();
+}
+
+
+var photo_comp= document.getElementById('photo_comp');
+$( "#photo_comp" ).data( "real", JSON.stringify(contri2[23]));
+var photo_compreal= $( "#photo_comp" ).data( "contri" ) ;
+if (photo_compreal!=JSON.stringify(contri2[23])){
+photo_comp.innerHTML = diffString(
+JSON.stringify(contri2[23]),
+photo_compreal 
+);
+$("#photo_comp").append ( "<input id='photo_comp_box' type='checkbox' value='1' />" );
+$( "#photo_comp" ).show();
+}else{
+photo_comp.innerHTML =photo_compreal ;
+$( "#photo_comp" ).hide();
+}
+
+var video_comp= document.getElementById('video_comp');
+$( "#video_comp" ).data( "real", JSON.stringify(contri2[24]));
+var video_compreal= $( "#video_comp" ).data( "contri" ) ;
+if (video_compreal!=JSON.stringify(contri2[24])){
+video_comp.innerHTML = diffString(
+ JSON.stringify(contri2[24]),
+video_compreal 
+);
+$("#video_comp").append ( "<input id='video_comp_box' type='checkbox' value='1' />" );
+$( "#video_comp" ).show();
+}else{
+video_comp.innerHTML =video_compreal ;
+$( "#video_comp" ).hide();
+}
+
+var file_comp= document.getElementById('file_comp');
+$( "#file_comp" ).data( "real", JSON.stringify(contri2[25]));
+var file_compreal= $( "#file_comp" ).data( "contri" ) ;
+if (file_compreal!=JSON.stringify(contri2[25])){
+file_comp.innerHTML = diffString(
+ JSON.stringify(contri2[25]),
+file_compreal 
+);
+$("#file_comp").append ( "<input id='file_comp_box' type='checkbox' value='1' />" );
+$( "#file_comp" ).show();
+}else{
+file_comp.innerHTML =file_compreal ;
+$( "#file_comp" ).hide();
+}
+
+var link_comp= document.getElementById('link_comp');
+$( "#link_comp" ).data( "real", JSON.stringify(contri2[26]));
+var link_compreal= $( "#link_comp" ).data( "contri" ) ;
+if (link_compreal!=JSON.stringify(contri2[26])){
+link_comp.innerHTML = diffString(
+ JSON.stringify(contri2[26]),
+link_compreal 
+);
+$("#link_comp").append ( "<input id='link_comp_box' type='checkbox' value='1' />" );
+$( "#link_comp" ).show();
+}else{
+link_comp.innerHTML =link_compreal ;
+$( "#link_comp" ).hide();
+}
+
+
+
+var address_comp = document.getElementById('address_comp');
+$( "#address_comp" ).data( "real", contri2[1]);
+var address_compreal= $( "#address_comp" ).data( "contri" ) ;
+if (address_compreal!=contri2[1]){
+address_comp.innerHTML = diffString(
+ contri2[1],
+address_compreal 
+);
+$("#address_comp").append ( "<input id='address_comp_box' type='checkbox' value='1' />" );
+$( "#address_comp" ).show();
+}else{
+address_comp.innerHTML =address_compreal ;
+$( "#address_comp" ).hide();
+}
+
+var Long_comp = document.getElementById('Long_comp');
+$( "#Long_comp" ).data( "real", String(contri2[2]));
+var Long_compreal= $( "#Long_comp" ).data( "contri" ) ;
+if (Long_compreal!=String(contri2[2])){
+Long_comp.innerHTML = diffString(
+String(contri2[2]),
+Long_compreal 
+);
+$("#Long_comp").append ( "<input id='Long_comp_box' type='checkbox' value='1' />" );
+$( "#Long_comp" ).show();
+}else{
+Long_comp.innerHTML =Long_compreal ;
+$( "#Long_comp" ).hide();
+}
+
+var Lat_comp = document.getElementById('Lat_comp');
+$( "#Lat_comp" ).data( "real", String(contri2[3]));
+var Lat_compreal= $( "#Lat_comp" ).data( "contri" ) ;
+if (Lat_compreal!=String(contri2[3])){
+Lat_comp.innerHTML = diffString(
+String(contri2[3]),
+Lat_compreal 
+);
+$("#Lat_comp").append ( "<input id='Lat_comp_box' type='checkbox' value='1' />" );
+$( "#Lat_comp" ).show();
+}else{
+Lat_comp.innerHTML =Lat_compreal ;
+$( "#Lat_comp" ).hide();
+}
+
+var summaros_comp = document.getElementById('summaros_comp');
+$( "#summaros_comp" ).data( "real", contri2[6]);
+var summaros_compreal= $( "#summaros_comp" ).data( "contri" ) ;
+if (summaros_compreal!=contri2[6]){
+summaros_comp.innerHTML = diffString(
+ contri2[6],
+summaros_compreal 
+);
+$("#summaros_comp").append ( "<br/><input id='summaros_comp_box' type='checkbox' value='1' />" );
+$( "#summaros_comp" ).show();
+}else{
+summaros_comp.innerHTML =summaros_compreal ;
+$( "#summaros_comp" ).hide();
+}
+
+var source_comp = document.getElementById('source_comp');
+$( "#source_comp" ).data( "real", contri2[7]);
+var source_compreal= $( "#source_comp" ).data( "contri" ) ;
+if (source_compreal!=contri2[7]){
+source_comp.innerHTML = diffString(
+ contri2[7],
+source_compreal 
+);
+$("#source_comp").append ( "<input id='source_comp_box' type='checkbox' value='1' />" );
+$( "#source_comp" ).show();
+}else{
+source_comp.innerHTML =source_compreal ;
+$( "#source_comp" ).hide();
+}
+
+var nombre1_comp = document.getElementById('nombre1_comp');
+$( "#nombre1_comp" ).data( "real", String(contri2[8]));
+var nombre1_compreal= $( "#nombre1_comp" ).data( "contri" ) ;
+if (nombre1_compreal!=String(contri2[8])){
+nombre1_comp.innerHTML = diffString(
+String(contri2[8]),
+nombre1_compreal 
+);
+$("#nombre1_comp").append ( "<input id='nombre1_comp_box' type='checkbox' value='1' />" );
+$( "#nombre1_comp" ).show();
+$( "#labelnombre1_comp" ).show();
+}else{
+nombre1_comp.innerHTML =nombre1_compreal ;
+$( "#nombre1_comp" ).hide();
+$( "#labelnombre1_comp" ).hide();
+}
+
+var nombre2_comp = document.getElementById('nombre2_comp');
+$( "#nombre2_comp" ).data( "real", String(contri2[9]));
+var nombre2_compreal= $( "#nombre2_comp" ).data( "contri" ) ;
+if (nombre2_compreal!=String(contri2[9])){
+nombre2_comp.innerHTML = diffString(
+String(contri2[9]),
+nombre2_compreal 
+);
+$("#nombre2_comp").append ( "<input id='nombre2_comp_box' type='checkbox' value='1' />" );
+$( "#nombre2_comp" ).show();
+$( "#labelnombre2_comp" ).show();
+}else{
+nombre2_comp.innerHTML =nombre2_compreal ;
+$( "#nombre2_comp" ).hide();
+$( "#labelnombre2_comp" ).hide();
+}
+
+var nombre3_comp = document.getElementById('nombre3_comp');
+$( "#nombre3_comp" ).data( "real", String(contri2[10]));
+var nombre3_compreal= $( "#nombre3_comp" ).data( "contri" ) ;
+if (nombre3_compreal!=String(contri2[10])){
+nombre3_comp.innerHTML = diffString(
+String(contri2[10]),
+nombre3_compreal 
+);
+$("#nombre3_comp").append ( "<input id='nombre3_comp_box' type='checkbox' value='1' />" );
+$( "#nombre3_comp" ).show();
+$( "#labelnombre3_comp" ).show();
+}else{
+nombre3_comp.innerHTML =nombre3_compreal ;
+$( "#nombre3_comp" ).hide();
+$( "#labelnombre3_comp" ).hide();
+}
+
+var nombre4_comp = document.getElementById('nombre4_comp');
+$( "#nombre4_comp" ).data( "real", String(contri2[11]));
+var nombre4_compreal= $( "#nombre4_comp" ).data( "contri" ) ;
+if (nombre4_compreal!=String(contri2[11])){
+nombre4_comp.innerHTML = diffString(
+String(contri2[11]),
+nombre4_compreal 
+);
+$("#nombre4_comp").append ( "<input id='nombre4_comp_box' type='checkbox' value='1' />" );
+$( "#nombre4_comp" ).show();
+$( "#labelnombre4_comp" ).show();
+}else{
+nombre4_comp.innerHTML =nombre4_compreal ;
+$( "#nombre4_comp" ).hide();
+$( "#labelnombre4_comp" ).hide();
+}
+
+
+var nombre5_comp = document.getElementById('nombre5_comp');
+$( "#nombre5_comp" ).data( "real", String(contri2[12]));
+var nombre5_compreal= $( "#nombre5_comp" ).data( "contri" ) ;
+if (nombre5_compreal!=String(contri2[12])){
+nombre5_comp.innerHTML = diffString(
+String(contri2[12]),
+nombre5_compreal 
+);
+$("#nombre5_comp").append ( "<input id='nombre5_comp_box' type='checkbox' value='1' />" );
+$( "#nombre5_comp" ).show();
+$( "#labelnombre5_comp" ).show();
+}else{
+nombre5_comp.innerHTML =nombre5_compreal ;
+$( "#nombre5_comp" ).hide();
+$( "#labelnombre5_comp" ).hide();
+}
+var question1_comp = document.getElementById('question1_comp');
+$( "#question1_comp" ).data( "real", String(contri2[18]));
+var question1_compreal= $( "#question1_comp" ).data( "contri" ) ;
+if (question1_compreal!=String(contri2[18])){
+question1_comp.innerHTML = diffString(
+String(contri2[18]),
+question1_compreal 
+);
+$("#question1_comp").append ( "<input id='question1_comp_box' type='checkbox' value='1' />" );
+$( "#question1_comp" ).show();
+$( "#labelquestion1_comp" ).show();
+}else{
+question1_comp.innerHTML =question1_compreal ;
+$( "#question1_comp" ).hide();
+$( "#labelquestion1_comp" ).hide();
+}
+
+var question2_comp = document.getElementById('question2_comp');
+$( "#question2_comp" ).data( "real", String(contri2[19]));
+var question2_compreal= $( "#question2_comp" ).data( "contri" ) ;
+if (question2_compreal!=String(contri2[19])){
+question2_comp.innerHTML = diffString(
+String(contri2[19]),
+question2_compreal 
+);
+$("#question2_comp").append ( "<input id='question2_comp_box' type='checkbox' value='1' />" );
+$( "#question2_comp" ).show();
+$( "#labelquestion2_comp" ).show();
+}else{
+question2_comp.innerHTML =question2_compreal ;
+$( "#question2_comp" ).hide();
+$( "#labelquestion2_comp" ).hide();
+}
+
+var question3_comp = document.getElementById('question3_comp');
+$( "#question3_comp" ).data( "real", String(contri2[20]));
+var question3_compreal= $( "#question3_comp" ).data( "contri" ) ;
+if (question3_compreal!=String(contri2[20])){
+question3_comp.innerHTML = diffString(
+String(contri2[20]),
+question3_compreal 
+);
+$("#question3_comp").append ( "<input id='question3_comp_box' type='checkbox' value='1' />" );
+$( "#question3_comp" ).show();
+$( "#labelquestion3_comp" ).show();
+}else{
+question3_comp.innerHTML =question3_compreal ;
+$( "#question3_comp" ).hide();
+$( "#labelquestion3_comp" ).hide();
+}
+
+var question4_comp = document.getElementById('question4_comp');
+$( "#question4_comp" ).data( "real", String(contri2[21]));
+var question4_compreal= $( "#question4_comp" ).data( "contri" ) ;
+if (question4_compreal!=String(contri2[21])){
+question4_comp.innerHTML = diffString(
+String(contri2[21]),
+question4_compreal 
+);
+$("#question4_comp").append ( "<input id='question4_comp_box' type='checkbox' value='1' />" );
+$( "#question4_comp" ).show();
+$( "#labelquestion4_comp" ).show();
+}else{
+question4_comp.innerHTML =question4_compreal ;
+$( "#question4_comp" ).hide();
+$( "#labelquestion4_comp" ).hide();
+}
+
+
+var question5_comp = document.getElementById('question5_comp');
+$( "#question5_comp" ).data( "real", String(contri2[22]));
+var question5_compreal= $( "#question5_comp" ).data( "contri" ) ;
+if (question5_compreal!=String(contri2[22])){
+question5_comp.innerHTML = diffString(
+String(contri2[22]),
+question5_compreal 
+);
+$("#question5_comp").append ( "<input id='question5_comp_box' type='checkbox' value='1' />" );
+$( "#question5_comp" ).show();
+$( "#labelquestion5_comp" ).show();
+}else{
+question5_comp.innerHTML =question5_compreal ;
+$( "#question5_comp" ).hide();
+$( "#labelquestion5_comp" ).hide();
+}
+
+
+var tags1_comp = document.getElementById('tags1_comp');
+$( "#tags1_comp" ).data( "real", String(contri2[13]));
+var tags1_compreal= $( "#tags1_comp" ).data( "contri" ) ;
+if (tags1_compreal!=String(contri2[13])){
+tags1_comp.innerHTML = diffString(
+String(contri2[13]),
+tags1_compreal 
+);
+$("#tags1_comp").append ( "<input id='tags1_comp_box' type='checkbox' value='1' />" );
+$( "#tags1_comp" ).show();
+$( "#labeltag1_comp" ).show();
+}else{
+tags1_comp.innerHTML =tags1_compreal ;
+$( "#tags1_comp" ).hide();
+$( "#labeltag1_comp" ).hide();
+}
+
+var tags2_comp = document.getElementById('tags2_comp');
+$( "#tags2_comp" ).data( "real", String(contri2[14]));
+var tags2_compreal= $( "#tags2_comp" ).data( "contri" ) ;
+if (tags2_compreal!=String(contri2[14])){
+tags2_comp.innerHTML = diffString(
+String(contri2[14]),
+tags2_compreal 
+);
+$("#tags2_comp").append ( "<input id='tags2_comp_box' type='checkbox' value='1' />" );
+$( "#tags2_comp" ).show();
+$( "#labeltag2_comp" ).show();
+}else{
+tags2_comp.innerHTML =tags2_compreal ;
+$( "#tags2_comp" ).hide();
+$( "#labeltag2_comp" ).hide();
+}
+
+var tags3_comp = document.getElementById('tags3_comp');
+$( "#tags3_comp" ).data( "real", String(contri2[15]));
+var tags3_compreal= $( "#tags3_comp" ).data( "contri" ) ;
+if (tags3_compreal!=String(contri2[15])){
+tags3_comp.innerHTML = diffString(
+String(contri2[15]),
+tags3_compreal 
+);
+$("#tags3_comp").append ( "<input id='tags3_comp_box' type='checkbox' value='1' />" );
+$( "#tags3_comp" ).show();
+$( "#labeltag3_comp" ).show();
+}else{
+tags3_comp.innerHTML =tags3_compreal ;
+$( "#tags3_comp" ).hide();
+$( "#labeltag3_comp" ).hide();
+}
+
+var tags4_comp = document.getElementById('tags4_comp');
+$( "#tags4_comp" ).data( "real", String(contri2[16]));
+var tags4_compreal= $( "#tags4_comp" ).data( "contri" ) ;
+if (tags4_compreal!=String(contri2[16])){
+tags4_comp.innerHTML = diffString(
+String(contri2[16]),
+tags4_compreal 
+);
+$("#tags4_comp").append ( "<input id='tags4_comp_box' type='checkbox' value='1' />" );
+$( "#tags4_comp" ).show();
+$( "#labeltag4_comp" ).show();
+}else{
+tags4_comp.innerHTML =tags4_compreal ;
+
+$( "#tags4_comp" ).hide();
+$( "#labeltag4_comp" ).hide();
+}
+
+
+var tags5_comp = document.getElementById('tags5_comp');
+$( "#tags5_comp" ).data( "real", String(contri2[17]));
+var tags5_compreal= $( "#tags5_comp" ).data( "contri" ) ;
+if (tags5_compreal!=String(contri2[17])){
+tags5_comp.innerHTML = diffString(
+String(contri2[17]),
+tags5_compreal 
+);
+$("#tags5_comp").append ( "<input id='tags5_comp_box' type='checkbox' value='1' />" );
+$( "#tags5_comp" ).show();
+$( "#labeltag5_comp" ).show();
+}else{
+tags5_comp.innerHTML =tags5_compreal ;
+$( "#tags5_comp" ).hide();
+$( "#labeltag5_comp" ).hide();
+
+}
+
+
+
+}else{
+alert(contri2);
+document.getElementById("launchreview").disabled =  false;
+}
+$( "#review_elements" ).show();
+$( "#validatoscontribution" ).show();
+$( "#choosecontribution" ).hide();
+document.getElementById("launchreview").disabled =  false;
+}
+//
+//
+//
+//
+function cancel_reviewos(){
+document.getElementById("cancel_review").disabled =  true;
+$( "#review_elements" ).hide();
+$( "#validatoscontribution" ).hide();
+$( "#choosecontribution" ).show();
+}
+//
+//
+//
+//
+function Accept_reviewos(){
+document.getElementById("Accept_review").disabled =  true;
+var thediolos =document.getElementById("ID_Event_comp");
+$("#ecran2").show();
+$("#footer1").hide();
+$("#filtons").hide();
+ $('#tabs').tabs('select', '#tabs-2');
+//
+//
+lodingos="goit";
+google.script.run.withSuccessHandler(onSuccessEvent).Get_event_data(thediolos.value)
+//google.script.run.withSuccessHandler(onSuccessEventrecovdraft).Get_event_data(thediolos.value);
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function escape(s) {
+    var n = s;
+    n = n.replace(/&/g, "&amp;");
+    n = n.replace(/</g, "&lt;");
+    n = n.replace(/>/g, "&gt;");
+    n = n.replace(/"/g, "&quot;");
+
+    return n;
+}
+
+function diffString( o, n ) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/) );
+  var str = "";
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  if (out.n.length == 0) {
+      for (var i = 0; i < out.o.length; i++) {
+        str += '<del>' + escape(out.o[i]) + oSpace[i] + "</del>";
+      }
+  } else {
+    if (out.n[0].text == null) {
+      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
+        str += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
+      }
+    }
+
+    for ( var i = 0; i < out.n.length; i++ ) {
+      if (out.n[i].text == null) {
+        str += '<ins>' + escape(out.n[i]) + nSpace[i] + "</ins>";
+      } else {
+        var pre = "";
+
+        for (n = out.n[i].row + 1; n < out.o.length && out.o[n].text == null; n++ ) {
+          pre += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
+        }
+        str += " " + out.n[i].text + nSpace[i] + pre;
+      }
+    }
+  }
+  
+  return str;
+}
+
+function randomColor() {
+    return "rgb(" + (Math.random() * 100) + "%, " + 
+                    (Math.random() * 100) + "%, " + 
+                    (Math.random() * 100) + "%)";
+}
+function diffString2( o, n ) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/) );
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  var os = "";
+  var colors = new Array();
+  for (var i = 0; i < out.o.length; i++) {
+      colors[i] = randomColor();
+
+      if (out.o[i].text != null) {
+          os += '<span style="background-color: ' +colors[i]+ '">' + 
+                escape(out.o[i].text) + oSpace[i] + "</span>";
+      } else {
+          os += "<del>" + escape(out.o[i]) + oSpace[i] + "</del>";
+      }
+  }
+
+  var ns = "";
+  for (var i = 0; i < out.n.length; i++) {
+      if (out.n[i].text != null) {
+          ns += '<span style="background-color: ' +colors[out.n[i].row]+ '">' + 
+                escape(out.n[i].text) + nSpace[i] + "</span>";
+      } else {
+          ns += "<ins>" + escape(out.n[i]) + nSpace[i] + "</ins>";
+      }
+  }
+
+  return { o : os , n : ns };
+}
+
+function diff( o, n ) {
+  var ns = new Object();
+  var os = new Object();
+  
+  for ( var i = 0; i < n.length; i++ ) {
+    if ( ns[ n[i] ] == null )
+      ns[ n[i] ] = { rows: new Array(), o: null };
+    ns[ n[i] ].rows.push( i );
+  }
+  
+  for ( var i = 0; i < o.length; i++ ) {
+    if ( os[ o[i] ] == null )
+      os[ o[i] ] = { rows: new Array(), n: null };
+    os[ o[i] ].rows.push( i );
+  }
+  
+  for ( var i in ns ) {
+    if ( ns[i].rows.length == 1 && typeof(os[i]) != "undefined" && os[i].rows.length == 1 ) {
+      n[ ns[i].rows[0] ] = { text: n[ ns[i].rows[0] ], row: os[i].rows[0] };
+      o[ os[i].rows[0] ] = { text: o[ os[i].rows[0] ], row: ns[i].rows[0] };
+    }
+  }
+  
+  for ( var i = 0; i < n.length - 1; i++ ) {
+    if ( n[i].text != null && n[i+1].text == null && n[i].row + 1 < o.length && o[ n[i].row + 1 ].text == null && 
+         n[i+1] == o[ n[i].row + 1 ] ) {
+      n[i+1] = { text: n[i+1], row: n[i].row + 1 };
+      o[n[i].row+1] = { text: o[n[i].row+1], row: i + 1 };
+    }
+  }
+  
+  for ( var i = n.length - 1; i > 0; i-- ) {
+    if ( n[i].text != null && n[i-1].text == null && n[i].row > 0 && o[ n[i].row - 1 ].text == null && 
+         n[i-1] == o[ n[i].row - 1 ] ) {
+      n[i-1] = { text: n[i-1], row: n[i].row - 1 };
+      o[n[i].row-1] = { text: o[n[i].row-1], row: i - 1 };
+    }
+  }
+  
+  return { o: o, n: n };
+}
+
+
+/////////////////
+function loadaccepted_data(){
+//nbn
+//alert("ici")
+
+var address_comp= $('#address_comp_box').is( ':checked' );
+if (address_comp== true){
+var newaddress= document.getElementById("address");
+newaddress.value= $( "#address_comp" ).data( "contri");
+var newaccu= document.getElementById("accu");
+newaccu.value= "";
+}
+
+var Long_comp= $('#Long_comp_box').is( ':checked' );
+if (Long_comp== true){
+var newLong= document.getElementById("Long");
+newLong.value= $( "#Long_comp" ).data( "contri");
+}
+
+var Lat_comp= $('#Lat_comp_box').is( ':checked' );
+if (Lat_comp== true){
+var newLat= document.getElementById("Lat");
+newLat.value= $( "#Lat_comp" ).data( "contri");
+}
+
+var Date_Event_comp= $('#Date_Event_comp_box').is( ':checked' );
+if (Date_Event_comp== true){
+var tranfo= $( "#Date_Event_comp" ).data( "contri");
+var newDate_Event= document.getElementById("Date_Event");
+newDate_Event.value= tranfo.substring(5, 7)+'/'+tranfo.substring(8, 10)+'/'+tranfo.substring(0, 4);
+var newHori= document.getElementById("Hori");
+newHori.value= tranfo.substring(11, 13);
+var newMini= document.getElementById("Mini");
+newMini.value= tranfo.substring(14, 16);
+}
+
+var summaros_comp= $('#summaros_comp_box').is( ':checked' );
+if (summaros_comp== true){
+var newsummaros= document.getElementById("summaros");
+newsummaros.value= $( "#summaros_comp" ).data( "contri");
+}
+
+var source_comp= $('#source_comp_box').is( ':checked' );
+if (source_comp== true){
+var newsource= document.getElementById("source");
+newsource.value= $( "#source_comp" ).data( "contri");
+}
+
+
+var nombre1_comp= $('#nombre1_comp_box').is( ':checked' );
+if (nombre1_comp== true){
+var newnombre1= document.getElementById("nombre1");
+newnombre1.value= $( "#nombre1_comp" ).data( "contri");
+}
+
+var nombre2_comp= $('#nombre2_comp_box').is( ':checked' );
+if (nombre2_comp== true){
+var newnombre2= document.getElementById("nombre2");
+newnombre2.value= $( "#nombre2_comp" ).data( "contri");
+}
+var nombre3_comp= $('#nombre3_comp_box').is( ':checked' );
+if (nombre3_comp== true){
+var newnombre3= document.getElementById("nombre3");
+newnombre3.value= $( "#nombre3_comp" ).data( "contri");
+}
+var nombre4_comp= $('#nombre4_comp_box').is( ':checked' );
+if (nombre4_comp== true){
+var newnombre4= document.getElementById("nombre4");
+newnombre4.value= $( "#nombre4_comp" ).data( "contri");
+}
+
+var nombre5_comp= $('#nombre5_comp_box').is( ':checked' );
+if (nombre5_comp== true){
+var newnombre5= document.getElementById("nombre5");
+newnombre5.value= $( "#nombre5_comp" ).data( "contri");
+}
+
+var tags1_comp= $('#tags1_comp_box').is( ':checked' );
+if (tags1_comp== true){
+var newtags1= document.getElementById("tags1");
+newtags1.value= $( "#tags1_comp" ).data( "contri");
+}
+
+var tags2_comp= $('#tags2_comp_box').is( ':checked' );
+if (tags2_comp== true){
+var newtags2= document.getElementById("tags2");
+newtags2.value= $( "#tags2_comp" ).data( "contri");
+}
+var tags3_comp= $('#tags3_comp_box').is( ':checked' );
+if (tags3_comp== true){
+var newtags3= document.getElementById("tags3");
+newtags3.value= $( "#tags3_comp" ).data( "contri");
+}
+var tags4_comp= $('#tags4_comp_box').is( ':checked' );
+if (tags4_comp== true){
+var newtags4= document.getElementById("tags4");
+newtags4.value= $( "#tags4_comp" ).data( "contri");
+}
+
+var tags5_comp= $('#tags5_comp_box').is( ':checked' );
+if (tags5_comp== true){
+var newtags5= document.getElementById("tags5");
+newtags5.value= $( "#tags5_comp" ).data( "contri");
+}
+
+var question1_comp= $('#question1_comp_box').is( ':checked' );
+if (question1_comp== true){
+var newquestion1= document.getElementById("question1");
+newquestion1.value= $( "#question1_comp" ).data( "contri");
+}
+
+var question2_comp= $('#question2_comp_box').is( ':checked' );
+if (question2_comp== true){
+var newquestion2= document.getElementById("question2");
+newquestion2.value= $( "#question2_comp" ).data( "contri");
+}
+var question3_comp= $('#question3_comp_box').is( ':checked' );
+if (question3_comp== true){
+var newquestion3= document.getElementById("question3");
+newquestion3.value= $( "#question3_comp" ).data( "contri");
+}
+var question4_comp= $('#question4_comp_box').is( ':checked' );
+if (question4_comp== true){
+var newquestion4= document.getElementById("question4");
+newquestion4.value= $( "#question4_comp" ).data( "contri");
+}
+
+var question5_comp= $('#question5_comp_box').is( ':checked' );
+if (question5_comp== true){
+var newquestion5= document.getElementById("question5");
+newquestion5.value= $( "#question5_comp" ).data( "contri");
+}
+
+
+var photo_comp= $('#photo_comp_box').is( ':checked' );
+if (photo_comp== true){
+//$("#photo_data").show();
+$("#photo_data").empty();
+var laphoto= $( "#photo_comp" ).data( "contri");
+laphoto=JSON.parse(laphoto);
+if (laphoto!= ""){
+document.getElementById("media_available").value = "photos";
+var myString = '[' + laphoto +']'
+var json = $.parseJSON(myString)
+buildHtmlTable(json);
+$("#photo_data").show();
+}else{
+var json =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable(json);
+$('#1').remove();
+$('#photo_data').hide();
+}
+}
+
+var video_comp= $('#video_comp_box').is( ':checked' );
+if (video_comp== true){
+$("#video_data").empty();
+var lavideo= $( "#video_comp" ).data( "contri");
+lavideo=JSON.parse(lavideo);
+if (lavideo!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',embedded_videos';
+}else{
+document.getElementById("media_available").value = "embedded_videos";
+}
+var myString2 = '[' + lavideo+']'
+var json2 = $.parseJSON(myString2)
+buildHtmlTable2(json2);
+$("#video_data").show();
+}else{
+var json2 =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+buildHtmlTable2(json2);
+$('#v1').remove();
+$('#video_data').hide();
+}
+}
+
+var file_comp= $('#file_comp_box').is( ':checked' );
+if (file_comp== true){
+$("#file_data").empty();
+var lafile= $( "#file_comp" ).data( "contri");
+lafile=JSON.parse(lafile);
+if (lafile!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',files';
+}else{
+document.getElementById("media_available").value = "files";
+}
+var myString3 = '[' + lafile +']'
+var json3 = $.parseJSON(myString3)
+buildHtmlTable3(json3);
+$("#file_data").show();
+}else{
+var json3 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable3(json3);
+$('#fil1').remove();
+$('#file_data').hide();
+}
+}
+
+var link_comp= $('#link_comp_box').is( ':checked' );
+if (link_comp== true){
+$("#link_data").empty();
+var lalink= $( "#link_comp" ).data( "contri");
+lalink=JSON.parse(lalink);
+if (lalink!= ""){
+var currentmedia= document.getElementById("media_available").value;
+if (currentmedia != ""){
+document.getElementById("media_available").value= currentmedia+',url_links';
+}else{
+document.getElementById("media_available").value = "url_links";
+}
+var myString4 = '[' + lalink +']'
+var json4 = $.parseJSON(myString4)
+buildHtmlTable4(json4);
+$("#link_data").show();
+}else{
+var json4 =[{"title":"","subtitle":"","url":""}];
+buildHtmlTable4(json4);
+$('#lin1').remove();
+$('#link_data').hide();
+}
+
+//iciaussi
+alert("should update the map");
+
+      
+}
+
+
+
+google.maps.event.trigger(map, 'resize');
+var centermap = new google.maps.LatLng(Lati.value,Longi.value);
+map.setCenter(centermap);
+placeMarker(centermap);
+
+
+
+cancel_reviewos();
+var laloli= $("#cccc").val();
+google.script.run.withSuccessHandler(onSuccessEventmovela).movela(laloli);
+checkfornewcontri();
+
+ //refresh contri list
+}
+
+function onSuccessEventmovela(pop){
+var pop="";
+
+}
+
+function onSuccessEvent(p) { 
+  $("#animo2").hide();
+  if ( p== "Event not found"){
+    alert(p);
+  }else{
+    var recovirios= JSON.parse(p);
+    //ici
+    $("#commentos").html(recovirios[28]);
+    $( "#commentos" ).data( "carbon", recovirios[28]);
+    
+    $("#ID_Event").val(recovirios[0]);
+    document.getElementById("Date_Event").value =recovirios[5].substring(5, 7)+'/'+recovirios[5].substring(8, 10)+'/'+recovirios[5].substring(0, 4);
+    document.getElementById("Hori").value =recovirios[5].substring(11, 13);
+    document.getElementById("Mini").value =recovirios[5].substring(14, 16);
+    
+    document.getElementById("address").value =recovirios[1];
+    document.getElementById("Long").value =recovirios[2];
+    document.getElementById("Lat").value =recovirios[3];
+    google.maps.event.trigger(map, 'resize');
+    var centermap = new google.maps.LatLng(recovirios[3],recovirios[2]);
+    map.setCenter(centermap);
+    placeMarker(centermap);
+    document.getElementById("accu").value =recovirios[4];
+    
+    $( "#Date_Event" ).data( "carbon", recovirios[5].substring(5, 7)+'/'+recovirios[5].substring(8, 10)+'/'+recovirios[5].substring(0, 4) );
+    $( "#Hori" ).data( "carbon", recovirios[5].substring(11, 13));
+    $( "#Mini" ).data( "carbon", recovirios[5].substring(14, 16) );
+    
+    $( "#address" ).data( "carbon", recovirios[1] );
+    $( "#Long" ).data( "carbon", recovirios[2] );
+    $( "#Lat" ).data( "carbon", recovirios[3] );
+    $( "#accu" ).data( "carbon", recovirios[4] );
+    
+    
+    $("#summaros").html(recovirios[6]);
+    $( "#summaros" ).data( "carbon", recovirios[6] );
+    document.getElementById("source").value =recovirios[7];
+    $( "#source" ).data( "carbon", recovirios[7] );
+    
+    document.getElementById("nombre1").value =recovirios[8];
+    document.getElementById("nombre2").value =recovirios[9];
+    document.getElementById("nombre3").value =recovirios[10];
+    document.getElementById("nombre4").value =recovirios[11];
+    document.getElementById("nombre5").value =recovirios[12];
+    
+    document.getElementById("tags1").value =recovirios[13];
+    document.getElementById("tags2").value =recovirios[14];
+    document.getElementById("tags3").value =recovirios[15];
+    document.getElementById("tags4").value =recovirios[16];
+    document.getElementById("tags5").value =recovirios[17];
+    
+    document.getElementById("question1").value =recovirios[18];
+    document.getElementById("question2").value =recovirios[19];
+    document.getElementById("question3").value =recovirios[20];
+    document.getElementById("question4").value =recovirios[21];
+    document.getElementById("question5").value =recovirios[22];
+    
+    //alert($( "#nombre1" ).data( "carbon" ));
+    $( "#nombre1" ).data( "carbon", recovirios[8] );
+    $( "#nombre2" ).data( "carbon", recovirios[9] );
+    $( "#nombre3" ).data( "carbon", recovirios[10] );
+    $( "#nombre4" ).data( "carbon", recovirios[11] );
+    $( "#nombre5" ).data( "carbon", recovirios[12] );
+    
+    $( "#tags1" ).data( "carbon", recovirios[13] );
+    $( "#tags2" ).data( "carbon", recovirios[14] );
+    $( "#tags3" ).data( "carbon", recovirios[15] );
+    $( "#tags4" ).data( "carbon", recovirios[16] );
+    $( "#tags5" ).data( "carbon", recovirios[17] );
+    
+    $( "#question1" ).data( "carbon", recovirios[18] );
+    $( "#question2" ).data( "carbon", recovirios[19] );
+    $( "#question3" ).data( "carbon", recovirios[20] );
+    $( "#question4" ).data( "carbon", recovirios[21] );
+    $( "#question5" ).data( "carbon", recovirios[22] );
+    $( "#photocarbon" ).data( "carbon", recovirios[23] );
+    $( "#videocarbon" ).data( "carbon", recovirios[24] );
+    $( "#filecarbon" ).data( "carbon", recovirios[25] );
+    $( "#linkcarbon" ).data( "carbon", recovirios[26] );
+    
+    //foto part
+    
+    if (recovirios[23]!= ""){
+      document.getElementById("media_available").value = "photos";
+      var myString = '[' + recovirios[23] +']'
+      var json = $.parseJSON(myString)
+      buildHtmlTable(json);
+      $("#photo_data").show();
+    }else{
+      var json =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+      buildHtmlTable(json);
+      $('#1').remove();
+      $('#photo_data').hide();
+    }
+    
+    if (recovirios[24]!= ""){
+      var currentmedia= document.getElementById("media_available").value;
+      if (currentmedia != ""){
+        document.getElementById("media_available").value= currentmedia+',embedded_videos';
+      }else{
+        document.getElementById("media_available").value = "embedded_videos";
+      }
+      var myString2 = '[' + recovirios[24] +']'
+      var json2 = $.parseJSON(myString2)
+      buildHtmlTable2(json2);
+      $("#video_data").show();
+    }else{
+      var json2 =[{"src":"","thumb":"","subhtml":"","title":"","author":"","datetime":"","location_name":"","latitude":"","longitude":"","caption":"","source":""}];
+      buildHtmlTable2(json2);
+      $('#v1').remove();
+      $('#video_data').hide();
+      
+    }
+    
+    if (recovirios[25]!= ""){
+      var currentmedia= document.getElementById("media_available").value;
+      if (currentmedia != ""){
+        document.getElementById("media_available").value= currentmedia+',files';
+      }else{
+        document.getElementById("media_available").value = "files";
+      }
+      var myString3 = '[' + recovirios[25] +']'
+      var json3 = $.parseJSON(myString3)
+      buildHtmlTable3(json3);
+      $("#file_data").show();
+    }else{
+      var json3 =[{"title":"","subtitle":"","url":""}];
+      buildHtmlTable3(json3);
+      $('#fil1').remove();
+      $('#file_data').hide();
+    }
+    
+    if (recovirios[26]!= ""){
+      var currentmedia= document.getElementById("media_available").value;
+      if (currentmedia != ""){
+        document.getElementById("media_available").value= currentmedia+',url_links';
+      }else{
+        document.getElementById("media_available").value = "url_links";
+      }
+      var myString4 = '[' + recovirios[26] +']'
+      var json4 = $.parseJSON(myString4)
+      buildHtmlTable4(json4);
+      $("#link_data").show();
+    }else{
+      var json4 =[{"title":"","subtitle":"","url":""}];
+      buildHtmlTable4(json4);
+      $('#lin1').remove();
+      $('#link_data').hide();
+    }
+    document.getElementById("savos").disabled = false;
+    document.getElementById("savos_dupli").disabled = false;
+    document.getElementById("Accept_review").disabled =  false;
+  }
+  if (lodingos=="goit"){
+    loadaccepted_data();
+  }
+}
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+</script>

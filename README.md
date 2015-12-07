@@ -55,8 +55,6 @@ At its current prototype stage of development, PATTRN comprises of:
 ### 3.3 PATTRN Platform (front-end visualisation)
 * Clone the repo or download the code from GitHub;
 * Optional: add a basemap by editing the field 'base_layer_01' in config.json.
-
-
 * Using the terminal, navigate to the folder where index.html lives and run a Python server:
 ```python -m SimpleHTTPServer```
 * Open your browser at http://localhost:8000/.
@@ -77,6 +75,30 @@ As we have just launched the project, please bear with us while we develop a ext
 In the meantime, please write us to support@pattrn.co for contributions, questions, suggestions, ideas, advices, encouragements, or just to say hi.
 
 
+## Authors
+
+
+PATTRN is an open source project hosted at [Goldsmiths, University of London][link_Goldsmiths].
+
+It originates in the work of [Forensic Architecture][link_FA], a research consultancy undertaking spatial and media analysis for the investigation of human rights violations.
+
+The PATTRN project was initiated thanks to a Proof-of-Concept Grant from the [European Research Council][link_ERC], awarded to Prof. Eyal Weizman, in the framework of Forensic Architecture (2015-2015).
+
+Project Architect: [FSBRG][link_FSBRG] (Francesco Sebregondi)
+
+Major Contributing Authors
+* [TEKJA Data Visualisation][link_Tekja] (PATTRN Platform)
+* [Digital Consolidation][link_DigitalConsolidation]  (PATTRN Editor)
+
+
+[ All new contributors to the project will be duly credited. ]
+
 
 
 [link_01]:https://support.google.com/drive/answer/2494822?hl=en
+[link_Goldsmiths]:http://www.gold.ac.uk/
+[link_FA]:http://www.forensic-architecture.org/
+[link_ERC]:https://erc.europa.eu/
+[link_FSBRG]:https://twitter.com/fsbrg
+[link_Tekja]:http://tekja.com/
+[link_DigitalConsolidation]:http://www.digital-consolidation.co.uk/

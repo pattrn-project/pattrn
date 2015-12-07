@@ -1,0 +1,74 @@
+How to set up a new Pattrn Editor Google Apps Script WebApp:
+
+Prerequisites: 
+Basic understanding of the Google Apps Script technology.
+Read https://developers.google.com/apps-script/overview#your_first_script 
+It is recommended to use a Google Apps for Work Account
+
+Introduction: 
+Google Apps Script is a prototype to easily edit the database (Master Sheet) of the data visualisation platform.It allows multiple users to:
+Create and edit events.
+Pin events location on a google map with accurate longitude and latitude .
+Contribute links and upload photos to google drive.
+Contribute data anonymously.
+Keep track of previous versions of events in an audit sheet.
+
+Developer: Digital Consolidation
+22 days of development.
+
+Definition:
+Owner of the web app means the person owning/controlling the google apps for work account.
+User means someone who signs into the web app to contribute data using the url parameter "editor"
+Anonymous Contributor means someone contributing data without being an identified user and accessing the app directly using an event id parameter in the url.
+
+Demo: Francesco to share live demo link here
+
+Anonymity and users:
+One google apps for work account acts as the server of the web apps for multiple users.
+The code is published from the owner of the platform google apps for work account, the code is published to run as the owner and accessed by anyone including anonymous. 
+The login system is managed in the script. Username and Password are managed from a spreadsheet see "GitHub_Admin_Password"
+All the photos are uploaded to the owner account (Google Drive account at root level).
+The web application can be used to contribute data anonymously. These anonymous contributors don't need a username. They don't need to be logged into a google account.
+Moreover these anonymous contributors remain anonymous for the owner of the platform and the users of the web app as the application don’t track them.
+Warning: Anonymous contributor internet activities can be tracked by their Internet provider and government agencies.
+
+
+Instructions:
+
+Files available in google drive folder.
+https://drive.google.com/folderview?id=0Bz4nklNR2qT-ckRSVkx5NkZqSzQ&usp=sharing
+
+Copy each spreadsheet to you google account.
+Get the spreadsheet ID/Keys such as 1IAP4HOfcD4Az6q_PFfZgIX7lZVoHrRKM9KBX-IMO24s
+Open your copy of the GitHub_Admin spreadsheet and in the sheet "Keys" input the ID/Keys of your copies of Master, WIP, Audit, Admin_Password spreadsheet.
+
+Copy the script GitHub_pattrn to your drive or recreate it from the server, javascript, index, index2 and stylesheet files.
+In code.gs and function Set_Script_Properties(){
+replace 'Input Key' with the actual spreadsheet ID/Key of your GitHub_Admin spreadsheet  in userProperties.setProperty('Admin', 'Input_KEY');
+Run the function Set_Script_Properties(){
+Run the function function Load_keys_from_admin(){
+Remember to replace your key by 'Input_KEY' 
+
+You have now synchronize the script with all your spreadsheets and can publish the script.
+Save the version of the script then deploy the web app with parameters
+Execute as: me
+Who has access to the app: Anyone even anonymous
+
+Copy the current web app url and save it the cell A1 of your "GitHub_Admin spreadsheet" in the "Admin" sheet
+
+You platform is now ready.
+You can now customise the platform in your "GitHub_Admin spreadsheet" in the "Admin" sheet
+
+country_iso = Country code used in address autocomplete
+gps_precision = Number of decimals for latitude and longitude
+starting_latitude, max_latitude, min_latitude, starting_longitude max_longitude min_longitude = default and min/max gps coordinate
+default_zoom= Starting zoom of the google maps
+Last_ID= Id of events are incremented from this number
+Name_platform= Name of the platform.
+
+Create username and password in your Admin_Passwords spreadsheet.
+
+In order to launch the app get the web app url and add the url parameter:
+For users exec?par=editor
+For anonymous exec?par='input event id here' (automatically generated from the visualisation platform)
+

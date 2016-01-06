@@ -1,4 +1,4 @@
-***PATTRN - Complete Documentation***
+#PATTRN - Complete Documentation#
 
 December 2015
 

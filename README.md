@@ -806,11 +806,15 @@ In both cases, by default, **the submission process is anonymous** , but Observe
 
 **Warning:** _for details about this feature, see_ _6. Privacy, security, anonymity__._
 
+</br>
+</br>
+</br>
 
+#5. How to use the PATTRN Editor
 
-**5. How to use the PATTRN Editor**
+</br>
 
-5.1 Accessing the PATTRN Editor
+###5.1 Accessing the PATTRN Editor
 
 In order to access the PATTRN Editor, open the PATTRN\_Admin spreadsheet in your Google Drive.
 
@@ -822,13 +826,13 @@ You can bookmark this URL for quicker access.
 
 Once the URL is open in your browser, a login page will be displayed. Enter your Editor **username** and **password**. You can find – or create – your username and password in the PATTRN\_Admin\_Password spreadsheet (see 2.2.6 Creation of usernames and passwords for Editors)
 
-_Note: The recommended browser to use the PATTRN Editor is_ [Chrome](https://www.google.com/chrome/)_._
+_Note: The recommended browser to use the PATTRN Editor is [Chrome](https://www.google.com/chrome/)._
 
+</br>
 
+###5.2 Editing Tab
 
-5.2 Editing Tab
-
-**5.2.1 Main Table view**
+####5.2.1 Main Table view
 
 Once you are logged in as an Editor, the first tab that will be displayed by default is the Editing Tab.
 
@@ -846,7 +850,9 @@ The top part of the page will display:
 
 - a "Refresh" button, which calls for a refresh of the entire table.
 
-**5.2.2 Create / Delete columns**
+</br>
+
+####5.2.2 Create / Delete columns
 
 In order to customise your data structure, you can **create new columns** in your dataset. Specifically, you can create:
 
@@ -860,7 +866,9 @@ To create a new column of data, click on the "Create" button in the top right co
 
 To delete a column of data, click on the "Delete" button in the top right corner of the Main Table view. Select the name of the column you want to delete, click Delete. Note: there is no going back once it is deleted, hence the two warning messages that require your OK.
 
-**5.2.3 Display of Events: by clusters, or all events**
+</br>
+
+####5.2.3 Display of Events: by clusters, or all events
 
 In the top left corner of the Main Table View, you will find a series of blue buttons, such as "1-500" or "All".
 
@@ -868,9 +876,9 @@ In order to improve the responsiveness and performances of the PATTRN Editor, by
 
 Click on "All" to load all your events at once in the Main Table View. Note that if you have a dataset of 2000+ events, and with each event containing large volumes of data, the PATTRN Editor may be slow to respond and could even crash, as it will have reached the limit of its processing capacity.
 
+</br>
 
-
-**5.2.4 Add or Edit an event**
+####5.2.4 Add or Edit an event
 
 To add an event to the dataset, click on the " **Add New Event**" button at the bottom left corner of the Main Table View.
 
@@ -882,13 +890,13 @@ Using the Event Editing interface will enable you to enter data about the events
 
 The Event Editing interface is designed to be self-intuitive. If you have questions about its functioning and how to enter data, please see 10. Getting Help
 
+</br>
 
+###5.3 Review of Contributions Tab
 
-5.3 Review of Contributions Tab
+####5.3.1 New contributions
 
-**5.3.1 New contributions**
-
-_NOTE: This function is still at_ **testing** _phase of development. Please do send us feedback about any issues you run into, or improvements you would suggest._
+_NOTE: This function is still at **testing** phase of development. Please do send us feedback about any issues you run into, or improvements you would suggest._
 
 When Observers of your PATTRN Platform **contribute new data** through the dedicated link in the PATTRN Platform (see 4.5 Submitting new Data), Editors can review the contributions through the Review of Contribution Tab in the PATTRN Editor.
 
@@ -896,15 +904,15 @@ As Editors log in, if there are new contributions, the PATTRN Editor will launch
 
 Select the contribution you would like to review and click "Review"
 
+</br>
 
-
-**5.3.2 Review of new event contribution**
+####5.3.2 Review of new event contribution
 
 If the contribution was submitted by an Observer as a new event, clicking on "review" will directly open the Editing Interface, with the data submitted by the Observer pre-loaded in the interface. Editors should carefully review this data. They can edit any field so as to correct any data after research and verification about the contributed event. Once reviewed and verified, the Editor can click on the "Save" button at the top of the page to include the contributed event in the main dataset of the PATTRN Platform.
 
+</br>
 
-
-**5.3.3 Review of edited event contribution**
+####5.3.3 Review of edited event contribution
 
 If the contribution was submitted by an Observer as an edited event, clicking on "Review" will open an interface that displays the edits suggested by the Observer to the data originally attached to an event in the dataset.
 
@@ -914,7 +922,9 @@ In order to help with the process of verification of the Edits proposed, Editors
 
 Once the Editors have selected which Edits they accept and which one they reject, they can load the full data of the now edited event by clicking on the "Load" button in the top left. This step is for a final review of all the data attached to this specific event, merging contribute data and original data, before saving this edited event into the main dataset by clicking "Save". Editors can also make new edits at this step.
 
-**5.3.4 PATTRN\_Audit spreadsheet**
+</br>
+
+####5.3.4 PATTRN\_Audit spreadsheet
 
 All contributions are logged in the **PATTRN\_Audit** spreadsheet, located in your Google Drive.
 
@@ -924,27 +934,27 @@ Contributions can be accessed in their original form in the PATTRN\_Audit spread
 
 The PATTRN\_Audit spreadsheet is also where the **contact details** of contributing Observers can be accessed (if the contribution was not anonymous).
 
+</br>
 
+###5.4 Collaboration among multiple Editors
 
-5.4 Collaboration among multiple Editors
-
-**5.4.1 Simultaneous work among multiple Editors**
+####5.4.1 Simultaneous work among multiple Editors
 
 The PATTRN Editor can be accessed by multiple Editors at the same time, so as to enable collaborative work on the dame dataset by multiple Editors.
 
 Note: The PATTRN Editor has been tested in conditions of up to five Editors working together simultaneously, without any noticeable issue or loss in performance.
 
+</br>
 
-
-**5.4.2 Comments**
+####5.4.2 Comments
 
 The COMMENTS field at the bottom of the Event Editing Interface is useful to leave notes that won't display on the PATTRN Platform.
 
-_Warning:_ **Do not input any sensitive or personal data in the COMMENTS field!** _As it is contained in the PATTRN\_Master spreadsheet, which is published online, Editors must assume that all data entered in COMMENTS is virtually public – although not displayed in the PATTRN Platform._
+_Warning: **Do not input any sensitive or personal data in the COMMENTS field!** As it is contained in the PATTRN\_Master spreadsheet, which is published online, Editors must assume that all data entered in COMMENTS is virtually public – although not displayed in the PATTRN Platform._
 
+</br>
 
-
-**5.4.3 Drafts**
+####5.4.3 Drafts
 
 The Event Editing interfaces also enables to save an Event as a Draft, for situations in which all data about an event has not yet been entered. An Editor can then recover the draft, even when the draft was created by another Editor, and resume the data entry process on that draft.
 
@@ -952,9 +962,17 @@ To do so, from the main table view, click on "Add a new Event", then click "Reco
 
 Once you've finished editing the Event, click "Save" to add the event to the main dataset.
 
-**6. Privacy, security, anonymity**
+</br>
+</br>
+</br>
 
-6.1 Use PATTRN only with public data
+
+
+#6. Privacy, security, anonymity
+
+</br>
+
+###6.1 Use PATTRN only with public data
 
 PATTRN is a public Platform. In the current version of PATTRN, all data featured in a PATTRN Platform or in a PATTRN\_Master spreadsheet is by definition publicly available online to anyone.
 
@@ -962,19 +980,21 @@ For this reason, **only data safe to be published online must be included in a P
 
 This applies to:
 
-- data entered by Editors directly into the PATTRN\_Master spreadsheet
-- data entered by Editors into the PATTRN\_Master spreadsheet via the PATTRN Editor
-- data submitted by Observers of a PATTRN Platform to the Editors of the Platform, via the data contribution tool integrated in the PATTRN Platform.
+- data entered by Editors directly into the PATTRN\_Master spreadsheet
+- data entered by Editors into the PATTRN\_Master spreadsheet via the PATTRN Editor
+- data submitted by Observers of a PATTRN Platform to the Editors of the Platform, via the data contribution tool integrated in the PATTRN Platform.
 
 By "data safe to be published online" we mean:
 
-- data that will not put the security of anyone at risk (Editor, Observer, or Third Party referred to directly or indirectly in the content of the data)
-- data that does not disclose the identity of anyone (Editor, Observer, or Third Party referred to directly or indirectly in the content of the data) without the explicit consent of the individual(s) concerned.
-- data that does not violate any of the Data Protection laws and policies in place in any of the countries where the data is processed (collected, submitted, reviewed, stored, or published)
+- data that will not put the security of anyone at risk (Editor, Observer, or Third Party referred to directly or indirectly in the content of the data)
+- data that does not disclose the identity of anyone (Editor, Observer, or Third Party referred to directly or indirectly in the content of the data) without the explicit consent of the individual(s) concerned.
+- data that does not violate any of the Data Protection laws and policies in place in any of the countries where the data is processed (collected, submitted, reviewed, stored, or published)
 
 **The responsibility of the correct and safe use of PATTRN is with its users.**
 
-6.2 Anonymous contributions
+</br>
+
+###6.2 Anonymous contributions
 
 The PATTRN Platform enables users to contribute data to a given Platform, by means of "anonymous contributions" (see 4.6 Submitting New Data and Edits)
 
@@ -986,15 +1006,15 @@ Nonetheless, it is important to note that:
 
 . Regardless of the specific technology used for the transfer of data through PATTRN: government agencies, Internet Service Providers, or the organisation administrating the network from which an anonymous data submission is performed, are likely to be able to access details about the identity, IP, and location of the individual(s) submitting data.
 
-For this reason: **anonymous contributions of data should not contain any information**** that **, should the identity of the individual submitting this data be disclosed,** could put the security of this individual at risk.**
+For this reason: **anonymous contributions of data should not contain any information that, should the identity of the individual submitting this data be disclosed, could put the security of this individual at risk.**
 
 This point is clearly and explicitly included in the **information and consent form** that any individual is required to approve in order to submit data anonymously via PATTRN.
 
 In addition, **it is the responsibility of Editors** reviewing contributions of data to make sure that all data received via anonymous contributions **is safe to be published** before actually publishing it on a PATTRN Platform.
 
+</br>
 
-
-6.3 Charter of Use
+###6.3 Charter of Use
 
 All users of PATTRN, or of any derivative software containing all or parts of PATTRN's code, must agree to a Charter of Use of the tool.
 
@@ -1002,27 +1022,31 @@ This is clearly indicated in the "License" file of PATTRN, which contains the ac
 
 The text of PATTRN's Charter of Use is reproduced here:
 
-CHARTER OF USE
+        CHARTER OF USE
 
-The code of PATTRN is hereby released under a permissive open-source license. In line with the open-source principle, the PATTRN Project supports and encourages efforts by individuals and communities to extend, adapt, transform, repurpose, or "hack" the code of PATTRN hereby released for the development of new projects.
+        The code of PATTRN is hereby released under a permissive open-source license. In line with the open-source principle, the      PATTRN Project supports and encourages efforts by individuals and communities to extend, adapt, transform, repurpose, or "hack" the code of PATTRN hereby released for the development of new projects.
 
-Nonetheless, all users of the code of PATTRN hereby released are required to comply with the "do no harm" principle. In particular, the use of all or part of the code of PATTRN is forbidden for:
+        Nonetheless, all users of the code of PATTRN hereby released are required to comply with the "do no harm" principle. In particular, the use of all or part of the code of PATTRN is forbidden for:
 
-- Activities that may compromise the security of vulnerable individuals or communities, anywhere in the world;
+        - Activities that may compromise the security of vulnerable individuals or communities, anywhere in the world;
 
-- Activities that aim at tracking, surveying, or targeting specific individuals or communities for the purpose of harming them directly or indirectly;
+        - Activities that aim at tracking, surveying, or targeting specific individuals or communities for the purpose of harming them directly or indirectly;
 
-- Activities that may disclose sensitive or personal information about individuals or communities without having obtained their explicit and informed consent in advance.
+        - Activities that may disclose sensitive or personal information about individuals or communities without having obtained their explicit and informed consent in advance.
 
-By running or using any software application that includes all or part of the code of PATTRN hereby released, you commit to the respect of the present Charter of Use.
+        By running or using any software application that includes all or part of the code of PATTRN hereby released, you commit to the respect of the present Charter of Use.
 
+</br>
+</br>
+</br>
 
+#7. Contributing to the development of PATTRN
 
-**7. Contributing to the development of PATTRN**
+</br>
 
 _Note: This section of the documentation is a work in progress. It will get more detailed as we gain experience with community-led development in the framework of PATTRN._
 
-7.1 Introduction
+###7.1 Introduction
 
 As an open source project, PATTRN welcomes and encourages contributions to its development by the community of its users.
 
@@ -1030,41 +1054,43 @@ The code of PATTRN is hosted on GitHub, which also provides the framework for co
 
 There are many ways people can contribute to the development of PATTRN. Below is a list of the most common ones.
 
-7.2 Writing code
+</br>
+
+###7.2 Writing code
 
 Developers wishing to contribute code to the development of PATTRN can do so by following the standard GitHub procedures of open source development, such as [forking the PATTRN repository](https://help.github.com/articles/fork-a-repo/), [creating a pull request](https://help.github.com/articles/using-pull-requests/), etc.
 
 For more information, visit [Github's help page](https://help.github.com/).
 
+</br>
 
-
-7.3 Raising issues
+###7.3 Raising issues
 
 Raising issues is an essential part of the development.
 
 Anyone can raise an issue. Whether you are a developer or a simple user of PATTRN, whether it is about a bug of the application or related to the User Interface, raising an issue is always welcome and can really help improving PATTRN.
 
-The best way to raise an issue is to do so directly on GitHub. To do so, please refer to the simple guide here:
-
-https://help.github.com/articles/creating-an-issue/
+The best way to raise an issue is to do so directly on GitHub. To do so, please refer to the [simple guide here](https://help.github.com/articles/creating-an-issue/)
 
 Alternatively, feel free to drop an email to [support@pattrn.co](mailto:support@pattrn.co) with a description of the issue you wish to raise.
 
-7.4 Writing/Editing the Documentation
+</br>
+
+###7.4 Writing/Editing the Documentation
 
 Help us improve the present documentation of PATTRN by editing it here.
 
+</br>
 
-
-7.5 Sharing ideas and spreading the word
+###7.5 Sharing ideas and spreading the word
 
 Ideas and suggestions to improve PATTRN, technical or not in nature, are very welcome. Please share them by sending an email to [support@pattrn.co](mailto:support@pattrn.co).
 
 Help us grow an active community of users/developers by spreading the word about PATTRN in your social and professional networks.
 
+</br>
 
-
-7.6 Financial support
+###7.6 Financial support
 
 Fully non-profit, the PATTRN Project depends on funding and financial support in order to maintain and develop PATTRN.
 
@@ -1072,9 +1098,9 @@ We welcome donations and funding from organisations interested in using PATTRN f
 
 Please get in touch by sending an email to [support@pattrn.co](mailto:support@pattrn.co).
 
+</br>
 
-
-7.7 Governance structure
+###7.7 Governance structure
 
 PATTRN is maintained and governed by the PATTRN Project.
 
@@ -1086,68 +1112,69 @@ Decisions regarding the development trajectory and roadmap of the PATTRN project
 
 As PATTRN grows and starts involving an active community of users and developers, mechanisms for this community to take an active part in the decision-making process will be put in place. For comments or suggestions, please send us an email at [support@pattrn.co](mailto:support@pattrn.co).
 
+</br>
+</br>
+</br>
 
+#8. Troubleshooting
 
-**8. Tutorials**
+</br>
 
-8.1 How to start a new PATTRN Platform from an existing dataset of events.
-
-_Note: Tutorial coming soon._
-
-
-
-**9. Troubleshooting**
-
-9.1 The PATTRN Platform won't load any data
+###8.1 The PATTRN Platform won't load any data
 
 If, after setting it up by following the step-by-step guide (section 2 of the doc) and having entered a dataset into the PATTRN\_Master spreadsheet, your PATTRN Platform doesn't load any data, please check that:
 
--  **Every row in the PATTRN\_Master spreadsheet that contains data in any of its cells, also contains valid data in the cells corresponding to the "latitude", "longitude", and "date\_time" columns**
+**- Every row in the PATTRN\_Master spreadsheet that contains data in any of its cells, also contains valid data in the cells corresponding to the "latitude", "longitude", and "date\_time" columns**
 
 In particular, check that all rows supposed to be empty are indeed completely empty of all data.
 
 Try reloading the PATTRN Platform URL. If it still doesn't load data, please check that:
 
--  **All the data in the "latitude", "longitude", and "date\_time" columns is formatted correctly**
+**- All the data in the "latitude", "longitude", and "date\_time" columns is formatted correctly**
 
 To help with the process, the PATTRN\_Master spreadsheet integrates data validation formulas for each column. Any cell wrongly formatted in the "latitude", "longitude", or "date\_time" columns will be marked with an orange triangle in the top right corner or the cell. Make sure you correct the formatting of the data.
 
 Try reloading the PATTRN Platform URL. If it still doesn't load data, please check that:
 
--  **The public URL of the PATTRN\_Master spreadsheet matches the one inputted in the config.json file of the PATTRN Platform**
+**- The public URL of the PATTRN\_Master spreadsheet matches the one inputted in the config.json file of the PATTRN Platform**
 
 You can check the URL of the PATTRN\_Master spreadsheet by opening it from your Google Drive and clicking on "File" > "Publish to the web...". The URL displayed needs to match the one inputted in the "config.json" file, in the "public\_spreadsheet" field.
 
 Save the file, re-upload it to your server, and try reloading the PATTRN Platform URL. If it still doesn't load data, please check that:
 
--  **There are no formatting errors in the config.json file**** of the PATTRN Platform**
+**- There are no formatting errors in the config.json file of the PATTRN Platform**
 
 In particular, check that all the quotation marks in the config.json file are straight quotation marks. Basic text editors may automatically replace straight quotation marks with curly ones.
 
-Save the file, re-upload it to your server, and try reloading the PATTRN Platform URL. If it still doesn't load data, please see the following section 10. Getting Help.
+Save the file, re-upload it to your server, and try reloading the PATTRN Platform URL. If it still doesn't load data, please see the following section 9. Getting Help.
 
+</br>
+</br>
+</br>
 
+#9. Getting Help
 
-**10. Getting Help**
+</br>
 
-10.1 Mailing List/Forum
+###9.1 Mailing List/Forum
 
-PATTRN has a Google Group to facilitate discussions and support among its community of users, accessible here:
-
-        https://groups.google.com/forum/#!forum/pattrn
+PATTRN has a Google Group to facilitate discussions and support among its community of users, [accessible here](https://groups.google.com/forum/#!forum/pattrn)
 
 The group is public, and anyone can join. Just open the URL above while logged in to your Google Account, and click on "Join the Group".
 
-Once you've joined, you'll be able to create new topics and post responses from the PATTRN Google Group online page, or directly from your Gmail address, by sending an email to:
+Once you've joined, you'll be able to create new topics and post responses from the PATTRN Google Group online page, or directly from your Gmail address, by sending an email to [pattrn@googlegroups.com](mailto:pattrn@googlegroups.com)
 
-        pattrn@googlegroups.com
+</br>       
 
-10.2 Drop us an email or a Tweet
+###10.2 Drop us an email or a Tweet
 
 While sharing your question or issue on the PATTRN Google Group is the recommended way to get help, you can also contact us with ideas, suggestions, or questions by:
 
-sending us an email at support@pattrn.co
+sending us an email at [support@pattrn.co](mailto:support@pattrn.co)
 
-tweeting us @pattrn\_
+tweeting us [@pattrn\_](http://twitter.com/pattrn_)
 
 We'll do our best to get back to you promptly.
+
+***
+

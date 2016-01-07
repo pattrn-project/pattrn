@@ -1,6 +1,5 @@
 # PATTRN
-</br>
-###[pattrn.co](http://pattrn.co)
+
 </br>
 ### Data-driven, participatory fact mapping for:
 ### * conflict monitoring
@@ -9,7 +8,7 @@
 ### * citizen science
 ### * research and analysis
 </br>
-### Free & open source.
+### Free & open source. [pattrn.co](http://pattrn.co)
 </br>
 * * *    
 </br>

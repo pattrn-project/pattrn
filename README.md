@@ -1,127 +1,120 @@
 # PATTRN
-
-#Data-driven, participatory fact mapping for conflict monitoring, citizen journalism, and human rights research. ###
-# Free & open source.
-
-* * * 
-
+</br>
+### Data-driven, participatory fact mapping for:
+### * conflict monitoring
+### * investigative journalism
+### * human rights
+### * citizen science
+### * research and analysis
+</br>
+### Free & open source.
+</br>
+* * *    
+</br>
 ## FULL DOCUMENTATION
-
 Note: This documentation is also available for download in PDF format <a href="http://pattrn.co">here</a>.
-
-### Table of Content 
-
-
-
+</br>
+### Table of Content    
+</br>
 ### 1. About PATTRN
 
-        1.1 What is PATTRN?
+1.1 What is PATTRN?
 
-        1.2 How does PATTRN work?
+1.2 How does PATTRN work?
 
-        1.3 Why PATTRN?
+1.3 Why PATTRN?
 
-        1.4 Credits & Authors
-
-
+1.4 Credits & Authors
+</br>
 ### 2. How to set up a PATTRN Platform 
 
-        2.1 Pre-requisites
+2.1 Pre-requisites
 
-        2.2 Setting up the PATTRN Editor
+2.2 Setting up the PATTRN Editor
 
-        2.3 Setting up the PATTRN Platform
-
-
+2.3 Setting up the PATTRN Platform
+</br>
 ### 3. How to format your data for use with PATTRN 
 
-        3.1 Principles of PATTRN data structure
+3.1 Principles of PATTRN data structure
 
-        3.2 Two ways of editing data
+3.2 Two ways of editing data
 
-        3.3 Customising your data structure
+3.3 Customising your data structure
 
-        3.4 Photos, Videos, Web Links
+3.4 Photos, Videos, Web Links
 
-        3.5 Automatically populated fields
+3.5 Automatically populated fields
 
-        3.6 Required fields
+3.6 Required fields
 
-        3.7 Data Formatting Reference
+3.7 Data Formatting Reference
 
-        3.8 Data limits
-
-
+3.8 Data limits
+</br>
 ### 4. How to use the PATTRN Platform 
 
-        4.1 Introduction
+4.1 Introduction
 
-        4.2 Navigation Area
+4.2 Navigation Area
 
-        4.3 Event Details Area
+4.3 Event Details Area
 
-        4.4 Chart & Filter Area
+4.4 Chart & Filter Area
 
-        4.5 Sharing a Platform
+4.5 Sharing a Platform
 
-        4.6 Submitting New Data and Edits
-
-
+4.6 Submitting New Data and Edits
+</br>
 ### 5. How to use the PATTRN Editor 
 
-        5.1 Editing Tab
+5.1 Editing Tab
 
-        5.2 Review of Contributions Tab
+5.2 Review of Contributions Tab
 
-        5.3 Collaboration among multiple Editors
-
-
+5.3 Collaboration among multiple Editors
+</br>
 ### 6. Privacy, security, anonymity 
 
-        6.1 Note about privacy, security, and anonymity
+6.1 Note about privacy, security, and anonymity
 
-        6.2 Anonymous contributions
-
-
+6.2 Anonymous contributions
+</br>
 ### 7. Contributing to the development of PATTRN 
 
-        7.1 Introduction
+7.1 Introduction
 
-        7.2 Writing code
+7.2 Writing code
 
-        7.3 Raising issues
+7.3 Raising issues
 
-        7.4 Writing/Editing the Documentation
+7.4 Writing/Editing the Documentation
 
-        7.5 Sharing ideas and spreading the word
+7.5 Sharing ideas and spreading the word
 
-        7.6 Financial support
+7.6 Financial support
 
-        7.7 Governance
-
-
+7.7 Governance
+</br>
 ### 8. Troubleshooting  
 
-        8.1 The PATTRN Platform won't load any data
-
-
+8.1 The PATTRN Platform won't load any data
+</br>
 ### 9. Getting Help
 
-        9.1 Mailing List/Forum
+9.1 Mailing List/Forum
 
-        9.2 Drop us an email or a Tweet
+9.2 Drop us an email or a Tweet
 
+</br>
+* * * 
+</br>
+</br>
+</br>
 
+#1. About PATTRN
 
-_______
-
-
-
-
-
-**1. About PATTRN**
-
-1.1 What is PATTRN?
+###* 1.1 What is PATTRN?
 
 **PATTRN** is a tool to map complex events – such as conflicts, protests, or crises – as they unfold.
 

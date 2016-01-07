@@ -130,6 +130,8 @@ Designed to be used in the fields of **conflict monitoring** , **human rights** 
 
 ###1.2 How does PATTRN work?
 
+</br>
+
 ####1.2.1 Components
 
 The current prototype version of PATTRN comprises of:
@@ -139,6 +141,8 @@ The current prototype version of PATTRN comprises of:
 2) ...a **dataset**** of events** hosted on Google Sheets and in sync with the PATTRN platform. The dataset can be edited either directly in Google Sheets, or through...
 
 3) ... a data editing WebApp (the **PATTRN Editor** ), built on Google Apps Script, which facilitates the process of entering and editing data.
+
+</br>
 
 ####1.2.2 Editors/Observers
 
@@ -208,9 +212,11 @@ Below is a **step-by-step guide** to set up a PATTRN Platform. All in all, the p
 
 ###2.2 Setting up the PATTRN Editor
 
+</br>
+
 ####2.2.1 Copying the PATTRN Editor files to your Google Drive
 
-Log in to the Google account you will use with PATTRN. Make sure you have activated [Google Drive](file:///tmp/d20160106-3-1xkhe1c/google.com/drive) for this account.
+Log in to the Google account you will use with PATTRN. Make sure you have activated [Google Drive](http://google.com/drive) for this account.
 
 Access the **PATTRN Editor files** by clicking on [this link](https://drive.google.com/folderview?id=0BwR9PFzDne86dU1qRWpxY3pacUU&usp=sharing).
 
@@ -220,13 +226,11 @@ Do the same operation for the four other spreadsheet files in the PATTRN folder 
 
 Finally, in the PATTRN folder, click on the PATTRN\_Editor\_Script file, then click on the "Pop-Out" icon in the top right corner of the viewer to open the file in Google Apps Script. Similarly, go to "File" > "Make a copy" (Note that it may take a few seconds to load the copy of the script). Rename the copied script as "PATTRN\_Editor" (remove "Copy of").
 
-Now, all the PATTRN Editor files have been copied into in the root folder of
+Now, all the PATTRN Editor files have been copied into in the root folder of your Google Drive.
 
-your Google Drive.
+</br>
 
-
-
-**2.2.2 Inputting the IDKeys**
+####2.2.2 Inputting the IDKeys
 
 Go to your Google Drive
 
@@ -234,7 +238,7 @@ Open the PATTRN\_Master spreadsheet.
 
 Copy the IDKey of the Spreadsheet. The IDKey is to be found in the URL of the spreadsheet displayed in your browser. For example:
 
-https://docs.google.com/spreadsheets/d/ **1tn6K498HPon80F57QDBGHUz6K3tA-AN2zWT\_g0ruaqY** /edit#gid=1782249319
+        https://docs.google.com/spreadsheets/d/**1tn6K498HPon80F57QDBGHUz6K3tA-AN2zWT\_g0ruaqY**/edit#gid=1782249319
 
 In the example above the IDKey is the part in bold, in between two "/" in the URL.
 
@@ -248,7 +252,7 @@ Next, go to your Google Drive, create a new folder, and name it  "PATTRN\_Photos
 
 In the address bar of your browser, copy the IDKey of this folder. The IDKey is the last part of the URL displayed. For example:
 
-https://drive.google.com/drive/folders/ **0BwR9PFzDne86TTIwZFFSUmpocW8**
+        https://drive.google.com/drive/folders/**0BwR9PFzDne86TTIwZFFSUmpocW8**
 
 In this example above, the IDKey of the folder is the part in bold.
 
@@ -256,15 +260,15 @@ Paste the IDKey of the PATTRN\_Photos folder in the corresponding cell, in the "
 
 Finally, get the IDkey of the PATTRN\_Admin spreadsheet, copy it, and keep it in your clipboard.
 
+</br>
 
-
-**2.2.3 Synchronising the script with the spreadsheets**
+####2.2.3 Synchronising the script with the spreadsheets
 
 In your Google Drive, double-click the PATTRN\_Editor\_Script. Google Drive will suggest to open it with a third-party app. Select Google Apps Script. The script will open on Google Apps Script.
 
 In code.gs (tab active by default in the left column), on line 9, Replace "InputKey" by pasting the IDKey of PATTRN\_Admin. Remember to keep the single quotation marks around your IDKey. You should obtain a line looking like:
 
-userProperties.setProperty('Admin',' **1v673QgP3li69umab5x0\_e7krurJB0pYZLeyrreYiUnw**');
+        userProperties.setProperty('Admin','**1v673QgP3li69umab5x0\_e7krurJB0pYZLeyrreYiUnw**');
 
 With the part in bold corresponding to the actual IDKey of your PATTRN\_Admin spreadsheet.
 
@@ -280,9 +284,9 @@ The application will run the function "Load\_keys\_from\_admin"
 
 Once you have run both functions run, go back to line 9 in Code.gs, and **delete the IDKey** of your PATTRN\_Admin spreadsheet by reverting back to "InputKey". At the end of the process, line 9 should look again like:
 
-userProperties.setProperty('Admin', 'InputKey **'** );
+        userProperties.setProperty('Admin', 'InputKey');
 
-**Warning: This is an important security measure** _. It is to prevent anyone from getting the ID key of your PATTRN\_Admin spreadsheet while the script is deployed on the web – from which one could then access the files, usernames, and passwords you are using with PATTRN. Remember to delete your IDKey and replace it by "InputKey"!_
+_**Warning: This is an important security measure**. It is to prevent anyone from getting the ID key of your PATTRN\_Admin spreadsheet while the script is deployed on the web – from which one could then access the files, usernames, and passwords you are using with PATTRN. Remember to delete your IDKey and replace it by "InputKey"!_
 
 Go to "File" > "Save".
 

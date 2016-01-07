@@ -1,24 +1,30 @@
-#PATTRN - Complete Documentation#
+# PATTRN
 
-December 2015
+#Data-driven, participatory fact mapping for conflict monitoring, citizen journalism, and human rights research. ###
+# Free & open source.
+
+* * * 
+
+## FULL DOCUMENTATION
+
+Note: This documentation is also available for download in PDF format <a href="http://pattrn.co">here</a>.
+
+### Table of Content 
 
 
 
-Table of Content
+### 1. About PATTRN
+
+        1.1 What is PATTRN?
+
+        1.2 How does PATTRN work?
+
+        1.3 Why PATTRN?
+
+        1.4 Credits & Authors
 
 
-
-**1. About PATTRN**
-
-1.1 What is PATTRN?
-
-1.2 How does PATTRN work?
-
-1.3 Why PATTRN?
-
-1.4 Credits & Authors
-
-**2. How to set up a PATTRN Platform**
+### 2. How to set up a PATTRN Platform 
 
         2.1 Pre-requisites
 
@@ -26,7 +32,8 @@ Table of Content
 
         2.3 Setting up the PATTRN Platform
 
-**3. How to format your data for use with PATTRN**
+
+### 3. How to format your data for use with PATTRN 
 
         3.1 Principles of PATTRN data structure
 
@@ -44,7 +51,8 @@ Table of Content
 
         3.8 Data limits
 
-**4. How to use the PATTRN Platform**
+
+### 4. How to use the PATTRN Platform 
 
         4.1 Introduction
 
@@ -58,7 +66,8 @@ Table of Content
 
         4.6 Submitting New Data and Edits
 
-**5. How to use the PATTRN Editor**
+
+### 5. How to use the PATTRN Editor 
 
         5.1 Editing Tab
 
@@ -66,13 +75,15 @@ Table of Content
 
         5.3 Collaboration among multiple Editors
 
-**6. Privacy, security, anonymity**
+
+### 6. Privacy, security, anonymity 
 
         6.1 Note about privacy, security, and anonymity
 
         6.2 Anonymous contributions
 
-**7. Contributing to the development of PATTRN**
+
+### 7. Contributing to the development of PATTRN 
 
         7.1 Introduction
 
@@ -88,23 +99,21 @@ Table of Content
 
         7.7 Governance
 
-**8. Tutorial**
 
-        8.1 How to start a new PATTRN Platform from an existing dataset of events.
+### 8. Troubleshooting  
 
-**9. Troubleshooting**
+        8.1 The PATTRN Platform won't load any data
 
-        9.1 The PATTRN Platform won't load any data
 
-**10. Getting Help**
+### 9. Getting Help
 
-        10.1 Mailing List/Forum
+        9.1 Mailing List/Forum
 
-        10.2 Drop us an email or a Tweet
+        9.2 Drop us an email or a Tweet
 
 
 
-
+_______
 
 
 

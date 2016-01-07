@@ -113,8 +113,8 @@ Note: This documentation is also available for download in PDF format <a href="h
 </br>
 
 #1. About PATTRN
-
-###* 1.1 What is PATTRN?
+</br>
+###1.1 What is PATTRN?
 
 **PATTRN** is a tool to map complex events – such as conflicts, protests, or crises – as they unfold.
 
@@ -126,11 +126,11 @@ The database can then be explored through an online **visualisation platform** :
 
 Designed to be used in the fields of **conflict monitoring** , **human rights** , **investigative journalism** , **citizen science** , and **research** at large, PATTRN responds to new ways of reporting from the front in the digital age.
 
+</br>
 
+###1.2 How does PATTRN work?
 
-1.2 How does PATTRN work?
-
-**1.2.1 Components**
+####1.2.1 Components
 
 The current prototype version of PATTRN comprises of:
 
@@ -140,9 +140,7 @@ The current prototype version of PATTRN comprises of:
 
 3) ... a data editing WebApp (the **PATTRN Editor** ), built on Google Apps Script, which facilitates the process of entering and editing data.
 
-
-
-**1.2.2 Editors/Observers**
+####1.2.2 Editors/Observers
 
 Individuals or organisations that start a PATTRN Platform are called **Editors**.
 
@@ -156,9 +154,9 @@ Editors can:
 
 General online users of the PATTRN Platform are called **Observers**. In addition to exploring the data available on the PATTRN Platform, Observers can participate to the research by contributing new data. A dedicated interface, accessible from the PATTRN Platform, enables Observers to either **add a new event** or **edit an existing event** (see 4.6 Submitting New Data and Edits).
 
+</br>
 
-
-1.3 Why PATTRN?
+###1.3 Why PATTRN?
 
 We are witnessing a revolution in the way people access information about events.
 
@@ -168,7 +166,9 @@ The PATTRN project set out to respond to the challenges and opportunities of thi
 
 PATTRN is primarily developed as a tool to support research and information around armed conflicts, human rights violations, or social and environmental crises. In addition to working as a crisis-mapping tool, PATTRN integrates powerful analytics that allow for temporal and spatial trends, or **patterns** , to be revealed across large datasets.
 
-1.4 Credits & Authors
+</br>
+
+###1.4 Credits & Authors
 
 PATTRN is an open source project hosted at  [Goldsmiths, University of London](http://www.gold.ac.uk/).
 
@@ -179,30 +179,36 @@ The PATTRN pwas initiated thanks to a Proof-of-Concept Grant from the [European 
 Project Architect: [FSBRG](https://twitter.com/fsbrg) (Francesco Sebregondi)
 
 Major Contributing Authors
- [TEKJA Data](http://tekja.com/) (PATTRN Platform)
+[TEKJA Data](http://tekja.com/) (PATTRN Platform)
 
 [Digital Consolidation](http://www.digital-consolidation.co.uk/)  (PATTRN Editor)
 
 _Note: All new contributors to the PATTRN project will be duly credited._
 
+</br>
+</br>
+</br>
 
+#2. How to set up a PATTRN Platform
 
-**2. How to set up a PATTRN Platform**
+</br>
 
-2.1 Pre-requisites
+###2.1 Pre-requisites
 
 All you will need to set up your own PATTRN Platform is:
 
-- one Google Account with Google Drive
-- basic knowledge of Google Sheets
-- some web hosting space
-- basic knowledge of how to put a website online
+- one Google Account with Google Drive
+- basic knowledge of Google Sheets
+- some web hosting space
+- basic knowledge of how to put a website online
 
 Below is a **step-by-step guide** to set up a PATTRN Platform. All in all, the process should not take longer than 20 min.
 
-2.2 Setting up the PATTRN Editor
+</br>
 
-**2.2.1 Copying the PATTRN Editor files to your Google Drive**
+###2.2 Setting up the PATTRN Editor
+
+####2.2.1 Copying the PATTRN Editor files to your Google Drive
 
 Log in to the Google account you will use with PATTRN. Make sure you have activated [Google Drive](file:///tmp/d20160106-3-1xkhe1c/google.com/drive) for this account.
 

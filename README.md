@@ -238,7 +238,7 @@ Open the PATTRN\_Master spreadsheet.
 
 Copy the IDKey of the Spreadsheet. The IDKey is to be found in the URL of the spreadsheet displayed in your browser. For example:
 
-        https://docs.google.com/spreadsheets/d/**1tn6K498HPon80F57QDBGHUz6K3tA-AN2zWT\_g0ruaqY**/edit#gid=1782249319
+https://docs.google.com/spreadsheets/d/**1tn6K498HPon80F57QDBGHUz6K3tA-AN2zWT\_g0ruaqY**/edit#gid=1782249319
 
 In the example above the IDKey is the part in bold, in between two "/" in the URL.
 
@@ -252,7 +252,7 @@ Next, go to your Google Drive, create a new folder, and name it  "PATTRN\_Photos
 
 In the address bar of your browser, copy the IDKey of this folder. The IDKey is the last part of the URL displayed. For example:
 
-        https://drive.google.com/drive/folders/**0BwR9PFzDne86TTIwZFFSUmpocW8**
+https://drive.google.com/drive/folders/**0BwR9PFzDne86TTIwZFFSUmpocW8**
 
 In this example above, the IDKey of the folder is the part in bold.
 
@@ -268,7 +268,7 @@ In your Google Drive, double-click the PATTRN\_Editor\_Script. Google Drive will
 
 In code.gs (tab active by default in the left column), on line 9, Replace "InputKey" by pasting the IDKey of PATTRN\_Admin. Remember to keep the single quotation marks around your IDKey. You should obtain a line looking like:
 
-        userProperties.setProperty('Admin','**1v673QgP3li69umab5x0\_e7krurJB0pYZLeyrreYiUnw**');
+userProperties.setProperty('Admin','**1v673QgP3li69umab5x0\_e7krurJB0pYZLeyrreYiUnw**');
 
 With the part in bold corresponding to the actual IDKey of your PATTRN\_Admin spreadsheet.
 
@@ -284,7 +284,7 @@ The application will run the function "Load\_keys\_from\_admin"
 
 Once you have run both functions run, go back to line 9 in Code.gs, and **delete the IDKey** of your PATTRN\_Admin spreadsheet by reverting back to "InputKey". At the end of the process, line 9 should look again like:
 
-        userProperties.setProperty('Admin', 'InputKey');
+userProperties.setProperty('Admin', 'InputKey');
 
 _**Warning: This is an important security measure**. It is to prevent anyone from getting the ID key of your PATTRN\_Admin spreadsheet while the script is deployed on the web – from which one could then access the files, usernames, and passwords you are using with PATTRN. Remember to delete your IDKey and replace it by "InputKey"!_
 
@@ -292,7 +292,9 @@ Go to "File" > "Save".
 
 You have now synchronised the PATTRN Editor script with all your PATTRN spreadsheets.
 
-**2.2.4 Publishing the script and the Master spreadsheet**
+</br>
+
+####2.2.4 Publishing the script and the Master spreadsheet
 
 In Google Apps Script, with the PATTRN\_Editor\_Script still open, go to "Publish" > "Deploy as web app..."
 
@@ -320,9 +322,9 @@ Click "Publish"
 
 The PATTRN\_Master spreadsheet is now published to the web.
 
+</br>
 
-
-**2.2.5 PATTRN Editor Settings**
+####2.2.5 PATTRN Editor Settings
 
 Open the PATTRN\_Admin spreadsheet in your Google Drive.
 
@@ -342,11 +344,11 @@ You can adjust the settings of the Editor here. Those include:
 
 - The Last\_ID: this corresponds to the number that the PATTRN Editor will use to generate incremental numbers and populate the unique\_event\_IDs field of all new events. By default, it is set as 1001, so that all new events will have a four-digits ID like 1001, 1002, 1003... You can chose another format for your Event ID by inputting a different number in the Last\_ID field.
 
-**Warning:** _Be sure to set up the Last\_ID field_ **once and for all** _when you start your PATTRN Platform. This field will be automatically updated as you use the PATTRN Editor, with the last Event ID created replacing the value in the Last\_ID field. Changing the value in the Last\_ID field will mess the incremental process of creation of unique Event IDs, and could result in the creation of events with the same Event ID, or inconsistent Event IDs._
+_**Warning:** Be sure to set up the Last\_ID field **once and for all** when you start your PATTRN Platform. This field will be automatically updated as you use the PATTRN Editor, with the last Event ID created replacing the value in the Last\_ID field. Changing the value in the Last\_ID field will mess the incremental process of creation of unique Event IDs, and could result in the creation of events with the same Event ID, or inconsistent Event IDs._
 
+</br>
 
-
-**2.2.6 Creation of usernames and passwords for Editors**
+####2.2.6 Creation of usernames and passwords for Editors
 
 Open the PATTRN\_Admin\_Password spreadsheet in your Google Drive.
 
@@ -354,21 +356,22 @@ Here you can create usernames and passwords for the Editors that will have acces
 
 You can use any combination of **letters and numbers** for both usernames and passwords.
 
-**No**** symbols **,** punctuation signs **, or** special characters** are allowed for passwords.
+No **symbols**, **punctuation signs**, or **special characters** are allowed for passwords.
 
 Usernames and passwords are case sensitive.
 
 There is no minimum length of usernames and passwords. Nonetheless, for security reasons, it is recommended that you use strong and unique passwords for all Editors (8+ characters).
 
-_Note: For security reasons, make sure to keep the PATTRN\_Admin\_Password spreadsheet_ **private** _in your Google Drive (not shared nor published on the web)._
+_Note: For security reasons, make sure to keep the PATTRN\_Admin\_Password spreadsheet **private** in your Google Drive (not shared nor published on the web)._
 
 **You have now finished setting up the PATTRN Editor.**
 
+</br>
+</br>
 
+###2.3 Setting up the PATTRN Platform
 
-2.3 Setting up the PATTRN Platform
-
-**2.3.1 Downloading the PATTRN Platform files**
+####2.3.1 Downloading the PATTRN Platform files
 
 Open the [PATTRN GitHub repository](https://github.com/pattrn-project/pattrn) in your browser.
 
@@ -376,9 +379,9 @@ In the top right corner of the page, click on "Download ZIP". The "pattrn-master
 
 Un-archive the "pattrn-master.zip" file, and open the "pattrn-master" folder.
 
+</br>
 
-
-**2.3.2 Configuring the PATTRN Platform**
+####2.3.2 Configuring the PATTRN Platform**
 
 Go to your Google Drive, and open the PATTRN\_Master spreadsheet.
 
@@ -388,7 +391,7 @@ Copy the URL of the published PATTRN\_Master spreadsheet
 
 In the "pattrn-master" folder, go to the "js" folder, open the "config.json" file.
 
-**Warning** _: JSON files need straight quotation marks to work; they wont work with curly ones. Make sure the text editing application does NOT automatically replace straight quotation marks with curly ones. This is the case with Apple's TextEdit as used by defaut. In this case, before editing the config.json file with TextEdit, it is recommended to Go to TextEdit > Preferences, and untick "smart quotes", smart dashes" and "Text replacement". Whatever your OS and your text editing application, double-check that all quotation marks in the JSON file are straight ones!_
+_**Warning:** JSON files need straight quotation marks to work; they wont work with curly ones. Make sure the text editing application does NOT automatically replace straight quotation marks with curly ones. This is the case with Apple's TextEdit as used by defaut. In this case, before editing the config.json file with TextEdit, it is recommended to Go to TextEdit > Preferences, and untick "smart quotes", smart dashes" and "Text replacement". Whatever your OS and your text editing application, double-check that all quotation marks in the JSON file are straight ones!_
 
 In the "config.json" file, paste the URL of the published PATTRN\_Master spreadsheet (still in your cilpboard) in the "public\_spreadsheet" field.
 
@@ -412,47 +415,46 @@ with the part in bold corresponding to the actual URL of your PATTRN\_Editor\_Sc
 
 Save your "config.json" file.
 
-**2.3.4 Configuring the baselayers of the map**
+</br>
+
+####2.3.4 Configuring the baselayers of the map
 
 By editing the "config.json" file, you can also add a series of baselayers to the map in your PATTRN Platform. Below a few examples.
 
-Open Street Map:
+**Open Street Map:**
 
 "name"="Open Street Map"
 
-"URL"="http://{s}. [tile.osm.org/](http://tile.osm.org/){z}/{x}/{y}.png"
+"URL"="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
 
-Stamen:
+**Stamen:**
 
 "name"="Stamen"
 
-"URL"="http://{s}. [tile.stamen.com/toner/](http://tile.stamen.com/toner/){z}/{x}/{y}.png"
+"URL"="http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png"
 
-To add a satellite imagery baselayer, you can use a [MapBox](https://www.mapbox.com/) account (free).
-
-Sign Up for a MapBox account or log in to you existing one.
-
-Go to ...
-
-Copy the URL of the ....
-
-Paste it in the config.json as
+**Satellite** (example of MapBox):
 
 "name"="Satellite"
 
-"URL"="......."
+"URL"="https://{s}.tiles.mapbox.com/v4/**{mapid}**/{z}/{x}/{y}.png?access_token=**<your access token>**"
+
+with **{mapid}** replaced by the Map ID you will have selected from the [MapBox Maps API page](https://www.mapbox.com/developers/api/maps/) (for example: mapbox.satellite) and **<your access token>** replaced by your actual "Default Access Token" that you will find in "Studio" > "Account" > "API access tokens"
+You should end up with a URL looking like:
+"URL"="https://{s}.tiles.mapbox.com/v4/**mapbox.satellite**/{z}/{x}/{y}.png?access_token=**pk.eyJ1IjoiZnJhbmFzZWJyZSIsImEiOiJjaWoycG05emswMDBid2JsenducjJz M3hiIn0.v9cylsLP5rOr87jh66UNTw**"
+with the parts in bold replaced by your personal ones.
 
 Save and close the "config.json" file
 
+</br>
 
+####2.3.5 [Optional] Add sharing buttons to your PATTRN Platform
 
-**2.3.5 [Optional] Add sharing buttons to your PATTRN Platform**
-
-In order to display sharing buttons from the "SHARE" link to be found in the Header of the PATTRN Platform, you will need to use an [AddThis](file:///tmp/d20160106-3-1xkhe1c/addthis.com) account (free).
+In order to display sharing buttons from the "SHARE" link to be found in the Header of the PATTRN Platform, you will need to use an [AddThis](http://addthis.com) account (free).
 
 Sign up for an AddThis account or log in to your existing one.
 
-Go to "Tools" and select "Sharing Buttons". Configure the Sharing Buttons as you see fit, Then click Activate. Copy the code displayed in the Basic Code section.
+Go to "Tools" and select "Sharing Buttons". Configure the Sharing Buttons as you see fit, then click Activate. Copy the code displayed in the "Basic Code" section.
 
 In the "pattrn-master" folder, open the "index.html" file with an HTML editor application (you can download free HTML Editors easily online if you don't have one installed on your computer).
 
@@ -461,9 +463,7 @@ On line 531 of the "index.html" file, paste the Add This code you copied. The co
 <!-- Optional - Addthis code to be added here (it will populate the 'Share' button) -->
 
 **<script type="text/javascript"**
-
-**src=** [**"http://s7.addthis.com/js/300/addthis\_widget.js#pubid=ra-55af788b2148ea27"<http://s7.addthis.com/js/300/addthis\_widget.js#pubid=ra-55af788b2148ea27>**](http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55af788b2148ea27)
-
+**src="http://s7.addthis.com/js/300/addthis\_widget.js#pubid=ra-55af788b2148ea27"<http://s7.addthis.com/js/300/addthis\_widget.js#pubid=ra-55af788b2148ea27>**
 **async="async"></script>**
 
 </body>
@@ -472,7 +472,9 @@ With the part in bold to be replaced with the actual code you will get from your
 
 Save and close the "index.html" file.
 
-**2.3.6 Upload the PATTRN Platform files to your web server**
+</br>
+
+####2.3.6 Upload the PATTRN Platform files to your web server
 
 Connect to your web server using your FTP application.
 
@@ -492,13 +494,11 @@ Once uploaded, your PATTRN Platform will be accessible at the URL of your websit
 
 **Your PATTRN Platform is now all set up and ready to visualise your data.**
 
-Note: By default, if the Master spreadsheet has not been edited, the PATTRN Platform should load with one dummy event located in London.
+_Note: By default, if the Master spreadsheet has not been edited, the PATTRN Platform should load with one dummy event located in London. If it doesn't load properly, please see the Section 9. Troubleshooting_
 
-If it doesn't load properly, please see the Section 9. Troubleshooting
+</br>
 
-
-
-**2.3.7 PATTRN Platform Settings**
+####2.3.7 PATTRN Platform Settings
 
 Open the PATTRN\_Master spreadsheet in your Google Drive, and go to the **Settings** sheet (second tab at the bottom left).
 
@@ -514,7 +514,9 @@ By editing the content of the cells in this tab, you can:
 
 _Note: In the About section, you can use html language for advanced formatting._
 
-**2.3.8 [Optional] Run your PATTRN Platform locally on your computer**
+</br>
+
+####2.3.8 [Optional] Run your PATTRN Platform locally on your computer**
 
 If you want to test your PATTRN Platform before publishing it online, you can do so by running it locally on your computer.
 
@@ -532,11 +534,15 @@ Your PATTRN Platform will load in your browser.
 
 _Note: you will still require an Internet connection, as the data will still be loaded from the PATTRN\_Master spreadsheet online._
 
+</br>
+</br>
+</br>
 
+#3. How to format your data for use with PATTRN
 
-**3. How to format your data for use with PATTRN**
+</br>
 
-3.1 Principles of PATTRN Data structure
+###3.1 Principles of PATTRN Data structure
 
 PATTRN works with datasets of **events**.
 
@@ -544,17 +550,17 @@ An event is defined as row of data that contains a **date/time** information, as
 
 The PATTRN\_Master spreadsheet is where the data visualised in the PATTRN Platform is stored. It is pre-formatted with the data template in use with PATTRN.
 
+</br>
 
-
-3.2 Two ways of editing data
+###3.2 Two ways of editing data
 
 It is recommended to use the **PATTRN Editor** to enter and edit data on the PATTRN\_Master spreadsheet, as it is designed to output data in the correct format and thereby to avoid display issues or glitches in the PATTRN Platform.
 
 However, you can also **enter and edit data directly on the Master spreadsheet** , using Google Sheets. For example, if you want to visualise an existing dataset of events, you can copy and paste the available data in the PATTRN\_Master spreadsheet. Make sure to format it correctly, by always referring to the "Data Formatting Reference" sheet in the PATTRN\_Master spreadsheet.
 
+</br>
 
-
-3.3 Customising your data structure
+###3.3 Customising your data structure
 
 For any event in the dataset in use with PATTRN, the following are the **fixed fields** – the headers of which must not be modified in the PATTRN\_Master spreadsheet:
 
@@ -578,9 +584,9 @@ In addition, the data structure of the dataset to be used with PATTRN can be cus
 
 You can create these custom columns of data either inside the PATTRN Editor, or by manually renaming the header of one of the column comprised between "I" and "W" in the PATTRN\_Master spreadsheet.
 
+</br>
 
-
-3.4 Photos, Videos, Web Links
+###3.4 Photos, Videos, Web Links
 
 Using the PATTRN Editor, you can attach **Photos** , **Videos** , and **Web Links** to each event.
 

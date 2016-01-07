@@ -13,7 +13,7 @@
 * * *    
 </br>
 ## FULL DOCUMENTATION
-Note: This documentation is also available for download in PDF format <a href="http://pattrn.co">here</a>.
+Note: This documentation is also available for download in PDF format <a href="http://pattrn.co/wp-content/uploads/2016/01/PATTRN-Complete-Doc-final.pdf">here</a>.
 </br>
 ### Table of Content    
 </br>

@@ -46,6 +46,9 @@ h1 {
 
 h1.gray{
     color: #cfd8dc !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px
 }
 
 h1.display{
@@ -92,7 +95,7 @@ p.tableHeader {
 }
 
 p.noMargin{
-    margin-bottom: 0px;
+    margin-bottom: 0px !important;
     color:#cfd8dc;
 }
 
@@ -193,7 +196,7 @@ td > p{
     font-weight: 500;
     font-weight:medium;
     padding:none;
-    margin:none;
+    margin:0px;
 }
 
 .chart_dropdown {
@@ -218,6 +221,7 @@ td > p{
     z-index: 1000;
     color: white !important;
     text-align: left;
+    min-width:150px;
 }
 
 .dropdown-menu>li>a.active {
@@ -597,10 +601,6 @@ a.carousel-control{
     margin-bottom:0px;
 }
 
-.infowindow{
-    margin-top:0px;
-}
-
 /*sub-dropdown menu*/
 .dropdown-submenu {
     position: relative;
@@ -707,7 +707,7 @@ a.carousel-control{
 
 .filterText{
     font-size: 12px;
-    padding-top:0px;
+    padding-top:10px;
 }
 
 .filter{
@@ -811,11 +811,12 @@ a.toggle-left {
     padding:none;
     padding-top:15px;
     margin:none;
-    margin-bottom: 60px;
+    margin-bottom: 0px;
     background-color:#2f363f;
     min-height: 80vh;
     max-height: 80vh;
     overflow: auto;
+    margin-top:0px;
 }
 
 .popover-content{
@@ -972,4 +973,12 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 0px;
+}
+
+.chartTitle{
+  text-align:right;
+  margin-bottom: 0px;
+  font-size: 14px;
+  padding-top:10px;
+
 }

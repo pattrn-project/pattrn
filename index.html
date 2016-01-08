@@ -1,0 +1,534 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>PATTRN</title>
+    <meta name="description" content="">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,500' rel='stylesheet' type='text/css'>
+
+    <!-- Dependencies -->
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-alpha.2/dc.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-alpha.2/dc.css"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.11/crossfilter.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" rel="stylesheet"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.4.2/tabletop.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.1.5/js/lightGallery.min.js"></script>
+    <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.1.5/css/lightGallery.css"/>
+
+    <!-- Pattrn code -->
+    <link href="css/styles.css" rel="stylesheet">
+    <script type="text/javascript" src="js/platform.js"></script>
+
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-fixed navbar-inverse" role="navigation">
+        <div class="container-fluid-navbar" >
+            <div class="col-sm-2 col-lg-2 highlight" id="highlight">
+                <h1 class="nav" id="platformTitle" style="text-align:center"></h1>
+            </div>
+            <div class="col-sm-6 col-lg-6">
+                <h1 class="display" id="platformSubtitle" style = "padding-right: 50px; margin-bottom: 0px"></h1>
+            </div>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" style="">
+                <a href="#about_project" class="dropdown-toggle" data-toggle="modal" role="button" aria-expanded="false" style="margin-top:5px; padding-bottom: 10px; padding-right:15px">ABOUT</span></a>
+            </li>
+            <li class="dropdown" style="margin-right:5px">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="margin-top:5px; padding-bottom: 10px;">SHARE</a>
+                <ul class="dropdown-menu" role="menu" id="chart_dropdown">
+                    <li>
+                        <div class="addthis_sharing_toolbox"></div>
+                    </li>
+                </ul>
+            </li>
+            <li style="color:#a4afbb; margin-bottom:0px; font-size: 11px" class="footerSmall">
+                <a class="" style= "padding-bottom: 0px;padding-top:18px; margin-right: 20px;" target="_blank" href="http://pattrn.co">Made with <img src="images/pattrn-logo-white.png" style="max-height:30px"></a>
+            </li>
+        </ul>
+        <div class="modal fade" id="about_project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">About this platform</h4>
+                    </div>
+                        <div class="modal-body" id="aboutModalContent"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+
+        <!-- Map & Charts-->
+        <div class="col-sm-8 col-lg-8" id="charts" style = "padding: 0px">
+            <div id="chart-map"></div>
+                <div class="col-sm-7 col-lg-7" id="offGrayBar" style="padding: 0px; margin: 0px;" >
+
+                    <!-- DROPDOWN MENU -->
+                    <div class="col-sm-5 col-lg-5" id="button">
+                        <ul class="nav nav-pills nav-justified" id="myTab">
+                            <li class="dropdown dropup customfontsize">
+                                <a class="dropdown-toggle charts" data-toggle="dropdown" href="#">
+                                    <h1 class="gray">Charts & Filters<span class="caret"></span></h1>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                    <!-- LINE CHARTS -->
+                                    <li class="dropdown-submenu pull-left">
+                                        <a role="menuitem" tabindex="-1" href="#" data-toggle="tab">Over Time</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a role="menuitem" tabindex="-1" href="#event_chart_01" data-toggle="tab" id="eventTimeLine">Number of Events over Time</a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#line_chart_01" data-toggle="tab" id="line_chart_01_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#line_chart_02" data-toggle="tab" id="line_chart_02_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#line_chart_03" data-toggle="tab" id="line_chart_03_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#line_chart_04" data-toggle="tab" id="line_chart_04_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#line_chart_05" data-toggle="tab" id="line_chart_05_title"></a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- BAR CHARTS -->
+                                    <li class="dropdown-submenu pull-left">
+                                        <a role="menuitem" tabindex="-1" href="#" data-toggle="tab">By Tags</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a role="menuitem" tabindex="-1" href="#bar_chart_01" data-toggle="tab" id="bar_chart_01_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#bar_chart_02" data-toggle="tab" id="bar_chart_02_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#bar_chart_03" data-toggle="tab" id="bar_chart_03_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#bar_chart_04" data-toggle="tab" id="bar_chart_04_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#bar_chart_05" data-toggle="tab" id="bar_chart_05_title"></a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- BOOLEAN CHARTS -->
+                                    <li class="dropdown-submenu pull-left">
+                                        <a role="menuitem" tabindex="-1" href="#" data-toggle="tab">Yes / No</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a role="menuitem" tabindex="-1" href="#boolean_chart_01" data-toggle="tab" id="boolean_chart_01_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#boolean_chart_02" data-toggle="tab" id="boolean_chart_02_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#boolean_chart_03" data-toggle="tab" id="boolean_chart_03_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#boolean_chart_04" data-toggle="tab" id="boolean_chart_04_title"></a></li>
+                                            <li><a role="menuitem" tabindex="-1" href="#boolean_chart_05" data-toggle="tab" id="boolean_chart_05_title"></a></li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- AGGREGATE COUNTS-->
+                                    <li class="pull-left"><a role="menuitem" tabindex="-1" href="#aggregate_counts" data-toggle="tab">Counts over area</a></li>
+
+                                    <!-- SOURCE CHARTS-->
+                                    <li class="pull-left"><a role="menuitem" tabindex="-1" href="#d3_source_chart" data-toggle="tab">Events By Source </a></li>
+
+                                    <!-- MEDIA CHARTS-->
+                                    <li class="pull-left"><a role="menuitem" tabindex="-1" href="#d3_media_chart" data-toggle="tab" style="padding-right:0px">Events By Media Available </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- TOTAL EVENTS -->
+                    <div class="col-sm-7 col-lg-7">
+                        <div id="number_total_events"><h2 class= 'inline'><span class='filter-count'></span></h2><p class= 'inline'> &nbsp &nbsp TOTAL EVENTS </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SEARCH BOX -->
+                <div class="col-sm-3 col-lg-3" id="button">
+                    <div class="dc-data-count"></div>
+                    <div class="form-group has-feedback" style="padding: 0px; margin: 0px; color:#cfd8dc;">
+                        <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                        <input type="text" class="form-control" placeholder="SEARCH" id="tableSearch"></input>
+                    </div>
+                </div>
+
+                <!-- FILTER BUTTON -->
+                <div class="col-sm-1 col-lg-1" id="button">
+                    <div class="btn-group" style="border:none; margin-left:0px" role="group" aria-label="..." align:"right">
+                        <a type="button" style="border:none" class="btn btn-default">
+                            <p class="glyphicon glyphicon-filter" aria-hidden="true" title="Click to reset charts" id="filterList"></p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- REFRESH BUTTON -->
+                <div class="col-sm-1 col-lg-1" id="button">
+                    <div class="btn-group" style="border:none; margin-left:0px" role="group" aria-label="..." align:"right">
+                        <a type="button" style="border:none" class="btn btn-default" onclick= "bounds()" href="javascript:location.reload();">
+                            <p class="glyphicon glyphicon-refresh" aria-hidden="true" title="Click to reset charts" id=""></p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CHARTS -->
+                <div class="tab-content">
+
+                    <div class="tab-pane fade in active" id="event_chart_01">
+                        <div class="col-sm-12 col-lg-12" id="d3_event_chart_01">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="event_chart_01_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="line_chart_01">
+                        <div class="col-sm-12 col-lg-12" id="d3_line_chart_01">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="line_chart_01_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="line_chart_02">
+                        <div class="col-sm-12 col-lg-12"  id="d3_line_chart_02">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="line_chart_02_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="line_chart_03">
+                        <div class="col-sm-12 col-lg-12" id="d3_line_chart_03">
+                          <p id="line_chart_03_chartTitle" class="chartTitle" ></p>
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="line_chart_03_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="line_chart_04">
+                        <div class="col-sm-12 col-lg-12" id="d3_line_chart_04">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="line_chart_04_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="line_chart_05">
+                        <div class="col-sm-12 col-lg-12" id="d3_line_chart_05">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="line_chart_05_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="bar_chart_01">
+                        <div class="col-sm-12 col-lg-12"  id="d3_bar_chart_01">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="bar_chart_01_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="bar_chart_02">
+                        <div class="col-sm-12 col-lg-12"  id="d3_bar_chart_02">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="bar_chart_02_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="bar_chart_03">
+                        <div class="col-sm-12 col-lg-12"  id="d3_bar_chart_03">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="bar_chart_03_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="bar_chart_04">
+                        <div class="col-sm-12 col-lg-12" id="d3_bar_chart_04">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="bar_chart_04_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="bar_chart_05">
+                        <div class="col-sm-12 col-lg-12" id="d3_bar_chart_05">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="bar_chart_05_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOOLEAN -->
+                    <div class="tab-pane fade in" id="boolean_chart_01">
+                        <div class="col-sm-12 col-lg-12" id="d3_boolean_chart_01">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="boolean_chart_01_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="boolean_chart_02">
+                        <div class="col-sm-12 col-lg-12" id="d3_boolean_chart_02">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="boolean_chart_02_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="boolean_chart_03">
+                        <div class="col-sm-12 col-lg-12" id="d3_boolean_chart_03">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="boolean_chart_03_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="boolean_chart_04">
+                        <div class="col-sm-12 col-lg-12" id="d3_boolean_chart_04">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="boolean_chart_04_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="boolean_chart_05">
+                        <div class="col-sm-12 col-lg-12" id="d3_boolean_chart_05">
+                            <div class="col-sm-6 col-lg-6">
+                              <p class="filterText">Current filter: <span class='filter' id="highlightText">No active filter, click/drag on charts to filter data</span></p>
+                            </div>
+                            <div class="col-sm-6 col-lg-6">
+                              <p id="boolean_chart_05_chartTitle" class="chartTitle" ></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade in"  id="aggregate_counts">
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-12">
+                                <div class="col-sm-2 col-lg-2 col-lg-offset-1" id="agreggate">
+                                    <div id="d3_aggregate_count_01"  style="margin-left:10px" class="border">
+                                        <h2 class="agreggateText">
+                                            <span class="number-display"></span>
+                                            <p id="agreggateCountTitle_01">No Data</p>
+                                        </h2>
+                                    </div>
+                                    <div id="SliderChart_01" style="padding-top:10px"></div>
+                                </div>
+
+                                <div class="col-sm-2 col-lg-2" id="agreggate">
+                                    <div id="d3_aggregate_count_02"  style="margin-left:10px" class="border">
+                                        <h2 class="agreggateText">
+                                            <span class="number-display"></span>
+                                            <p id="agreggateCountTitle_02">No Data</p>
+                                        </h2>
+                                    </div>
+                                    <div id="SliderChart_02" style="padding-top:10px"></div>
+                                </div>
+
+                                <div class="col-sm-2 col-lg-2" id="agreggate">
+                                    <div id="d3_aggregate_count_03"  style="margin-left:10px" class="border">
+                                        <h2 class="agreggateText">
+                                            <span class="number-display"></span>
+                                            <p id="agreggateCountTitle_03">No Data</p>
+                                        </h2>
+                                    </div>
+                                    <div id="SliderChart_03" style="padding-top:10px"></div>
+                                </div>
+
+                                <div class="col-sm-2 col-lg-2" id="agreggate">
+                                    <div id="d3_aggregate_count_04"  style="margin-left:10px" class="border">
+                                        <h2 class="agreggateText">
+                                            <span class="number-display"></span>
+                                            <p id="agreggateCountTitle_04">No Data</p>
+                                        </h2>
+                                    </div>
+                                    <div id="SliderChart_04" style="padding-top:10px"></div>
+                                </div>
+
+                                <div class="col-sm-2 col-lg-2" id="agreggate">
+                                    <div id="d3_aggregate_count_05"  style="margin-left:10px" class="border">
+                                        <h2 class="agreggateText">
+                                            <span class="number-display"></span>
+                                            <p id="agreggateCountTitle_05">No Data</p>
+                                        </h2>
+                                    </div>
+                                    <div id="SliderChart_05" style="padding-top:10px"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-12">
+                                <p>Click and drag in the measuring bars to filter data by number of [selected variable] per individual event</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Source chart -->
+                    <div class="tab-pane fade in" id="d3_source_chart">
+                        <div class="col-sm-12 col-lg-12">
+                            <div id="d3_source_chart">
+                                <p class="filterText">Current filter: <span class='filter' id="highlightText"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media chart -->
+                    <div class="tab-pane fade in" id="d3_media_chart">
+                        <div class="col-sm-12 col-lg-12">
+                            <div id="d3_media_chart">
+                                <p class="filterText">Current filter: <span class='filter' id="highlightText"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!-- /.tab-content-->
+            </div>  <!-- /. Map & Charts-->
+
+            <!-- Sidebar - infowindow -->
+            <div class="col-sm-4 col-lg-4" id='info' style="padding: 10px; overflow: auto;">
+                <!-- Info section -->
+                <div id='contentTab'>
+                    <div id="midGrayBar" class="col-sm-12 col-lg-12">
+                        <div class="col-sm-4 col-lg-4">
+                            <h1 class="gray">Event Details</h1>
+                        </div>
+                        <div class='col-xs-4 col-xs-offset-4'id='edit_event'>
+                            <li class='dropdown' style='margin-right:0px'>
+                                <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false' style=''>Edit / Add Event </a>
+                                <ul class='dropdown-menu' role='menu' id='edit_dropdown'>
+                                </ul>
+                            </li>
+                         </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-12" id="dateTime" style="min-height:100px">
+                        <h4></h4>
+                    </div>
+                </div>
+
+                <!-- Tab panel -->
+                <div role="tabpanel" >
+                    <div id="darkGrayBar">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active" style="padding-left:15px">
+                                <a href="#summaryTab" title="SUMMARY" role="tab" data-toggle="tab" class = "tab">
+                                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#mediaTab" title="PHOTOS" role="tab" data-toggle="tab" class = "tab">
+                                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#videoTab" title="VIDEO" role="tab" data-toggle="tab" class = "tab">
+                                    <span class="glyphicon glyphicon-film" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <!-- <li role="presentation">
+                                <a href="#fileTab" title="FILES" role="tab" data-toggle="tab" class = "tab">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                </a>
+                            </li> -->
+                            <li role="presentation">
+                                <a href="#URLsTab" title="URLs" role="tab" data-toggle="tab" class = "tab">
+                                    <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="summaryTab">
+                        <div class='infowindow'>
+                            <div class='col-sm-12' id="summary">
+                                <p class='summary'>This panel will update when a marker is clicked.</p>
+                            </div>
+                            <div class='col-sm-12' id="summaryTable">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="mediaTab">
+                        <div class='col-sm-12 infowindow gallery' style='padding-top:15px' id = "image_div">
+                            <p class='summary'></p>
+                            <ul id="image_gallery"></ul>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="videoTab">
+                        <div class='col-sm-12 infowindow' style='padding-top:15px' id="video_gallery">
+                            <p class='summary'></p>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="URLsTab">
+                        <div class='col-sm-12 infowindow' style='padding-top:15px'  id="urls">
+                            <p class='summary'></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional - Addthis code to be added here (it will populate the 'Share' button) -->
+<script type="text/javascript" src="" async="async"></script>
+</body>
+
+</html>

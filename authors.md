@@ -1,5 +1,6 @@
 ### Authors
 
+<br/>
 
 PATTRN is an open source project hosted at  [Goldsmiths, University of London](http://www.gold.ac.uk/).
 

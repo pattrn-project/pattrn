@@ -9,9 +9,11 @@ a research consultancy undertaking spatial and media analysis for the investigat
 The PATTRN project was initiated thanks to a Proof-of-Concept Grant from the [European Research Council](https://erc.europa.eu/),
 awarded to Prof. Eyal Weizman, in the framework of Forensic Architecture (2015-2015).
 
-**Project Architect:** [FSBRG](https://twitter.com/fsbrg) (Francesco Sebregondi)
+**Project Architect:**
 
-**Major Contributing Authors**
+[FSBRG](https://twitter.com/fsbrg) (Francesco Sebregondi)
+
+**Major Contributing Authors:**
 
 [TEKJA Data](http://tekja.com/) (PATTRN Platform)
 

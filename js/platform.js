@@ -1690,11 +1690,6 @@
                     minZoom:2}
                 );
 
-                _map.attributionControl.setPrefix('');
-                _map.attributionControl.addAttribution('<a href="http://www.tekja.com"><span class="tekja">TEKJA </span>data visualisation</a>');
-                var mapAttribution = L.control.attribution({position:'bottomleft'}).setPrefix('').addAttribution('<a  target="_blank" href="" target="_blank"></a>');
-                mapAttribution.addTo(_map);
-
                 // Baselayers
                 var base_layer_01 = L.tileLayer(config.base_layers[0].url, {
                         // attribution: ''

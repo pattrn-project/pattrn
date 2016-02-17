@@ -61,30 +61,44 @@
         function init_table(src) {
             Tabletop.init({
                 key: src,
-                callback: consume_table,
+                callback: consume_table_google_docs,
                 simpleSheet: false
             });
         }
 
-        function consume_table(data) {
-
+        /**
+         * Wrap actual function, should be done with .bind()
+         * @tags TECHNICAL_DEBT
+         */
+        function consume_table_google_docs(data) {
+            consume_table(data, "google_docs");
+        }
+        
+        function consume_table(data, data_source_type) {
+            var settings,
+                platformTitle,
+                platformSubtitle,
+                aboutModalContent,
+                highlightColour,
+                elements;
+                
             // SETTINGS
-            var settings = data.Settings.elements;
+            settings = data.Settings.elements;
 
             // Title
-            var platformTitle = document.getElementById('platformTitle')
-            .innerHTML = settings[0].title;
+            platformTitle = document.getElementById('platformTitle')
+             .innerHTML = settings[0].title;
 
             // Subtitle
-            var platformSubtitle = document.getElementById('platformSubtitle')
-            .innerHTML = settings[0].subtitle;
+            platformSubtitle = document.getElementById('platformSubtitle')
+                .innerHTML = settings[0].subtitle;
 
             // About modal
-            var aboutModalContent = document.getElementById('aboutModalContent')
-            .innerHTML = settings[0].about;
+            aboutModalContent = document.getElementById('aboutModalContent')
+                .innerHTML = settings[0].about;
 
             // Highlight colour
-            var highlightColour = settings[0].colour;
+            highlightColour = settings[0].colour;
             elements = document.getElementById("highlight");
             elements.style.backgroundColor = highlightColour;
             $('.filter').css('color', highlightColour);
@@ -143,7 +157,7 @@
             var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
 
             // Add 'Unknown' to empty tag fields
-            for (i = 0; i < dataset.length; i++) {
+            for (var i = 0; i < dataset.length; i++) {
                 if (dataset[i][tags_field_name_1].length === 0) {
                     dataset[i][tags_field_name_1] = 'Unknown';
                 }

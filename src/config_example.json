@@ -1,0 +1,21 @@
+{
+    "data_sources": {
+        "google_docs": [
+            ""
+        ],
+        "json_file" : [
+            ""
+        ]
+    },
+    "script_url": "",
+    "base_layers": [
+        {
+            "name": "",
+            "url": ""
+        },
+        {
+            "name": "",
+            "url": ""
+        }
+    ]
+}

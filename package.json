@@ -50,51 +50,8 @@
     "tabletop": "^1.4.2"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.6.0",
-    "babelify": "^7.3.0",
-    "browserify": "^13.0.1",
-    "docco": "^0.7.0",
-    "exorcist": "^0.4.0",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-jade": "^1.1.0",
-    "gulp-json-lint": "^0.1.0",
-    "gulp-sass": "^2.3.2",
-    "gulp-util": "^3.0.7",
-    "gulp-webserver": "^0.9.1",
-    "http-server": "^0.8.5",
-    "vinyl-source-stream": "^1.1.0"
-  },
-  "pattrn_configuration": {
-    "app_main": "src/js/app.js",
-    "bundle": "js/main.js",
-    "src": "src",
-    "dest": "dist",
-    "vendor_stylesheets": [
-      {
-        "stylesheets": "node_modules/bootstrap/dist/css/bootstrap.css",
-        "assets": [
-          {
-            "src": "node_modules/bootstrap/dist/fonts/**/*",
-            "dest": "/fonts"
-          }
-        ]
-      },
-      {
-        "stylesheets": "node_modules/dc/dc.css"
-      },
-      {
-        "stylesheets": "node_modules/leaflet/dist/leaflet.css"
-      },
-      {
-        "stylesheets": "node_modules/lightgallery/dist/css/lightgallery.css",
-        "assets": [
-          {
-            "src": "node_modules/lightgallery/dist/fonts/**/*",
-            "dest": "/fonts"
-          }
-        ]
-      }
-    ]
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.0",
+    "http-server": "^0.8.5"
   }
 }

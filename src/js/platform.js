@@ -23,18 +23,42 @@
     });
 
     // Load the json file with the local settings
-    d3.json("js/config.json", function(config) {
+    /* global d3 */
+    d3.json("config.json", function(config) {
 
-        $('#edit_dropdown').append(
-            "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
-        );
-
+        /**
+         * Add link to edit interface, if defined
+         */
+        if(config.script_url) {
+            $('#edit_dropdown').append(
+                "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
+            );
+        }
+        
         // Get data from
-        $(document).ready(function() { init_table(); });
+        $(document).ready(function() { load_data(config.data_sources); });
 
-        function init_table() {
+        /**
+         * Load data
+         * Eventually, multiple sources will be supported. Until the
+         * core visualization code is updated to handle multiple sources,
+         * we actually only load a single data source:
+         * by default, if any JSON files are defined, we load the first one;
+         * as fallback, if any Google Sheet document is defined, we load the
+         * first one.
+         */
+        function load_data(data_sources) {
+            if(data_sources.json_file && data_sources.json_file.length) {
+                d3.json(data_sources.json_file[0], consume_table);
+            } else if(data_sources.google_docs && data_sources.google_docs.length) {
+                init_table(data_sources.google_docs[0]);
+            }
+        }
+        
+        /* global Tabletop */
+        function init_table(src) {
             Tabletop.init({
-                key: config.public_spreadsheet,
+                key: src,
                 callback: consume_table,
                 simpleSheet: false
             });

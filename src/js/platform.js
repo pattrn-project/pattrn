@@ -711,6 +711,7 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_01(p, v) {
+                    if(typeof v[tags_field_name_1] !== 'string') return p;
                     v[tags_field_name_1].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -718,6 +719,7 @@
                 }
 
                 function reduceRemoveTarget_01(p, v) {
+                    if(typeof v[tags_field_name_1] !== 'string') return p;
                     v[tags_field_name_1].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -789,6 +791,7 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_02(p, v) {
+                    if(typeof v[tags_field_name_2] !== 'string') return p;
                     v[tags_field_name_2].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -796,6 +799,7 @@
                 }
 
                 function reduceRemoveTarget_02(p, v) {
+                    if(typeof v[tags_field_name_2] !== 'string') return p;
                     v[tags_field_name_2].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -873,6 +877,7 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_03(p, v) {
+                    if(typeof v[tags_field_name_3] !== 'string') return p;
                     v[tags_field_name_3].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -880,6 +885,7 @@
                 }
 
                 function reduceRemoveTarget_03(p, v) {
+                    if(typeof v[tags_field_name_3] !== 'string') return p;
                     v[tags_field_name_3].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -948,6 +954,7 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_04(p, v) {
+                    if(typeof v[tags_field_name_4] !== 'string') return p;
                     v[tags_field_name_4].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -955,6 +962,7 @@
                 }
 
                 function reduceRemoveTarget_04(p, v) {
+                    if(typeof v[tags_field_name_4] !== 'string') return p;
                     v[tags_field_name_4].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1022,6 +1030,7 @@
 
                 // CUSTOM REDUCE FUNCTION
                 function reduceAddTarget_05(p, v) {
+                    if(typeof v[tags_field_name_5] !== 'string') return p;
                     v[tags_field_name_5].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1029,6 +1038,7 @@
                 }
 
                 function reduceRemoveTarget_05(p, v) {
+                    if(typeof v[tags_field_name_5] !== 'string') return p;
                     v[tags_field_name_5].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1263,6 +1273,7 @@
             // SOURCE CHART - TAGS
             // REDUCE FUNCTION
                 function reduceAddTarget_source(p, v) {
+                    if(typeof v[source_field_name] !== 'string') return p;
                     v[source_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1270,6 +1281,7 @@
                 }
 
                 function reduceRemoveTarget_source(p, v) {
+                    if(typeof v[source_field_name] !== 'string') return p;
                     v[source_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1333,6 +1345,7 @@
 
                 // CUSTOM REDUCE FUNCTION
                 function reduceAddTarget_media(p, v) {
+                    if(typeof v[media_field_name] !== 'string') return p;
                     v[media_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1340,6 +1353,7 @@
                 }
 
                 function reduceRemoveTarget_media(p, v) {
+                    if(typeof v[media_field_name] !== 'string') return p;
                     v[media_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });

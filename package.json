@@ -1,0 +1,100 @@
+{
+  "name": "pattrn",
+  "version": "2.0.0beta1+hotzeplotz",
+  "description": "Data-driven, participatory fact-mapping",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "browserify --debug src/js/app.js | exorcist src/js/main.js.map > src/js/main.js",
+    "gulp": "gulp",
+    "start": "http-server dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hotzeplotz/pattrn.git"
+  },
+  "keywords": [
+    "data",
+    "mapping",
+    "research",
+    "human rights",
+    "citizen science",
+    "conflict monitoring",
+    "investigative journalism"
+  ],
+  "author": "andrea rota <a@xelera.eu>",
+  "contributors": [
+    "Pattrn project at Forensic Architecture <support@pattrn.co>"
+  ],
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/pattrn-project/pattrn/issues"
+  },
+  "homepage": "http://pattrn.co/",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "crossfilter2": "1.4.0-alpha.06",
+    "d3": "^3.5.14",
+    "d3-dispatch": "^1.0.0",
+    "d3-queue": "^2.0.3",
+    "dc": "2.0.0-beta.32",
+    "file-saver": "^1.3.2",
+    "jquery": "^2.2.0",
+    "jsdom": "^8.0.2",
+    "leaflet": "^0.7.7",
+    "leaflet.markercluster": "^0.4.0",
+    "lightgallery": "^1.1.5",
+    "lodash.range": "^3.1.5",
+    "patternfills": "^0.4.0",
+    "pug": "^2.0.0-beta3",
+    "tabletop": "^1.4.2"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1",
+    "docco": "^0.7.0",
+    "exorcist": "^0.4.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-jade": "^1.1.0",
+    "gulp-json-lint": "^0.1.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-util": "^3.0.7",
+    "gulp-webserver": "^0.9.1",
+    "http-server": "^0.8.5",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "pattrn_configuration": {
+    "app_main": "src/js/app.js",
+    "bundle": "js/main.js",
+    "src": "src",
+    "dest": "dist",
+    "vendor_stylesheets": [
+      {
+        "stylesheets": "node_modules/bootstrap/dist/css/bootstrap.css",
+        "assets": [
+          {
+            "src": "node_modules/bootstrap/dist/fonts/**/*",
+            "dest": "/fonts"
+          }
+        ]
+      },
+      {
+        "stylesheets": "node_modules/dc/dc.css"
+      },
+      {
+        "stylesheets": "node_modules/leaflet/dist/leaflet.css"
+      },
+      {
+        "stylesheets": "node_modules/lightgallery/dist/css/lightgallery.css",
+        "assets": [
+          {
+            "src": "node_modules/lightgallery/dist/fonts/**/*",
+            "dest": "/fonts"
+          }
+        ]
+      }
+    ]
+  }
+}

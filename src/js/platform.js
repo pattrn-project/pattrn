@@ -18,6 +18,32 @@
     };
 
     /**
+     * Translates GeoJSON source data to the legacy format that
+     * Pattrn v1 expects.
+     * Only FeatureCollections comprising Points are supported at the moment
+     * @param Object data The GeoJSON feature collection
+     * @param Object The dataset structured as Pattrn v1 expects
+     */
+    var geojson_to_pattrn_legacy_data_structure = function(data) {
+      if(! is_defined(data) || ! is_defined(data.features) || ! Array.isArray(data.features)) {
+        throw 'No GeoJSON feature defined';
+      }
+
+      return data.features.map(function(value, index, array) {
+        return {
+          unique_event_ID: index,
+          location_name: null,
+          latitude: value.geometry.coordinates[1],
+          longitude: value.geometry.coordinates[0],
+          geo_accuracy: null,
+          date_time: value.properties.pattrn_date_time,
+          event_summary: value.properties.pattrn_event_summary,
+          source_name: null
+        };
+      });
+    }
+
+    /**
      * check if variable is defined
      * @param variable The variable to check
      * @return bool Whether the variable is defined

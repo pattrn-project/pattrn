@@ -98,7 +98,8 @@
             if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
                 d3.json(data_sources.geojson_data.data_url, function(error, dataset) {
                     d3.json(data_sources.geojson_data.settings_url, function(error, settings) {
-                        consume_table(dataset, settings, 'geojson_file');
+                        var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset);
+                        consume_table(dataset_in_legacy_format, settings, 'geojson_file');
                     });
                 });
             } else if(data_sources.json_file && data_sources.json_file.length) {

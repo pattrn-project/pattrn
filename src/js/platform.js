@@ -95,37 +95,30 @@
             consume_table(data, "google_docs");
         }
         
-        function consume_table(data, data_source_type) {
-            var settings,
-                platformTitle,
+        function consume_table(dataset, settings, data_source_type) {
+            var platformTitle,
                 platformSubtitle,
                 aboutModalContent,
                 highlightColour,
                 elements;
                 
-            // SETTINGS
-            settings = data.Settings.elements;
-
             // Title
             platformTitle = document.getElementById('platformTitle')
-             .innerHTML = settings[0].title;
+             .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].title)) ? settings[0].title : platform_settings.default.title;
 
             // Subtitle
             platformSubtitle = document.getElementById('platformSubtitle')
-                .innerHTML = settings[0].subtitle;
+                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].subtitle)) ? settings[0].subtitle : platform_settings.default.subtitle;
 
             // About modal
             aboutModalContent = document.getElementById('aboutModalContent')
-                .innerHTML = settings[0].about;
+                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].about)) ? settings[0].about : platform_settings.default.about;
 
             // Highlight colour
-            highlightColour = settings[0].colour;
+            highlightColour =(is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].colour)) ? settings[0].colour : platform_settings.default.colour;
             elements = document.getElementById("highlight");
             elements.style.backgroundColor = highlightColour;
             $('.filter').css('color', highlightColour);
-
-            // DATA
-            var dataset = data.Data.elements;
 
             // Make new column with eventID for the charts / markers
             for (i = 0; i < dataset.length; i++) {

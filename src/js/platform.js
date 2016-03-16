@@ -8,6 +8,14 @@
     var brushOn = true;
     var zooming=false;
     var blockpopup = false;
+    var platform_settings = {
+      "default" : {
+        "title" : "Pattrn",
+        "subtitle" : "A data-driven, participatory fact mapping platform",
+        "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
+        "colour" : "#f45656"
+      }
+    };
 
     // Bug fix for dropdown sub-menu
     $(document).ready(function(){

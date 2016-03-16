@@ -69,9 +69,18 @@
          * first one.
          */
         function load_data(data_sources) {
-            if(data_sources.json_file && data_sources.json_file.length) {
+            if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
+                d3.json(data_sources.geojson_data.data_url, function(error, dataset) {
+                    d3.json(data_sources.geojson_data.settings_url, function(error, settings) {
+                        consume_table(dataset, settings, 'geojson_file');
+                    });
+                });
+            } else if(data_sources.json_file && data_sources.json_file.length) {
                 d3.json(data_sources.json_file[0], function(error, data) {
-                    consume_table(data, 'json_file');
+                    var dataset = data.Data.elements,
+                        settings = data.Settings.elements;
+
+                    consume_table(dataset, settings, 'json_file');
                 });
             } else if(data_sources.google_docs && data_sources.google_docs.length) {
                 init_table(data_sources.google_docs[0]);
@@ -92,7 +101,10 @@
          * @tags TECHNICAL_DEBT
          */
         function consume_table_google_docs(data) {
-            consume_table(data, "google_docs");
+            var dataset = data.Data.elements,
+                settings = data.Settings.elements;
+
+            consume_table(data, settings, "google_docs");
         }
         
         function consume_table(dataset, settings, data_source_type) {

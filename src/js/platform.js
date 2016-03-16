@@ -17,6 +17,19 @@
       }
     };
 
+    /**
+     * check if variable is defined
+     * @param variable The variable to check
+     * @return bool Whether the variable is defined
+     */
+    var is_defined = function(variable) {
+      if (typeof variable !== 'undefined' && variable !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     // Bug fix for dropdown sub-menu
     $(document).ready(function(){
         $(".dropdown-submenu").each(function(){

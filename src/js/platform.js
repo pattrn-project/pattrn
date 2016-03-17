@@ -29,17 +29,44 @@
         throw 'No GeoJSON feature defined';
       }
 
-      return data.features.map(function(value, index, array) {
-        return {
-          unique_event_ID: index,
-          location_name: null,
-          latitude: value.geometry.coordinates[1],
-          longitude: value.geometry.coordinates[0],
-          geo_accuracy: null,
-          date_time: value.properties.pattrn_date_time,
-          event_summary: value.properties.pattrn_event_summary,
-          source_name: null
-        };
+      return data.features
+        /**
+         * Extract key variables from source GeoJSON data,
+         * mapping them to a flat structure as per Pattrn v1
+         * source data structure.
+         */
+        .map(function(value, index, array) {
+          var data = {
+            unique_event_ID: index,
+            location_name: null,
+            latitude: value.geometry.coordinates[1],
+            longitude: value.geometry.coordinates[0],
+            geo_accuracy: null,
+            date_time: value.properties.pattrn_time_date,
+            event_summary: value.properties.pattrn_event_summary,
+            source_name: null
+          };
+          var defined_variables = Object.keys(data).length;
+
+        /**
+         * Pad variables with dummy empty ones (null is not ok because
+         * of lack of error handling before use of variables in legacy
+         * code) so that each array item has exactly 30 variables,
+         * including the ones defined above derived from the source
+         * dataset.
+         */
+        for(var i = 0; i < 30 - defined_variables - 1; i++) {
+          data['dummy_' + i] = '';
+        }
+
+        return data;
+      })
+      /**
+       * Filter out observations that don't include all of the
+       * variables needed (date_time, latitude, longitude).
+       */
+      .filter(function(value, index, array) {
+        return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
       });
     }
 

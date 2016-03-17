@@ -1865,6 +1865,7 @@
 
                 // Create markercluster
                 markercluster = new L.MarkerClusterGroup({
+                    disableClusteringAtZoom: 12,
                     showCoverageOnHover: false,
                     chunkedLoading: true,
                     spiderfyDistanceMultiplier:2,

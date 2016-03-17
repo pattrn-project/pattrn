@@ -1699,6 +1699,23 @@
                             );
                         }
 
+			function appendGeoJSONPropertyToTable(key, value) {
+			    $('#summaryTable').append(
+                                "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
+                                "</p></th><th class='col-sm-6' ><p class='white'> " + value +
+                                "</p> </th> </tr>"
+                            );
+                        }
+			    
+                        if('geojson_file' === data_source_type) {
+			  Object.keys(d.source_variables)
+			    .filter(function(value) { return ! value.match(/^pattrn_/); })
+			    .forEach(function(value, index, array) {
+			    if(is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
+			  });
+                        }
+
+                        
                         // Table content - Integers - hard coded to mirror spreadsheet structure
                         if (values_number_field_name_1 > 0) {
                             appendIntegerValueToTable(number_field_name_1);

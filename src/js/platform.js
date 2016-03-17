@@ -168,8 +168,30 @@
                 platformSubtitle,
                 aboutModalContent,
                 highlightColour,
-                elements;
-                
+                elements,
+                pattrn_data_sets = {};
+             
+            /**
+             * If the pattrn_data_set variable is set for any of the observations,
+             * associate colours to each source data set, to be used when displaying
+             * markers.
+             */
+            if('geojson_file' === data_source_type) {
+              var data_source_column = dataset.map(function(value) {
+                return value.pattrn_data_set;
+              })
+              .reduce(function(p, c) {
+                if(p.indexOf(c) < 0) p.push(c);
+                return p;
+              }, []);
+
+              var fill = d3.scale.category10();
+
+              data_source_column.forEach(function(value, index, array) {
+                pattrn_data_sets[value] = fill(index);
+              });
+            }
+
             // Title
             platformTitle = document.getElementById('platformTitle')
              .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].title)) ? settings[0].title : platform_settings.default.title;
@@ -1531,7 +1553,7 @@
                 d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude),{
                     title: "",
                     radius: 7,
-                    color: "black",
+                    color: pattrn_data_sets[d.pattrn_data_set],
                     opacity:0.9,
                     fillOpacity:0.8,
                     clickable: true,

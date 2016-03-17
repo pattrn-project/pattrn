@@ -1562,15 +1562,11 @@
                 d.marker.data = d;
 
                 // Tooltip content
-                var eventDetailsContent = (
-                    "<div class='col-sm-12' style='padding-top:15px' id='background'>" +
-                    "<p class='caption-grey'>EVENT ID:  </p><p class='noMargin'>" + d.event_ID + "</p>" +
-                    "<p class='caption-grey'>DATE:</p>" +
-                    "<p class='noMargin'> " + fullDateFormat(d.dd) + "</p>" +
-                    "<p class='caption-grey'>LOCATION: </p>" +
-                    "<p class='noMargin'> " + d.location_name + "</p><br/>" +
-                    "</div>"
-                );
+                var eventDetailsContent = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
+                if(is_defined(d.event_ID)) eventDetailsContent += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
+                if(is_defined(d.dd)) eventDetailsContent += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
+                if(is_defined(d.location_name)) eventDetailsContent += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
+                eventDetailsContent += "</div>";
 
                 // Summary content
                 var summaryContent = (

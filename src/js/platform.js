@@ -37,7 +37,7 @@
          */
         .map(function(value, index, array) {
           var data = {
-            unique_event_ID: index,
+            event_ID: index,
             location_name: null,
             latitude: value.geometry.coordinates[1],
             longitude: value.geometry.coordinates[0],

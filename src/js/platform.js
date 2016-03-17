@@ -1869,7 +1869,7 @@
                     showCoverageOnHover: false,
                     chunkedLoading: true,
                     spiderfyDistanceMultiplier:2,
-                    maxClusterRadius:25
+                    maxClusterRadius: 24 
                 });
 
                 // Add markercluster to the map

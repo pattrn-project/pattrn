@@ -1569,11 +1569,10 @@
                 eventDetailsContent += "</div>";
 
                 // Summary content
-                var summaryContent = (
-                    "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>" +
-                    "<p class='summary'>" + d.event_summary + "</p>" +
-                    "<p class='caption-grey'>SOURCE:</p>" +
-                    "<p class='summary'>" + d.source_name + "</p><br/>" +
+                var summaryContent = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
+                if(is_defined(d.event_summary)) summaryContent += "<p class='summary'>" + d.event_summary + "</p>";
+                if(is_defined(d.source_name)) summaryContent += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
+                summaryContent += (
                     "<div class='summaryTable'></div><br/>" +
                     "</div>"
                 );

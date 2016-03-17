@@ -44,7 +44,9 @@
             geo_accuracy: null,
             date_time: value.properties.pattrn_time_date,
             event_summary: value.properties.pattrn_event_summary,
-            source_name: null
+            source_name: null,
+            pattrn_data_set: value.properties.pattrn_data_set,
+            source_variables: value.properties
           };
           var defined_variables = Object.keys(data).length;
 

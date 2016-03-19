@@ -13,7 +13,14 @@
         "title" : "Pattrn",
         "subtitle" : "A data-driven, participatory fact mapping platform",
         "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
-        "colour" : "#f45656"
+        "colour" : "#f45656",
+	      "map" : {
+          "markers" : {
+	           "color" : "black",
+             "fillColor" : "black",
+             "opacity" : "0.8"
+           }
+	      }
       }
     };
 
@@ -1545,6 +1552,9 @@
 
             // MARKERS
             dataset.forEach(function(d, i) {
+                // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
+                var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
+
                 d.i = i;
                 var dayMonthFormat = d3.time.format("%d/%m/%y");
                 var fullDateFormat = d3.time.format("%A, %d %B %Y");
@@ -1553,8 +1563,8 @@
                 d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude),{
                     title: "",
                     radius: 7,
-                    color: pattrn_data_sets[d.pattrn_data_set],
-                    opacity:0.9,
+                    color: marker_color,
+                    opacity: 0.9,
                     fillOpacity:0.8,
                     clickable: true,
                 });
@@ -1778,11 +1788,14 @@
                     }
 
                     _map.on("popupclose", function(e) {
+                        // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
+                        var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
+
                         d.marker.setRadius(7);
                         d.marker.setStyle({
-                            fillColor: 'black',
-                            color: 'black',
-                            fillOpacity: 0.8,
+                            fillColor: marker_color,
+                            color: marker_color,
+                            fillOpacity: platform_settings.default.map.markers.opacity
                         });
                         content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
                         Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";

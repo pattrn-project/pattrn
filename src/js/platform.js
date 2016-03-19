@@ -117,7 +117,7 @@
                 "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
             );
         }
-        
+
         // Get data from
         $(document).ready(function() { load_data(config.data_sources); });
 
@@ -149,7 +149,7 @@
                 init_table(data_sources.google_docs[0]);
             }
         }
-        
+
         /* global Tabletop */
         function init_table(src) {
             Tabletop.init({
@@ -169,7 +169,7 @@
 
             consume_table(data, settings, "google_docs");
         }
-        
+
         function consume_table(dataset, settings, data_source_type) {
             var platformTitle,
                 platformSubtitle,
@@ -177,7 +177,7 @@
                 highlightColour,
                 elements,
                 pattrn_data_sets = {};
-             
+
             /**
              * If the pattrn_data_set variable is set for any of the observations,
              * associate colours to each source data set, to be used when displaying
@@ -1716,7 +1716,7 @@
                                 "</p> </th> </tr>"
                             );
                         }
-			    
+
                         if('geojson_file' === data_source_type) {
 			  Object.keys(d.source_variables)
 			    .filter(function(value) { return ! value.match(/^pattrn_/); })
@@ -1725,7 +1725,7 @@
 			  });
                         }
 
-                        
+
                         // Table content - Integers - hard coded to mirror spreadsheet structure
                         if (values_number_field_name_1 > 0) {
                             appendIntegerValueToTable(number_field_name_1);
@@ -1894,7 +1894,7 @@
                     showCoverageOnHover: false,
                     chunkedLoading: true,
                     spiderfyDistanceMultiplier:2,
-                    maxClusterRadius: 24 
+                    maxClusterRadius: 24
                 });
 
                 // Add markercluster to the map

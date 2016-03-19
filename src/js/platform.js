@@ -64,8 +64,16 @@
          * including the ones defined above derived from the source
          * dataset.
          */
-        for(var i = 0; i < 30 - defined_variables - 1; i++) {
-          data['dummy_' + i] = '';
+        for(var i = 0; i < 13 - defined_variables; i++) {
+          data['dummy_base_' + i] = '';
+        }
+
+        data['source_data_set'] = value.properties.pattrn_data_set;
+
+        defined_variables = Object.keys(data).length;
+
+        for(var i = 0; i < 29 - defined_variables; i++) {
+          data['dummy_extra_' + i] = '';
         }
 
         return data;

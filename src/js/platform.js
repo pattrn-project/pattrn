@@ -10,6 +10,7 @@
     var blockpopup = false;
     var platform_settings = {
       "default" : {
+        "release_status" : "beta",
         "title" : "Pattrn",
         "subtitle" : "A data-driven, participatory fact mapping platform",
         "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
@@ -179,12 +180,20 @@
         }
 
         function consume_table(dataset, settings, data_source_type) {
-            var platformTitle,
+            var release_status,
+                platformTitle,
                 platformSubtitle,
                 aboutModalContent,
                 highlightColour,
                 elements,
                 pattrn_data_sets = {};
+
+            /**
+             * Disable 'edit/add event' link for read-only data source types
+             */
+            if('geojson_file' === data_source_type) {
+              document.getElementById('edit_event').style.display = 'none';
+            }
 
             /**
              * If the pattrn_data_set variable is set for any of the observations,
@@ -214,6 +223,15 @@
             // Subtitle
             platformSubtitle = document.getElementById('platformSubtitle')
                 .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].subtitle)) ? settings[0].subtitle : platform_settings.default.subtitle;
+
+            // Is this a pre-release platform? If so, display the pre-release label defined (e.g. beta)
+            if(is_defined(platform_settings.default.release_status)) {
+              release_status = document.getElementById('platformTitle').appendChild(document.createElement('span'));
+              if(is_defined(release_status)) {
+                release_status.className = 'pre-release';
+                release_status.innerHTML = '(' + platform_settings.default.release_status + ')';
+              }
+            }
 
             // About modal
             aboutModalContent = document.getElementById('aboutModalContent')

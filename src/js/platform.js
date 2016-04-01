@@ -176,7 +176,7 @@
             var dataset = data.Data.elements,
                 settings = data.Settings.elements;
 
-            consume_table(data, settings, "google_docs");
+            consume_table(dataset, settings, "google_docs");
         }
 
         function consume_table(dataset, settings, data_source_type) {
@@ -353,6 +353,17 @@
 
             // Parse time
             var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
+
+            // Remove rows with invalid dates
+            dataset = dataset.filter(function(d) {
+              try {
+                dateFormat.parse(d.date_time);
+              }
+              catch(e) {
+                return false;
+              }
+              return true;
+            });
 
             dataset.forEach(function (d) {
                 d.dd = dateFormat.parse(d.date_time);

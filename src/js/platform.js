@@ -1,3 +1,10 @@
+var d3 = require('d3');
+var dc = require('dc');
+var crossfilter = require('crossfilter');
+var L = require('leaflet');
+require('leaflet.markercluster');
+var Tabletop = require('tabletop');
+
 (function pattrn(){
 
     var _map;
@@ -8,98 +15,6 @@
     var brushOn = true;
     var zooming=false;
     var blockpopup = false;
-    var platform_settings = {
-      "default" : {
-        "release_status" : "beta",
-        "title" : "Pattrn",
-        "subtitle" : "A data-driven, participatory fact mapping platform",
-        "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
-        "colour" : "#f45656",
-	      "map" : {
-          "markers" : {
-	           "color" : "black",
-             "fillColor" : "black",
-             "opacity" : "0.8"
-           }
-	      }
-      }
-    };
-
-    /**
-     * Translates GeoJSON source data to the legacy format that
-     * Pattrn v1 expects.
-     * Only FeatureCollections comprising Points are supported at the moment
-     * @param Object data The GeoJSON feature collection
-     * @param Object The dataset structured as Pattrn v1 expects
-     */
-    var geojson_to_pattrn_legacy_data_structure = function(data) {
-      if(! is_defined(data) || ! is_defined(data.features) || ! Array.isArray(data.features)) {
-        throw 'No GeoJSON feature defined';
-      }
-
-      return data.features
-        /**
-         * Extract key variables from source GeoJSON data,
-         * mapping them to a flat structure as per Pattrn v1
-         * source data structure.
-         */
-        .map(function(value, index, array) {
-          var data = {
-            event_ID: index,
-            location_name: null,
-            latitude: value.geometry.coordinates[1],
-            longitude: value.geometry.coordinates[0],
-            geo_accuracy: null,
-            date_time: value.properties.pattrn_time_date,
-            event_summary: value.properties.pattrn_event_summary,
-            source_name: null,
-            pattrn_data_set: value.properties.pattrn_data_set,
-            source_variables: value.properties
-          };
-          var defined_variables = Object.keys(data).length;
-
-        /**
-         * Pad variables with dummy empty ones (null is not ok because
-         * of lack of error handling before use of variables in legacy
-         * code) so that each array item has exactly 30 variables,
-         * including the ones defined above derived from the source
-         * dataset.
-         */
-        for(var i = 0; i < 13 - defined_variables; i++) {
-          data['dummy_base_' + i] = '';
-        }
-
-        data['source_data_set'] = value.properties.pattrn_data_set;
-
-        defined_variables = Object.keys(data).length;
-
-        for(var i = 0; i < 29 - defined_variables; i++) {
-          data['dummy_extra_' + i] = '';
-        }
-
-        return data;
-      })
-      /**
-       * Filter out observations that don't include all of the
-       * variables needed (date_time, latitude, longitude).
-       */
-      .filter(function(value, index, array) {
-        return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
-      });
-    }
-
-    /**
-     * check if variable is defined
-     * @param variable The variable to check
-     * @return bool Whether the variable is defined
-     */
-    var is_defined = function(variable) {
-      if (typeof variable !== 'undefined' && variable !== null) {
-        return true;
-      } else {
-        return false;
-      }
-    };
 
     // Bug fix for dropdown sub-menu
     $(document).ready(function(){
@@ -115,133 +30,48 @@
     });
 
     // Load the json file with the local settings
-    /* global d3 */
-    d3.json("config.json", function(config) {
+    d3.json("js/config.json", function(config) {
 
-        /**
-         * Add link to edit interface, if defined
-         */
-        if(config.script_url) {
-            $('#edit_dropdown').append(
-                "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
-            );
-        }
+        $('#edit_dropdown').append(
+            "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
+        );
 
         // Get data from
-        $(document).ready(function() { load_data(config.data_sources); });
+        $(document).ready(function() { init_table(); });
 
-        /**
-         * Load data
-         * Eventually, multiple sources will be supported. Until the
-         * core visualization code is updated to handle multiple sources,
-         * we actually only load a single data source:
-         * by default, if any JSON files are defined, we load the first one;
-         * as fallback, if any Google Sheet document is defined, we load the
-         * first one.
-         */
-        function load_data(data_sources) {
-            if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
-                d3.json(data_sources.geojson_data.data_url, function(error, dataset) {
-                    d3.json(data_sources.geojson_data.settings_url, function(error, settings) {
-                        var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset);
-                        consume_table(dataset_in_legacy_format, settings, 'geojson_file');
-                    });
-                });
-            } else if(data_sources.json_file && data_sources.json_file.length) {
-                d3.json(data_sources.json_file[0], function(error, data) {
-                    var dataset = data.Data.elements,
-                        settings = data.Settings.elements;
-
-                    consume_table(dataset, settings, 'json_file');
-                });
-            } else if(data_sources.google_docs && data_sources.google_docs.length) {
-                init_table(data_sources.google_docs[0]);
-            }
-        }
-
-        /* global Tabletop */
-        function init_table(src) {
+        function init_table() {
             Tabletop.init({
-                key: src,
-                callback: consume_table_google_docs,
+                key: config.public_spreadsheet,
+                callback: consume_table,
                 simpleSheet: false
             });
         }
 
-        /**
-         * Wrap actual function, should be done with .bind()
-         * @tags TECHNICAL_DEBT
-         */
-        function consume_table_google_docs(data) {
-            var dataset = data.Data.elements,
-                settings = data.Settings.elements;
+        function consume_table(data) {
 
-            consume_table(dataset, settings, "google_docs");
-        }
-
-        function consume_table(dataset, settings, data_source_type) {
-            var release_status,
-                platformTitle,
-                platformSubtitle,
-                aboutModalContent,
-                highlightColour,
-                elements,
-                pattrn_data_sets = {};
-
-            /**
-             * Disable 'edit/add event' link for read-only data source types
-             */
-            if('geojson_file' === data_source_type) {
-              document.getElementById('edit_event').style.display = 'none';
-            }
-
-            /**
-             * If the pattrn_data_set variable is set for any of the observations,
-             * associate colours to each source data set, to be used when displaying
-             * markers.
-             */
-            if('geojson_file' === data_source_type) {
-              var data_source_column = dataset.map(function(value) {
-                return value.pattrn_data_set;
-              })
-              .reduce(function(p, c) {
-                if(p.indexOf(c) < 0) p.push(c);
-                return p;
-              }, []);
-
-              var fill = d3.scale.category10();
-
-              data_source_column.forEach(function(value, index, array) {
-                pattrn_data_sets[value] = fill(index);
-              });
-            }
+            // SETTINGS
+            var settings = data.Settings.elements;
 
             // Title
-            platformTitle = document.getElementById('platformTitle')
-             .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].title)) ? settings[0].title : platform_settings.default.title;
+            var platformTitle = document.getElementById('platformTitle')
+            .innerHTML = settings[0].title;
 
             // Subtitle
-            platformSubtitle = document.getElementById('platformSubtitle')
-                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].subtitle)) ? settings[0].subtitle : platform_settings.default.subtitle;
-
-            // Is this a pre-release platform? If so, display the pre-release label defined (e.g. beta)
-            if(is_defined(platform_settings.default.release_status)) {
-              release_status = document.getElementById('platformTitle').appendChild(document.createElement('span'));
-              if(is_defined(release_status)) {
-                release_status.className = 'pre-release';
-                release_status.innerHTML = '(' + platform_settings.default.release_status + ')';
-              }
-            }
+            var platformSubtitle = document.getElementById('platformSubtitle')
+            .innerHTML = settings[0].subtitle;
 
             // About modal
-            aboutModalContent = document.getElementById('aboutModalContent')
-                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].about)) ? settings[0].about : platform_settings.default.about;
+            var aboutModalContent = document.getElementById('aboutModalContent')
+            .innerHTML = settings[0].about;
 
             // Highlight colour
-            highlightColour =(is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].colour)) ? settings[0].colour : platform_settings.default.colour;
+            var highlightColour = settings[0].colour;
             elements = document.getElementById("highlight");
             elements.style.backgroundColor = highlightColour;
             $('.filter').css('color', highlightColour);
+
+            // DATA
+            var dataset = data.Data.elements;
 
             // Make new column with eventID for the charts / markers
             for (i = 0; i < dataset.length; i++) {
@@ -294,7 +124,7 @@
             var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
 
             // Add 'Unknown' to empty tag fields
-            for (var i = 0; i < dataset.length; i++) {
+            for (i = 0; i < dataset.length; i++) {
                 if (dataset[i][tags_field_name_1].length === 0) {
                     dataset[i][tags_field_name_1] = 'Unknown';
                 }
@@ -353,17 +183,6 @@
 
             // Parse time
             var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
-
-            // Remove rows with invalid dates
-            dataset = dataset.filter(function(d) {
-              try {
-                dateFormat.parse(d.date_time);
-              }
-              catch(e) {
-                return false;
-              }
-              return true;
-            });
 
             dataset.forEach(function (d) {
                 d.dd = dateFormat.parse(d.date_time);
@@ -859,7 +678,6 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_01(p, v) {
-                    if(typeof v[tags_field_name_1] !== 'string') return p;
                     v[tags_field_name_1].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -867,7 +685,6 @@
                 }
 
                 function reduceRemoveTarget_01(p, v) {
-                    if(typeof v[tags_field_name_1] !== 'string') return p;
                     v[tags_field_name_1].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -939,7 +756,6 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_02(p, v) {
-                    if(typeof v[tags_field_name_2] !== 'string') return p;
                     v[tags_field_name_2].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -947,7 +763,6 @@
                 }
 
                 function reduceRemoveTarget_02(p, v) {
-                    if(typeof v[tags_field_name_2] !== 'string') return p;
                     v[tags_field_name_2].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1025,7 +840,6 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_03(p, v) {
-                    if(typeof v[tags_field_name_3] !== 'string') return p;
                     v[tags_field_name_3].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1033,7 +847,6 @@
                 }
 
                 function reduceRemoveTarget_03(p, v) {
-                    if(typeof v[tags_field_name_3] !== 'string') return p;
                     v[tags_field_name_3].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1102,7 +915,6 @@
 
                 // REDUCE FUNCTION
                 function reduceAddTarget_04(p, v) {
-                    if(typeof v[tags_field_name_4] !== 'string') return p;
                     v[tags_field_name_4].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1110,7 +922,6 @@
                 }
 
                 function reduceRemoveTarget_04(p, v) {
-                    if(typeof v[tags_field_name_4] !== 'string') return p;
                     v[tags_field_name_4].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1178,7 +989,6 @@
 
                 // CUSTOM REDUCE FUNCTION
                 function reduceAddTarget_05(p, v) {
-                    if(typeof v[tags_field_name_5] !== 'string') return p;
                     v[tags_field_name_5].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1186,7 +996,6 @@
                 }
 
                 function reduceRemoveTarget_05(p, v) {
-                    if(typeof v[tags_field_name_5] !== 'string') return p;
                     v[tags_field_name_5].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1421,7 +1230,6 @@
             // SOURCE CHART - TAGS
             // REDUCE FUNCTION
                 function reduceAddTarget_source(p, v) {
-                    if(typeof v[source_field_name] !== 'string') return p;
                     v[source_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1429,7 +1237,6 @@
                 }
 
                 function reduceRemoveTarget_source(p, v) {
-                    if(typeof v[source_field_name] !== 'string') return p;
                     v[source_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1493,7 +1300,6 @@
 
                 // CUSTOM REDUCE FUNCTION
                 function reduceAddTarget_media(p, v) {
-                    if(typeof v[media_field_name] !== 'string') return p;
                     v[media_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) + 1; //increment counts
                     });
@@ -1501,7 +1307,6 @@
                 }
 
                 function reduceRemoveTarget_media(p, v) {
-                    if(typeof v[media_field_name] !== 'string') return p;
                     v[media_field_name].split(',').forEach (function(val, idx) {
                         p[val] = (p[val] || 0) - 1; //decrement counts
                     });
@@ -1589,9 +1394,6 @@
 
             // MARKERS
             dataset.forEach(function(d, i) {
-                // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
-
                 d.i = i;
                 var dayMonthFormat = d3.time.format("%d/%m/%y");
                 var fullDateFormat = d3.time.format("%A, %d %B %Y");
@@ -1600,8 +1402,8 @@
                 d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude),{
                     title: "",
                     radius: 7,
-                    color: marker_color,
-                    opacity: 0.9,
+                    color: "black",
+                    opacity:0.9,
                     fillOpacity:0.8,
                     clickable: true,
                 });
@@ -1609,17 +1411,22 @@
                 d.marker.data = d;
 
                 // Tooltip content
-                var eventDetailsContent = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
-                if(is_defined(d.event_ID)) eventDetailsContent += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
-                if(is_defined(d.dd)) eventDetailsContent += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
-                if(is_defined(d.location_name)) eventDetailsContent += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
-                eventDetailsContent += "</div>";
+                var eventDetailsContent = (
+                    "<div class='col-sm-12' style='padding-top:15px' id='background'>" +
+                    "<p class='caption-grey'>EVENT ID:  </p><p class='noMargin'>" + d.event_ID + "</p>" +
+                    "<p class='caption-grey'>DATE:</p>" +
+                    "<p class='noMargin'> " + fullDateFormat(d.dd) + "</p>" +
+                    "<p class='caption-grey'>LOCATION: </p>" +
+                    "<p class='noMargin'> " + d.location_name + "</p><br/>" +
+                    "</div>"
+                );
 
                 // Summary content
-                var summaryContent = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
-                if(is_defined(d.event_summary)) summaryContent += "<p class='summary'>" + d.event_summary + "</p>";
-                if(is_defined(d.source_name)) summaryContent += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
-                summaryContent += (
+                var summaryContent = (
+                    "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>" +
+                    "<p class='summary'>" + d.event_summary + "</p>" +
+                    "<p class='caption-grey'>SOURCE:</p>" +
+                    "<p class='summary'>" + d.source_name + "</p><br/>" +
                     "<div class='summaryTable'></div><br/>" +
                     "</div>"
                 );
@@ -1746,23 +1553,6 @@
                             );
                         }
 
-			function appendGeoJSONPropertyToTable(key, value) {
-			    $('#summaryTable').append(
-                                "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
-                                "</p></th><th class='col-sm-6' ><p class='white'> " + value +
-                                "</p> </th> </tr>"
-                            );
-                        }
-
-                        if('geojson_file' === data_source_type) {
-			  Object.keys(d.source_variables)
-			    .filter(function(value) { return ! value.match(/^pattrn_/); })
-			    .forEach(function(value, index, array) {
-			    if(is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
-			  });
-                        }
-
-
                         // Table content - Integers - hard coded to mirror spreadsheet structure
                         if (values_number_field_name_1 > 0) {
                             appendIntegerValueToTable(number_field_name_1);
@@ -1825,14 +1615,11 @@
                     }
 
                     _map.on("popupclose", function(e) {
-                        // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                        var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
-
                         d.marker.setRadius(7);
                         d.marker.setStyle({
-                            fillColor: marker_color,
-                            color: marker_color,
-                            fillOpacity: platform_settings.default.map.markers.opacity
+                            fillColor: 'black',
+                            color: 'black',
+                            fillOpacity: 0.8,
                         });
                         content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
                         Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
@@ -1927,11 +1714,10 @@
 
                 // Create markercluster
                 markercluster = new L.MarkerClusterGroup({
-                    disableClusteringAtZoom: 12,
                     showCoverageOnHover: false,
                     chunkedLoading: true,
                     spiderfyDistanceMultiplier:2,
-                    maxClusterRadius: 24
+                    maxClusterRadius:25
                 });
 
                 // Add markercluster to the map

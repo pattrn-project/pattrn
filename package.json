@@ -54,5 +54,8 @@
     "gulp": "^3.9.1",
     "gulp-json-lint": "^0.1.0",
     "http-server": "^0.8.5"
+  },
+  "dependencies": {
+    "d3-queue": "^2.0.3"
   }
 }

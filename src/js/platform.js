@@ -15,6 +15,99 @@ var Tabletop = require('tabletop');
     var brushOn = true;
     var zooming=false;
     var blockpopup = false;
+    var q = d3_queue.queue();
+    var platform_settings = {
+      "default" : {
+        "release_status" : "beta",
+        "title" : "Pattrn",
+        "subtitle" : "A data-driven, participatory fact mapping platform",
+        "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
+        "colour" : "#f45656",
+	      "map" : {
+          "markers" : {
+	           "color" : "black",
+             "fillColor" : "black",
+             "opacity" : "0.8"
+           }
+	      }
+      }
+    };
+
+    /**
+     * Translates GeoJSON source data to the legacy format that
+     * Pattrn v1 expects.
+     * Only FeatureCollections comprising Points are supported at the moment
+     * @param Object data The GeoJSON feature collection
+     * @param Object The dataset structured as Pattrn v1 expects
+     */
+    var geojson_to_pattrn_legacy_data_structure = function(data) {
+      if(! is_defined(data) || ! is_defined(data.features) || ! Array.isArray(data.features)) {
+        throw 'No GeoJSON feature defined';
+      }
+
+      return data.features
+        /**
+         * Extract key variables from source GeoJSON data,
+         * mapping them to a flat structure as per Pattrn v1
+         * source data structure.
+         */
+        .map(function(value, index, array) {
+          var data = {
+            event_ID: index,
+            location_name: null,
+            latitude: value.geometry.coordinates[1],
+            longitude: value.geometry.coordinates[0],
+            geo_accuracy: null,
+            date_time: value.properties.pattrn_time_date,
+            event_summary: value.properties.pattrn_event_summary,
+            source_name: null,
+            pattrn_data_set: value.properties.pattrn_data_set,
+            source_variables: value.properties
+          };
+          var defined_variables = Object.keys(data).length;
+
+        /**
+         * Pad variables with dummy empty ones (null is not ok because
+         * of lack of error handling before use of variables in legacy
+         * code) so that each array item has exactly 30 variables,
+         * including the ones defined above derived from the source
+         * dataset.
+         */
+        for(var i = 0; i < 13 - defined_variables; i++) {
+          data['dummy_base_' + i] = '';
+        }
+
+        data['source_data_set'] = value.properties.pattrn_data_set;
+
+        defined_variables = Object.keys(data).length;
+
+        for(var i = 0; i < 29 - defined_variables; i++) {
+          data['dummy_extra_' + i] = '';
+        }
+
+        return data;
+      })
+      /**
+       * Filter out observations that don't include all of the
+       * variables needed (date_time, latitude, longitude).
+       */
+      .filter(function(value, index, array) {
+        return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
+      });
+    }
+
+    /**
+     * check if variable is defined
+     * @param variable The variable to check
+     * @return bool Whether the variable is defined
+     */
+    var is_defined = function(variable) {
+      if (typeof variable !== 'undefined' && variable !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    };
 
     // Bug fix for dropdown sub-menu
     $(document).ready(function(){

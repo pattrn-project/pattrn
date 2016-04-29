@@ -1,4 +1,4 @@
-(function pattrn(){
+module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
     var _map;
     var markerChart = null;
@@ -8,7 +8,6 @@
     var brushOn = true;
     var zooming=false;
     var blockpopup = false;
-    var q = d3_queue.queue();
     var platform_settings = {
       "default" : {
         "release_status" : "beta",
@@ -2133,4 +2132,4 @@
         };
     });
 
-})();
+};

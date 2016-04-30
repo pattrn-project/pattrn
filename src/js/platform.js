@@ -1720,7 +1720,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                     var urls = document.getElementById("urls").innerHTML = '';
                     $('.edit_dropdown').remove();
 
-                    if (markerChart.filter() == e.target.data.i) {
+                    if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
                         markerChart.filter(true);
                     } else {
 
@@ -1788,7 +1788,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                         });
 
                         // Open popup
-                        e.target.popup.openOn(markerChart.getMap());
+                        // TECHNICAL_DEBT - restore next line once dc.markerChart works reliably again in dc
+                        // e.target.popup.openOn(markerChart.getMap());
 
                         // Change style of popup
                         $('.leaflet-popup-content-wrapper').addClass('transparent');
@@ -1958,11 +1959,14 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                     );
 
                     // Execute markerChart function - assign marker dimension and group to the chart
+                    // TECHNICAL_DEBT: restore next block once dc.markerChart works reliably in dc
+                    /*
                     markerChart = dc.markerChart()
                         .dimension(markerDimension)
                         .group(markerGroup)
                         .filterByBounds(true);
-
+                    */
+                    
                     dc.renderAll();
 
                 } // draw function close
@@ -2128,8 +2132,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                         }
                     };
 
-            return _chart.anchor(parent, chartGroup);
-
+            var cha = _chart.anchor(/*parent, chartGroup*/);
+            return cha;
         };
     });
 

@@ -22,6 +22,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
              "opacity" : "0.8"
            }
 	      }
+      },
+      "ui": {
+        "map": {
+          "root_selector": "chart-map"
+        }
       }
     };
 

@@ -1793,8 +1793,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                         });
 
                         // Open popup
-                        // TECHNICAL_DEBT - restore next line once dc.markerChart works reliably again in dc
-                        // e.target.popup.openOn(markerChart.getMap());
+                        e.target.popup.openOn(markerChart.getMap());
 
                         // Change style of popup
                         $('.leaflet-popup-content-wrapper').addClass('transparent');
@@ -1964,14 +1963,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                     );
 
                     // Execute markerChart function - assign marker dimension and group to the chart
-                    // TECHNICAL_DEBT: restore next block once dc.markerChart works reliably in dc
-                    /*
-                    markerChart = dc.markerChart()
+                    markerChart = dc.markerChart(platform_settings.ui.map.root_selector)
                         .dimension(markerDimension)
                         .group(markerGroup)
                         .filterByBounds(true);
-                    */
-                    
+
                     dc.renderAll();
 
                 } // draw function close
@@ -1990,7 +1986,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             _chart._doRender = function() {
 
                 // MAP SETTINGS
-                _map = L.map('chart-map', {
+                _map = L.map(platform_settings.ui.map.root_selector, {
                     touchZoom: false,
                     scrollWheelZoom: false,
                     maxZoom:14,
@@ -2137,7 +2133,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                         }
                     };
 
-            var cha = _chart.anchor(/*parent, chartGroup*/);
+            var cha = _chart.anchor(parent, chartGroup);
             return cha;
         };
     });

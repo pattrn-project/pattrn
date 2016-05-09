@@ -5,7 +5,7 @@ var marker_chart = require('./dc_markerchart.js');
 
 module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
-    var _map;
+    var _map = {};
     var markerChart = null;
     var bounds;
     var filterByBounds = false;
@@ -1929,180 +1929,31 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
                     );
 
-                    // Execute markerChart function - assign marker dimension and group to the chart
-                    markerChart = dc.markerChart(platform_settings.ui.map.root_selector)
-                        .dimension(markerDimension)
-                        .group(markerGroup)
-                        .filterByBounds(true);
+                    // MAP SETTINGS
+                    _map = L.map(instance_settings.map.root_selector, {
+                        touchZoom: false,
+                        scrollWheelZoom: false,
+                        maxZoom:14,
+                        minZoom:2}
+                    );
 
-                    dc.renderAll();
+      /**
+       * Make dc.markerChart function, passing in L, dc and settings/configs
+       *
+       * @x-technical-debt Clean up closure and passing of variables from
+       * current scope
+       */
+      dc.markerChart = function(parent, chartGroup) {
+        return marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config);
+      };
 
-                } // draw function close
+      // Execute markerChart function - assign marker dimension and group to the chart
+      markerChart = dc.markerChart(instance_settings.map.root_selector)
+                      .dimension(markerDimension)
+                      .group(markerGroup)
+                      .filterByBounds(true);
 
-        // Many thanks to Boyan Yurukov for his emails and help,
-        // check out his project - dc-leaflet: https://github.com/yurukov/dc.leaflet.js
-        dc.markerChart = function(parent, chartGroup) {
-
-            // Create an empty chart
-            var _chart = dc.baseChart({});
-            var markercluster;
-            var markerList = [];
-            var blockpopup = false;
-
-            // Render function
-            _chart._doRender = function() {
-
-                // MAP SETTINGS
-                _map = L.map(platform_settings.ui.map.root_selector, {
-                    touchZoom: false,
-                    scrollWheelZoom: false,
-                    maxZoom:14,
-                    minZoom:2}
-                );
-
-                // Baselayers
-                var base_layer_01 = L.tileLayer(config.base_layers[0].url, {
-                        // attribution: ''
-                }).addTo(_map);
-
-                var basemaps = {};
-                for (i=0; i<config.base_layers.length; i++){
-                    layerName = config.base_layers[i].name;
-                    basemaps[layerName] = L.tileLayer(config.base_layers[i].url);
-                }
-
-                var overlaymaps = {};
-
-                L.control.layers(basemaps, overlaymaps, {position: 'topleft'}).addTo(_map);
-
-                // Create markercluster
-                markercluster = new L.MarkerClusterGroup({
-                    disableClusteringAtZoom: 12,
-                    showCoverageOnHover: false,
-                    chunkedLoading: true,
-                    spiderfyDistanceMultiplier:2,
-                    maxClusterRadius: 24
-                });
-
-                // Add markercluster to the map
-                _map.addLayer(markercluster);
-
-                // Remove layers from marker cluster
-                markercluster.clearLayers();
-
-                _chart.group().all().forEach(function(v, i) {
-                    markerList = markerList.concat(v.value.markers);
-                });
-
-                markercluster.addLayers(markerList);
-
-                _map.fitBounds(markercluster.getBounds());
-
-                _chart._postRender();
-
-                return _chart._doRedraw();
-            };
-
-            // Redraw function
-            _chart._doRedraw = function(){
-                var markerList = [];
-                // Remove layers from marker cluster
-                markercluster.clearLayers();
-                _chart.group().all().forEach(function(v, i) {
-                    markerList = markerList.concat(v.value.markers);
-                });
-                markercluster.addLayers(markerList);
-                return _chart;
-            };
-
-            _chart.blockpopup = function(_) {
-                blockpopup=  _=== null;
-            };
-
-            _chart.brushOn = function(_) {
-                if (!arguments.length) return brushOn;
-                brushOn = _;
-                return _chart;
-            };
-
-            _chart.filterByBounds = function(_) {
-                if (!arguments.length) return filterByBounds;
-                filterByBounds = _;
-                return _chart;
-            };
-
-            _chart.getMap = function() {
-                return _map;
-            };
-
-            // UPDATE MARKERS
-            _chart._postRender = function() {
-
-                if (filterByBounds)
-                    _chart.filterHandler(doFilterByBounds);
-                    _map.on('zoomend moveend', zoomFilter, this );
-
-                if (!filterByBounds)
-                    _map.on('click', zoomFilter, this );
-                    _map.on('zoomstart', zoomStart, this);
-
-            };
-
-            var zoomStart = function(e) {
-                zooming=true;
-            };
-
-            var zoomFilter = function(e) {
-
-                if (e.type=="moveend" && (zooming || e.hard))
-                    return; zooming=false;
-
-                if (filterByBounds) {
-                    var filter;
-                    // reset filter based on pan and zoom
-                    if (_map.getCenter().equals([31.4, 34.3]) && _map.getZoom()==11)
-                        filter = null;
-                        else
-                            filter = _map.getBounds();
-                            dc.events.trigger(function () {
-                                _chart.filter(null);
-                                if (filter) {
-                                    innerFilter=true;
-                                    _chart.filter(filter);
-                                    innerFilter=false;
-                                }
-                                dc.redrawAll(_chart.chartGroup());
-                            });
-                }
-
-                else if (_chart.filter() && (e.type=="click" ||
-                    (_chart.filter() in markerList &&
-                    !_map.getBounds().contains(markerList[_chart.filter()].getLatLng())))) {
-                        dc.events.trigger(function () {
-                            _chart.filter(null);
-                            dc.redrawAll(_chart.chartGroup());
-                        });
-                    }
-
-            };
-
-            var doFilterByBounds = function(dimension, filters) {
-                _chart.dimension().filter(null);
-                if (filters && filters.length>0) {
-                    _chart.dimension().filterFunction(function(d) {
-                        if (!(d in markerList))
-                            return false;
-                            var location0 = markerList[d].getLatLng();
-                            return location0 && filters[0].contains(location0);
-                        });
-                        if (!innerFilter && _map.getBounds().toString!=filters[0].toString())
-                            _map.fitBounds(filters[0]);
-                        }
-                    };
-
-            var cha = _chart.anchor(parent, chartGroup);
-            return cha;
-        };
-    });
-
+      dc.renderAll();
+    } // draw function close
+  });
 };

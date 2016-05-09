@@ -26,7 +26,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 // Many thanks to Boyan Yurukov for his emails and help,
 // check out his project - dc-leaflet: https://github.com/yurukov/dc.leaflet.js
 
-function marker_chart(parent, chartGroup, L, dc, instance_settings, config) {
+function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config) {
 
     // Create an empty chart
     var _chart = dc.baseChart({});
@@ -37,13 +37,7 @@ function marker_chart(parent, chartGroup, L, dc, instance_settings, config) {
     // Render function
     _chart._doRender = function() {
 
-        // MAP SETTINGS
-        _map = L.map(instance_settings.map.root_selector, {
-            touchZoom: false,
-            scrollWheelZoom: false,
-            maxZoom:14,
-            minZoom:2}
-        );
+
 
         // Baselayers
         var base_layer_01 = L.tileLayer(config.base_layers[0].url, {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bundle": "browserify --debug src/js/app.js -o src/js/main.js",
+    "bundle": "browserify --debug src/js/app.js | exorcist src/js/main.js.map > src/js/main.js",
     "start": "http-server src/"
   },
   "repository": {
@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "docco": "^0.7.0",
+    "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
     "gulp-json-lint": "^0.1.0",
     "http-server": "^0.8.5"

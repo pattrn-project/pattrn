@@ -32,6 +32,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
     };
 
     /**
+     *
+     */
+
+
+    /**
      * Translates GeoJSON source data to the legacy format that
      * Pattrn v1 expects.
      * Only FeatureCollections comprising Points are supported at the moment

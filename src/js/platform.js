@@ -1,3 +1,8 @@
+var initialize_ui = require('./pattrn_ui.js');
+var process_settings = require('./settings.js');
+var is_defined = require('./is_defined.js');
+var marker_chart = require('./dc_markerchart.js');
+
 module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
     var _map;

@@ -221,7 +221,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          */
         function consume_table_google_docs(data) {
             var dataset = data.Data.elements,
-                settings = data.Settings.elements;
+                settings = data.Settings.elements[0];  // settings are in the first data row - just get this
 
             consume_table(dataset, null, settings, "google_docs");
         }
@@ -251,13 +251,14 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          *  new Pattrn API.
          */
         function consume_table(dataset, variables, settings, data_source_type) {
-            var release_status,
-                platformTitle,
-                platformSubtitle,
-                aboutModalContent,
-                highlightColour,
-                elements,
-                pattrn_data_sets = {};
+            var highlightColour,
+                pattrn_data_sets = {},
+                instance_settings = {};
+
+            /**
+             * Merge settings from config file with default settings
+             */
+            instance_settings = process_settings(platform_settings, settings);
 
             /**
              * Disable 'edit/add event' link for read-only data source types
@@ -287,32 +288,10 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
               });
             }
 
-            // Title
-            platformTitle = document.getElementById('platformTitle')
-             .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].title)) ? settings[0].title : platform_settings.default.title;
-
-            // Subtitle
-            platformSubtitle = document.getElementById('platformSubtitle')
-                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].subtitle)) ? settings[0].subtitle : platform_settings.default.subtitle;
-
-            // Is this a pre-release platform? If so, display the pre-release label defined (e.g. beta)
-            if(is_defined(platform_settings.default.release_status)) {
-              release_status = document.getElementById('platformTitle').appendChild(document.createElement('span'));
-              if(is_defined(release_status)) {
-                release_status.className = 'pre-release';
-                release_status.innerHTML = '(' + platform_settings.default.release_status + ')';
-              }
-            }
-
-            // About modal
-            aboutModalContent = document.getElementById('aboutModalContent')
-                .innerHTML = (is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].about)) ? settings[0].about : platform_settings.default.about;
-
-            // Highlight colour
-            highlightColour =(is_defined(settings) && is_defined(settings[0]) && is_defined(settings[0].colour)) ? settings[0].colour : platform_settings.default.colour;
-            elements = document.getElementById("highlight");
-            elements.style.backgroundColor = highlightColour;
-            $('.filter').css('color', highlightColour);
+            /**
+             * Initialize UI elements (title, subtitle, title area colours, about text)
+             */
+            initialize_ui(instance_settings);
 
             // Make new column with eventID for the charts / markers
             for (i = 0; i < dataset.length; i++) {
@@ -1661,7 +1640,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             // MARKERS
             dataset.forEach(function(d, i) {
                 // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
+                var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
 
                 d.i = i;
                 var dayMonthFormat = d3.time.format("%d/%m/%y");
@@ -1897,13 +1876,13 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
                     _map.on("popupclose", function(e) {
                         // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                        var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : platform_settings.default.map.markers.color;
+                        var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
 
                         d.marker.setRadius(7);
                         d.marker.setStyle({
                             fillColor: marker_color,
                             color: marker_color,
-                            fillOpacity: platform_settings.default.map.markers.opacity
+                            fillOpacity: instance_settings.map.markers.opacity
                         });
                         content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
                         Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";

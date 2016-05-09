@@ -20,17 +20,13 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         "subtitle" : "A data-driven, participatory fact mapping platform",
         "about" : "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
         "colour" : "#f45656",
-	      "map" : {
+        "map" : {
+          "root_selector": "chart-map",
           "markers" : {
-	           "color" : "black",
+             "color" : "black",
              "fillColor" : "black",
              "opacity" : "0.8"
            }
-	      }
-      },
-      "ui": {
-        "map": {
-          "root_selector": "chart-map"
         }
       }
     };

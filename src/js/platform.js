@@ -43,12 +43,14 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
      * @param Object data The GeoJSON feature collection
      * @param Object The dataset structured as Pattrn v1 expects
      */
-    var geojson_to_pattrn_legacy_data_structure = function(data, variables) {
+    var geojson_to_pattrn_legacy_data_structure = function(data, variables, config, settings) {
+      var features = [];
+
       if(! is_defined(data) || ! is_defined(data.features) || ! Array.isArray(data.features)) {
         throw 'No GeoJSON feature defined';
       }
 
-      return data.features
+      features = data.features
         /**
          * Extract key variables from source GeoJSON data,
          * mapping them to a flat structure as per Pattrn v1
@@ -149,6 +151,23 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
       .filter(function(value, index, array) {
         return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
       });
+
+      /**
+       * MONKEYPATCH - bisect as needed until dc works
+       */
+      if(is_defined(config)
+        && is_defined(config.data_sources)
+        && is_defined(config.data_sources.geojson_data)
+        && is_defined(config.data_sources.geojson_data.splice_times)
+        && config.data_sources.geojson_data.splice_times === parseInt(config.data_sources.geojson_data.splice_times, 10)
+        && config.data_sources.geojson_data.splice_times > 0
+        && config.data_sources.geojson_data.splice_times < 10) {
+        var splice_times = config.data_sources.geojson_data.splice_times;
+        while(splice_times--) {
+          features = features.splice(0, features.length / 2);
+        }
+      }
+      return features;
     }
 
     // Bug fix for dropdown sub-menu
@@ -196,7 +215,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 .defer(d3.json, data_sources.geojson_data.settings_url)
                 .await(function(error, dataset, variables, settings) {
                     if (error) throw error;
-                    var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables);
+                    var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
                     consume_table(dataset_in_legacy_format, variables, settings, 'geojson_file');
                 });
             } else if(data_sources.json_file && data_sources.json_file.length) {

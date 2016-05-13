@@ -70,88 +70,88 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           };
           var defined_variables = Object.keys(data).length;
 
+          /**
+           * Pad variables with dummy empty ones (null is not ok because
+           * of lack of error handling before use of variables in legacy
+           * code) up to the first integer variable in Pattrn v1 data layout.
+           */
+          for(var i = 0; i < 8 - defined_variables; i++) {
+            data['dummy_base_' + i] = '';
+          }
+
+          /**
+           * TECHNICAL_DEBT: limit this to 5 until
+           * we break from the v1 data layout legacy.
+           * Add int variables, if defined
+           */
+          if(is_defined(variables.integer)) {
+            variables.integer.forEach(function(v, i, a) {
+              if(is_defined(v.id)) {
+                data[v.id] = value.properties[v.id];
+              }
+            });
+          }
+
+          /**
+           * Pad variables with dummy empty ones (null is not ok because
+           * of lack of error handling before use of variables in legacy
+           * code) up to the first tag variable in Pattrn v1 data layout.
+           */
+          defined_variables = Object.keys(data).length;
+          for(var i = 0; i < 13 - defined_variables; i++) {
+            data['dummy_int_' + i] = '';
+          }
+
+          /**
+           * TECHNICAL_DEBT: do this only if applicable
+           * add source_data_set as first tag variable
+           */
+          data['source_data_set'] = value.properties.pattrn_data_set;
+
+          /**
+           * TECHNICAL_DEBT: limit this to 4 (5 minus the previous one) until
+           * we break from the v1 data layout legacy.
+           * Add other tag variables, if defined
+           */
+          if(is_defined(variables.tag)) {
+            variables.tag.forEach(function(v, i, a) {
+              if(is_defined(v.id)) {
+                data[v.id] = value.properties[v.id];
+              }
+            });
+          }
+
+          /**
+           * Pad variables with dummy empty ones (null is not ok because
+           * of lack of error handling before use of variables in legacy
+           * code) up to the first bool variable in Pattrn v1 data layout.
+           */
+          defined_variables = Object.keys(data).length;
+          for(var i = 0; i < 18 - defined_variables; i++) {
+            data['dummy_tag_' + i] = '';
+          }
+
+          /**
+           * and finally pad until we have 28 variables as in a complete
+           * Pattrn v1 dataset
+           */
+          defined_variables = Object.keys(data).length;
+          for(var i = 0; i < 29 - defined_variables; i++) {
+            data['dummy_extra_' + i] = '';
+          }
+
+          data['pattrn_data_set'] = value.properties.pattrn_data_set;
+          data['source_variables'] = value.properties;
+
+          return data;
+        })
         /**
-         * Pad variables with dummy empty ones (null is not ok because
-         * of lack of error handling before use of variables in legacy
-         * code) up to the first integer variable in Pattrn v1 data layout.
+         * Filter out observations that don't include all of the
+         * variables needed (date_time, latitude, longitude).
          */
-        for(var i = 0; i < 8 - defined_variables; i++) {
-          data['dummy_base_' + i] = '';
-        }
-
-        /**
-         * TECHNICAL_DEBT: limit this to 5 until
-         * we break from the v1 data layout legacy.
-         * Add int variables, if defined
-         */
-        if(is_defined(variables.integer)) {
-          variables.integer.forEach(function(v, i, a) {
-            if(is_defined(v.id)) {
-              data[v.id] = value.properties[v.id];
-            }
-          });
-        }
-
-        /**
-         * Pad variables with dummy empty ones (null is not ok because
-         * of lack of error handling before use of variables in legacy
-         * code) up to the first tag variable in Pattrn v1 data layout.
-         */
-        defined_variables = Object.keys(data).length;
-        for(var i = 0; i < 13 - defined_variables; i++) {
-          data['dummy_int_' + i] = '';
-        }
-
-        /**
-         * TECHNICAL_DEBT: do this only if applicable
-         * add source_data_set as first tag variable
-         */
-        data['source_data_set'] = value.properties.pattrn_data_set;
-
-        /**
-         * TECHNICAL_DEBT: limit this to 4 (5 minus the previous one) until
-         * we break from the v1 data layout legacy.
-         * Add other tag variables, if defined
-         */
-        if(is_defined(variables.tag)) {
-          variables.tag.forEach(function(v, i, a) {
-            if(is_defined(v.id)) {
-              data[v.id] = value.properties[v.id];
-            }
-          });
-        }
-
-        /**
-         * Pad variables with dummy empty ones (null is not ok because
-         * of lack of error handling before use of variables in legacy
-         * code) up to the first bool variable in Pattrn v1 data layout.
-         */
-        defined_variables = Object.keys(data).length;
-        for(var i = 0; i < 18 - defined_variables; i++) {
-          data['dummy_tag_' + i] = '';
-        }
-
-        /**
-         * and finally pad until we have 28 variables as in a complete
-         * Pattrn v1 dataset
-         */
-        defined_variables = Object.keys(data).length;
-        for(var i = 0; i < 29 - defined_variables; i++) {
-          data['dummy_extra_' + i] = '';
-        }
-
-        data['pattrn_data_set'] = value.properties.pattrn_data_set;
-        data['source_variables'] = value.properties;
-
-        return data;
-      })
-      /**
-       * Filter out observations that don't include all of the
-       * variables needed (date_time, latitude, longitude).
-       */
-      .filter(function(value, index, array) {
-        return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
-      });
+        .filter(function(value, index, array) {
+          return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
+        });
 
       features = bisect_features(features, config);
 

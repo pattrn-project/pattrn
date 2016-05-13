@@ -50,186 +50,185 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
     // Load the json file with the local settings
     /* global d3 */
     d3.json("config.json", function(config) {
+      /**
+       * Add link to edit interface, if defined
+       */
+      if(config.script_url) {
+          $('#edit_dropdown').append(
+              "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
+          );
+      }
 
-        /**
-         * Add link to edit interface, if defined
-         */
-        if(config.script_url) {
-            $('#edit_dropdown').append(
-                "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
-            );
-        }
+      // load data; legacy code wrapped this in jQuery's document.ready - is that really needed?
+      load_data(config.data_sources);
 
-        // Get data from
-        $(document).ready(function() { load_data(config.data_sources); });
-
-        /**
-         * Load data
-         * Eventually, multiple sources will be supported. Until the
-         * core visualization code is updated to handle multiple sources,
-         * we actually only load a single data source:
-         * by default, if any JSON files are defined, we load the first one;
-         * as fallback, if any Google Sheet document is defined, we load the
-         * first one.
-         */
-        function load_data(data_sources) {
-            if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
-              q.defer(d3.json, data_sources.geojson_data.data_url)
-                .defer(d3.json, data_sources.geojson_data.metadata_url)
-                .defer(d3.json, data_sources.geojson_data.settings_url)
-                .await(function(error, dataset, variables, settings) {
-                    if (error) throw error;
-                    var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
-                    consume_table(dataset_in_legacy_format, variables, settings, 'geojson_file');
-                });
-            } else if(data_sources.json_file && data_sources.json_file.length) {
-                d3.json(data_sources.json_file[0], function(error, data) {
-                    var dataset = data.Data.elements,
-                        settings = data.Settings.elements;
-
-                    consume_table(dataset, null, settings, 'json_file');
-                });
-            } else if(data_sources.google_docs && data_sources.google_docs.length) {
-                init_table(data_sources.google_docs[0]);
-            }
-        }
-
-        /* global Tabletop */
-        function init_table(src) {
-            Tabletop.init({
-                key: src,
-                callback: consume_table_google_docs,
-                simpleSheet: false
+      /**
+       * Load data
+       * Eventually, multiple sources will be supported. Until the
+       * core visualization code is updated to handle multiple sources,
+       * we actually only load a single data source:
+       * by default, if any JSON files are defined, we load the first one;
+       * as fallback, if any Google Sheet document is defined, we load the
+       * first one.
+       */
+      function load_data(data_sources) {
+        if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
+          q.defer(d3.json, data_sources.geojson_data.data_url)
+            .defer(d3.json, data_sources.geojson_data.metadata_url)
+            .defer(d3.json, data_sources.geojson_data.settings_url)
+            .await(function(error, dataset, variables, settings) {
+              if (error) throw error;
+              var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
+              consume_table(dataset_in_legacy_format, variables, settings, 'geojson_file');
             });
-        }
-
-        /**
-         * Wrap actual function, should be done with .bind()
-         * @tags TECHNICAL_DEBT
-         */
-        function consume_table_google_docs(data) {
+        } else if(data_sources.json_file && data_sources.json_file.length) {
+          d3.json(data_sources.json_file[0], function(error, data) {
             var dataset = data.Data.elements,
-                settings = data.Settings.elements[0];  // settings are in the first data row - just get this
+                settings = data.Settings.elements;
 
-            consume_table(dataset, null, settings, "google_docs");
+            consume_table(dataset, null, settings, 'json_file');
+          });
+        } else if(data_sources.google_docs && data_sources.google_docs.length) {
+            init_table(data_sources.google_docs[0]);
+        }
+      }
+
+      /* global Tabletop */
+      function init_table(src) {
+          Tabletop.init({
+              key: src,
+              callback: consume_table_google_docs,
+              simpleSheet: false
+          });
+      }
+
+      /**
+       * Wrap actual function, should be done with .bind()
+       * @tags TECHNICAL_DEBT
+       */
+      function consume_table_google_docs(data) {
+          var dataset = data.Data.elements,
+              settings = data.Settings.elements[0];  // settings are in the first data row - just get this
+
+          consume_table(dataset, null, settings, "google_docs");
+      }
+
+      /**
+       * Legacy monolithic function - process and prepare data and UI
+       * This needs to be broken down into manageable functions and
+       * refactored: lots of repeated code can be moved into forEach/map/etc.
+       * as appropriate, dead code must be removed, code must be adapted to
+       * deal with flexible number and type of variables, etc.
+       * Until then, we are slowly adapting the existing monolithic function
+       * to work with the Pattrn API and refactoring the low-hanging fruits.
+       *
+       * @param {Object} dataset The dataset itself
+       * @param {Object} variables Data structure describing the dataset's
+       *  variables, grouped by type (e.g. integer, tags, bool)
+       *  Pattrn v1 was using hardcoded variable positions (e.g. 9th to 13th
+       *  variables of the dataset were of type integer, etc.), with the
+       *  added caveat that the colun names were extracted by looking up
+       *  the keys of the first object of the dataset, relying on the brittle
+       *  assumption that JavaScript objects are ordered sets.
+       *  In the transition to v2, we are using a thin dataset description
+       *  using Open Knowledge's Tabular Data Packages.
+       * @param {Object} settings Settings for this Pattrn instance
+       * @param {string} data_source_type Whether the data source is
+       *  a legacy (v1) one from Google Sheets, a plain JSON file or the
+       *  new Pattrn API.
+       */
+      function consume_table(dataset, variables, settings, data_source_type) {
+        var highlightColour,
+            pattrn_data_sets = {},
+            instance_settings = {};
+
+        /**
+         * Merge settings from config file with default settings
+         */
+        instance_settings = process_settings(platform_settings, settings);
+
+        /**
+         * Disable 'edit/add event' link for read-only data source types
+         */
+        if('geojson_file' === data_source_type) {
+          document.getElementById('edit_event').style.display = 'none';
         }
 
         /**
-         * Legacy monolithic function - process and prepare data and UI
-         * This needs to be broken down into manageable functions and
-         * refactored: lots of repeated code can be moved into forEach/map/etc.
-         * as appropriate, dead code must be removed, code must be adapted to
-         * deal with flexible number and type of variables, etc.
-         * Until then, we are slowly adapting the existing monolithic function
-         * to work with the Pattrn API and refactoring the low-hanging fruits.
-         *
-         * @param {Object} dataset The dataset itself
-         * @param {Object} variables Data structure describing the dataset's
-         *  variables, grouped by type (e.g. integer, tags, bool)
-         *  Pattrn v1 was using hardcoded variable positions (e.g. 9th to 13th
-         *  variables of the dataset were of type integer, etc.), with the
-         *  added caveat that the colun names were extracted by looking up
-         *  the keys of the first object of the dataset, relying on the brittle
-         *  assumption that JavaScript objects are ordered sets.
-         *  In the transition to v2, we are using a thin dataset description
-         *  using Open Knowledge's Tabular Data Packages.
-         * @param {Object} settings Settings for this Pattrn instance
-         * @param {string} data_source_type Whether the data source is
-         *  a legacy (v1) one from Google Sheets, a plain JSON file or the
-         *  new Pattrn API.
+         * If the pattrn_data_set variable is set for any of the observations,
+         * associate colours to each source data set, to be used when displaying
+         * markers.
          */
-        function consume_table(dataset, variables, settings, data_source_type) {
-            var highlightColour,
-                pattrn_data_sets = {},
-                instance_settings = {};
+        if('geojson_file' === data_source_type) {
+          var data_source_column = dataset.map(function(value) {
+            return value.pattrn_data_set;
+          })
+          .reduce(function(p, c) {
+            if(p.indexOf(c) < 0) p.push(c);
+            return p;
+          }, []);
 
-            /**
-             * Merge settings from config file with default settings
-             */
-            instance_settings = process_settings(platform_settings, settings);
+          var fill = d3.scale.category10();
 
-            /**
-             * Disable 'edit/add event' link for read-only data source types
-             */
-            if('geojson_file' === data_source_type) {
-              document.getElementById('edit_event').style.display = 'none';
-            }
+          data_source_column.forEach(function(value, index, array) {
+            pattrn_data_sets[value] = fill(index);
+          });
+        }
 
-            /**
-             * If the pattrn_data_set variable is set for any of the observations,
-             * associate colours to each source data set, to be used when displaying
-             * markers.
-             */
-            if('geojson_file' === data_source_type) {
-              var data_source_column = dataset.map(function(value) {
-                return value.pattrn_data_set;
-              })
-              .reduce(function(p, c) {
-                if(p.indexOf(c) < 0) p.push(c);
-                return p;
-              }, []);
+        /**
+         * Initialize UI elements (title, subtitle, title area colours, about text)
+         */
+        initialize_ui(instance_settings);
 
-              var fill = d3.scale.category10();
+        // Make new column with eventID for the charts / markers
+        for (i = 0; i < dataset.length; i++) {
+            dataset[i].eventID = i;
+        }
 
-              data_source_column.forEach(function(value, index, array) {
-                pattrn_data_sets[value] = fill(index);
-              });
-            }
+        // Get the headers in an array of strings
+        var headers = Object.keys(dataset[0]);
 
-            /**
-             * Initialize UI elements (title, subtitle, title area colours, about text)
-             */
-            initialize_ui(instance_settings);
+          // Extract columns for integers (hardcoded to mirror spreadsheet)
+          var integer_fields_names = [headers[11], headers[12], headers[13], headers[14], headers[15]];
 
-            // Make new column with eventID for the charts / markers
-            for (i = 0; i < dataset.length; i++) {
-                dataset[i].eventID = i;
-            }
+          var number_field_name_1 = headers[8];
+          var number_field_name_2 = headers[9];
+          var number_field_name_3 = headers[10];
+          var number_field_name_4 = headers[11];
+          var number_field_name_5 = headers[12];
 
-            // Get the headers in an array of strings
-            var headers = Object.keys(dataset[0]);
+          // Extract columns for tags (hardcoded to mirror spreadsheet)
+          var tag_fields_names = [headers[16], headers[17], headers[18], headers[19], headers[20]];
+          var tags_field_name_1 = headers[13];
+          var tags_field_name_2 = headers[14];
+          var tags_field_name_3 = headers[15];
+          var tags_field_name_4 = headers[16];
+          var tags_field_name_5 = headers[17];
 
-            // Extract columns for integers (hardcoded to mirror spreadsheet)
-            var integer_fields_names = [headers[11], headers[12], headers[13], headers[14], headers[15]];
+          // Extract columns for booleans (hardcoded to mirror spreadsheet)
+          var boolean_field_name_1 = headers[18];
+          var boolean_field_name_2 = headers[19];
+          var boolean_field_name_3 = headers[20];
+          var boolean_field_name_4 = headers[21];
+          var boolean_field_name_5 = headers[22];
 
-            var number_field_name_1 = headers[8];
-            var number_field_name_2 = headers[9];
-            var number_field_name_3 = headers[10];
-            var number_field_name_4 = headers[11];
-            var number_field_name_5 = headers[12];
+          // Extract columns for source
+          var source_field_name = headers[7];
 
-            // Extract columns for tags (hardcoded to mirror spreadsheet)
-            var tag_fields_names = [headers[16], headers[17], headers[18], headers[19], headers[20]];
-            var tags_field_name_1 = headers[13];
-            var tags_field_name_2 = headers[14];
-            var tags_field_name_3 = headers[15];
-            var tags_field_name_4 = headers[16];
-            var tags_field_name_5 = headers[17];
+          // Extract columns for media available
+          var media_field_name = headers[26];
 
-            // Extract columns for booleans (hardcoded to mirror spreadsheet)
-            var boolean_field_name_1 = headers[18];
-            var boolean_field_name_2 = headers[19];
-            var boolean_field_name_3 = headers[20];
-            var boolean_field_name_4 = headers[21];
-            var boolean_field_name_5 = headers[22];
+          var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
+          var value_tags_field_name_2 = map(dataset, function(item) { return item[tags_field_name_2]; }).join("");
+          var value_tags_field_name_3 = map(dataset, function(item) { return item[tags_field_name_3]; }).join("");
+          var value_tags_field_name_4 = map(dataset, function(item) { return item[tags_field_name_4]; }).join("");
+          var value_tags_field_name_5 = map(dataset, function(item) { return item[tags_field_name_5]; }).join("");
 
-            // Extract columns for source
-            var source_field_name = headers[7];
-
-            // Extract columns for media available
-            var media_field_name = headers[26];
-
-            var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
-            var value_tags_field_name_2 = map(dataset, function(item) { return item[tags_field_name_2]; }).join("");
-            var value_tags_field_name_3 = map(dataset, function(item) { return item[tags_field_name_3]; }).join("");
-            var value_tags_field_name_4 = map(dataset, function(item) { return item[tags_field_name_4]; }).join("");
-            var value_tags_field_name_5 = map(dataset, function(item) { return item[tags_field_name_5]; }).join("");
-
-            var value_boolean_field_name_1 = map(dataset, function(item) { return item[boolean_field_name_1]; }).join("");
-            var value_boolean_field_name_2 = map(dataset, function(item) { return item[boolean_field_name_2]; }).join("");
-            var value_boolean_field_name_3 = map(dataset, function(item) { return item[boolean_field_name_3]; }).join("");
-            var value_boolean_field_name_4 = map(dataset, function(item) { return item[boolean_field_name_4]; }).join("");
-            var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
+          var value_boolean_field_name_1 = map(dataset, function(item) { return item[boolean_field_name_1]; }).join("");
+          var value_boolean_field_name_2 = map(dataset, function(item) { return item[boolean_field_name_2]; }).join("");
+          var value_boolean_field_name_3 = map(dataset, function(item) { return item[boolean_field_name_3]; }).join("");
+          var value_boolean_field_name_4 = map(dataset, function(item) { return item[boolean_field_name_4]; }).join("");
+          var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
 
             // Add 'Unknown' to empty tag fields
             for (var i = 0; i < dataset.length; i++) {

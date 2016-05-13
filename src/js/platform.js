@@ -158,14 +158,27 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
       if(is_defined(config)
         && is_defined(config.data_sources)
         && is_defined(config.data_sources.geojson_data)
-        && is_defined(config.data_sources.geojson_data.splice_times)
-        && config.data_sources.geojson_data.splice_times === parseInt(config.data_sources.geojson_data.splice_times, 10)
-        && config.data_sources.geojson_data.splice_times > 0
-        && config.data_sources.geojson_data.splice_times < 10) {
-        var splice_times = config.data_sources.geojson_data.splice_times;
-        while(splice_times--) {
-          features = features.splice(0, features.length / 2);
-        }
+        && is_defined(config.data_sources.geojson_data.debug)
+        && is_defined(config.data_sources.geojson_data.debug.bisect)
+        && Array.isArray(config.data_sources.geojson_data.debug.bisect)
+        && config.data_sources.geojson_data.debug.bisect.length < 10) {
+          var bisect = config.data_sources.geojson_data.debug.bisect.filter(function(element, index, array) {
+            return element === 'left' || element === 'right';
+          });
+
+          if(bisect.length !== config.data_sources.geojson_data.debug.bisect.length) {
+            console.log('Bisect configuration provided is not valid: expecting an array whose members can either be "left" or "right"');
+          } else {
+            bisect.forEach(function(element, index, array) {
+              var half = Math.floor(features.length / 2);
+
+              if(element === 'left') {
+                features = features.splice(0, half);
+              } else if(element === 'right') {
+                features = features.splice(half, features.length);
+              }
+            });
+          }
       }
       return features;
     }

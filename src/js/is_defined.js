@@ -22,7 +22,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
  * @param variable The variable to check
  * @return bool Whether the variable is defined
  */
-var is_defined = function(variable) {
+function is_defined(variable) {
   if (typeof variable !== 'undefined' && variable !== null) {
     return true;
   } else {

@@ -2,6 +2,7 @@ var initialize_ui = require('./pattrn_ui.js');
 var process_settings = require('./settings.js');
 var is_defined = require('./is_defined.js');
 var marker_chart = require('./dc_markerchart.js');
+var bisect_features = require('./bisect.js');
 
 module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
@@ -152,34 +153,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         return is_defined(value.date_time) && is_defined(value.latitude) && is_defined(value.longitude);
       });
 
-      /**
-       * MONKEYPATCH - bisect as needed until dc works
-       */
-      if(is_defined(config)
-        && is_defined(config.data_sources)
-        && is_defined(config.data_sources.geojson_data)
-        && is_defined(config.data_sources.geojson_data.debug)
-        && is_defined(config.data_sources.geojson_data.debug.bisect)
-        && Array.isArray(config.data_sources.geojson_data.debug.bisect)
-        && config.data_sources.geojson_data.debug.bisect.length < 10) {
-          var bisect = config.data_sources.geojson_data.debug.bisect.filter(function(element, index, array) {
-            return element === 'left' || element === 'right';
-          });
+      features = bisect_features(features, config);
 
-          if(bisect.length !== config.data_sources.geojson_data.debug.bisect.length) {
-            console.log('Bisect configuration provided is not valid: expecting an array whose members can either be "left" or "right"');
-          } else {
-            bisect.forEach(function(element, index, array) {
-              var half = Math.floor(features.length / 2);
-
-              if(element === 'left') {
-                features = features.splice(0, half);
-              } else if(element === 'right') {
-                features = features.splice(half, features.length);
-              }
-            });
-          }
-      }
       return features;
     }
 

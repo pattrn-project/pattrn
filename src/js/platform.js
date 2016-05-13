@@ -34,6 +34,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
 
     $(document).ready(function(){
+
+      // Bug fix for dropdown sub-menu (CHECK - hack from legacy code)
         $(".dropdown-submenu").each(function(){
             var submenu = $(this).find(".dropdown-menu");
             submenu.find("li").each(function(){

@@ -230,144 +230,144 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           var value_boolean_field_name_4 = map(dataset, function(item) { return item[boolean_field_name_4]; }).join("");
           var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
 
-            // Add 'Unknown' to empty tag fields
-            for (var i = 0; i < dataset.length; i++) {
-                if (is_defined(dataset[i][tags_field_name_1]) && dataset[i][tags_field_name_1].length === 0) {
-                    dataset[i][tags_field_name_1] = 'Unknown';
-                }
-                if (is_defined(dataset[i][tags_field_name_2]) && dataset[i][tags_field_name_2].length === 0) {
-                    dataset[i][tags_field_name_2] = 'Unknown';
-                }
-                if (is_defined(dataset[i][tags_field_name_3]) && dataset[i][tags_field_name_3].length === 0) {
-                    dataset[i][tags_field_name_3] = 'Unknown';
-                }
-                if (is_defined(dataset[i][tags_field_name_4]) && dataset[i][tags_field_name_4].length === 0) {
-                    dataset[i][tags_field_name_4] = 'Unknown';
-                }
-                if (is_defined(dataset[i][tags_field_name_5]) && dataset[i][tags_field_name_5].length === 0) {
-                    dataset[i][tags_field_name_5] = 'Unknown';
-                }
-            }
-
-            // Add 'Unknown' to empty boolean fields
-            for (i=0; i<dataset.length; i++) {
-                if (is_defined(dataset[i][boolean_field_name_1]) && dataset[i][boolean_field_name_1].length === 0) {
-                    dataset[i][boolean_field_name_1] = 'Unknown';
-                }
-                if (is_defined(dataset[i][boolean_field_name_2]) && dataset[i][boolean_field_name_2].length === 0) {
-                    dataset[i][boolean_field_name_2] = 'Unknown';
-                }
-                if (is_defined(dataset[i][boolean_field_name_3]) && dataset[i][boolean_field_name_3].length === 0) {
-                    dataset[i][boolean_field_name_3] = 'Unknown';
-                }
-                if (is_defined(dataset[i][boolean_field_name_4]) && dataset[i][boolean_field_name_4].length === 0) {
-                    dataset[i][boolean_field_name_4] = 'Unknown';
-                }
-                if (is_defined(dataset[i][boolean_field_name_5]) && dataset[i][boolean_field_name_5].length === 0) {
-                    dataset[i][boolean_field_name_5] = 'Unknown';
-                }
-            }
-
-            // Fill nan - Replace null value with zeros
-            for (i=0; i<dataset.length; i++) {
-
-                if (dataset[i][number_field_name_1] === "") {
-                    dataset[i][number_field_name_1] = 0;
-                }
-                if (dataset[i][number_field_name_2] === "") {
-                    dataset[i][number_field_name_2] = 0;
-                }
-                if (dataset[i][number_field_name_3] === "") {
-                    dataset[i][number_field_name_3] = 0;
-                }
-                if (dataset[i][number_field_name_4] === "") {
-                    dataset[i][number_field_name_4] = 0;
-                }
-                if (dataset[i][number_field_name_5] === "") {
-                    dataset[i][number_field_name_5] = 0;
-                }
-            }
-
-            // Parse time
-            var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
-
-            // Remove rows with invalid dates
-            dataset = dataset.filter(function(d) {
-              try {
-                dateFormat.parse(d.date_time);
+          // Add 'Unknown' to empty tag fields
+          for (var i = 0; i < dataset.length; i++) {
+              if (is_defined(dataset[i][tags_field_name_1]) && dataset[i][tags_field_name_1].length === 0) {
+                  dataset[i][tags_field_name_1] = 'Unknown';
               }
-              catch(e) {
-                return false;
+              if (is_defined(dataset[i][tags_field_name_2]) && dataset[i][tags_field_name_2].length === 0) {
+                  dataset[i][tags_field_name_2] = 'Unknown';
               }
-              return true;
-            });
+              if (is_defined(dataset[i][tags_field_name_3]) && dataset[i][tags_field_name_3].length === 0) {
+                  dataset[i][tags_field_name_3] = 'Unknown';
+              }
+              if (is_defined(dataset[i][tags_field_name_4]) && dataset[i][tags_field_name_4].length === 0) {
+                  dataset[i][tags_field_name_4] = 'Unknown';
+              }
+              if (is_defined(dataset[i][tags_field_name_5]) && dataset[i][tags_field_name_5].length === 0) {
+                  dataset[i][tags_field_name_5] = 'Unknown';
+              }
+          }
 
-            dataset.forEach(function (d) {
-                d.dd = dateFormat.parse(d.date_time);
-            });
+          // Add 'Unknown' to empty boolean fields
+          for (i=0; i<dataset.length; i++) {
+              if (is_defined(dataset[i][boolean_field_name_1]) && dataset[i][boolean_field_name_1].length === 0) {
+                  dataset[i][boolean_field_name_1] = 'Unknown';
+              }
+              if (is_defined(dataset[i][boolean_field_name_2]) && dataset[i][boolean_field_name_2].length === 0) {
+                  dataset[i][boolean_field_name_2] = 'Unknown';
+              }
+              if (is_defined(dataset[i][boolean_field_name_3]) && dataset[i][boolean_field_name_3].length === 0) {
+                  dataset[i][boolean_field_name_3] = 'Unknown';
+              }
+              if (is_defined(dataset[i][boolean_field_name_4]) && dataset[i][boolean_field_name_4].length === 0) {
+                  dataset[i][boolean_field_name_4] = 'Unknown';
+              }
+              if (is_defined(dataset[i][boolean_field_name_5]) && dataset[i][boolean_field_name_5].length === 0) {
+                  dataset[i][boolean_field_name_5] = 'Unknown';
+              }
+          }
 
-            // Set up charts
-            var scatterWidth = document.getElementById('charts').offsetWidth;
-            var chartHeight = 200;
-            var tagChartHeight = 350;
+          // Fill nan - Replace null value with zeros
+          for (i=0; i<dataset.length; i++) {
 
-            // Crossfilter
-            var xf = crossfilter(dataset);
+              if (dataset[i][number_field_name_1] === "") {
+                  dataset[i][number_field_name_1] = 0;
+              }
+              if (dataset[i][number_field_name_2] === "") {
+                  dataset[i][number_field_name_2] = 0;
+              }
+              if (dataset[i][number_field_name_3] === "") {
+                  dataset[i][number_field_name_3] = 0;
+              }
+              if (dataset[i][number_field_name_4] === "") {
+                  dataset[i][number_field_name_4] = 0;
+              }
+              if (dataset[i][number_field_name_5] === "") {
+                  dataset[i][number_field_name_5] = 0;
+              }
+          }
 
-            // Search
-            var searchDimension = xf.dimension(function(d) {
-                return [d.event_ID, d.event_summary, d.source_name, d.location_name,
-                d[tags_field_name_1], d[tags_field_name_2], d[tags_field_name_3],
-                d[tags_field_name_4], d[tags_field_name_5]];
-            });
+          // Parse time
+          var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
 
-            $("#tableSearch").on('input', function () {
-                text_filter(searchDimension, this.value);
-            });
-
-            function text_filter(dim, queriedText) {
-
-                var regex = new RegExp(queriedText, "i");
-
-                if (queriedText) {
-                    // Filter when the query matches any sequence of chars in the data
-                    dim.filter(function(d) {
-                        return regex.test(d);
-                    });
-                }
-
-                // Else clear the filters
-                else {
-                    dim.filterAll();
-                }
-
-                dc.redrawAll();
+          // Remove rows with invalid dates
+          dataset = dataset.filter(function(d) {
+            try {
+              dateFormat.parse(d.date_time);
             }
-
-            var filterOn = document.getElementById("filterList");
-            tooltip = "Tooltip Text";
-            $('.activeFilter').attr('title', tooltip);
-
-            function map(array, callback) {
-                var result = [];
-                var i;
-
-                for (i = 0; i < array.length; ++i) {
-                    result.push(callback(array[i]));
-                }
-
-                return result;
+            catch(e) {
+              return false;
             }
+            return true;
+          });
 
-            // Make array of string values of the whole columns for line charts
-            var line_charts_string_values = [];
-            for (i = 0; i<integer_fields_names.length; i++) {
-                line_charts_string_values.push({
-                    "string_values_chart" : map(dataset, function(item) { return item[integer_fields_names[i]]; }).join("")
-                });
-            }
+          dataset.forEach(function (d) {
+              d.dd = dateFormat.parse(d.date_time);
+          });
 
-            var values_number_field_name_4 = map(dataset, function(item) { return item[number_field_name_4]; }).join("");
+          // Set up charts
+          var scatterWidth = document.getElementById('charts').offsetWidth;
+          var chartHeight = 200;
+          var tagChartHeight = 350;
+
+          // Crossfilter
+          var xf = crossfilter(dataset);
+
+          // Search
+          var searchDimension = xf.dimension(function(d) {
+              return [d.event_ID, d.event_summary, d.source_name, d.location_name,
+              d[tags_field_name_1], d[tags_field_name_2], d[tags_field_name_3],
+              d[tags_field_name_4], d[tags_field_name_5]];
+          });
+
+          $("#tableSearch").on('input', function () {
+              text_filter(searchDimension, this.value);
+          });
+
+          function text_filter(dim, queriedText) {
+
+              var regex = new RegExp(queriedText, "i");
+
+              if (queriedText) {
+                  // Filter when the query matches any sequence of chars in the data
+                  dim.filter(function(d) {
+                      return regex.test(d);
+                  });
+              }
+
+              // Else clear the filters
+              else {
+                  dim.filterAll();
+              }
+
+              dc.redrawAll();
+          }
+
+          var filterOn = document.getElementById("filterList");
+          tooltip = "Tooltip Text";
+          $('.activeFilter').attr('title', tooltip);
+
+          function map(array, callback) {
+              var result = [];
+              var i;
+
+              for (i = 0; i < array.length; ++i) {
+                  result.push(callback(array[i]));
+              }
+
+              return result;
+          }
+
+          // Make array of string values of the whole columns for line charts
+          var line_charts_string_values = [];
+          for (i = 0; i<integer_fields_names.length; i++) {
+              line_charts_string_values.push({
+                  "string_values_chart" : map(dataset, function(item) { return item[integer_fields_names[i]]; }).join("")
+              });
+          }
+
+          var values_number_field_name_4 = map(dataset, function(item) { return item[number_field_name_4]; }).join("");
 
             // LINE CHART 1 - Integer
             var values_number_field_name_1 = map(dataset, function(item) { return item[number_field_name_1]; }).join("");

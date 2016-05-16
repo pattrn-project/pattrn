@@ -63,17 +63,24 @@ var turn_on_controls = chart_settings.turn_on_controls || false;
 var chart_width = chart_settings.width || 300;
 // default from legacy code, defined as chartHeight within the main consume_table() function
 var chart_height = chart_settings.height || 200;
+// legacy code uses 500ms for charts 3, 4 and 5 and doesn't override default for
+// charts 1 and 2
+var chart_transition_duration = chart_settings.transition_duration || 750;
 
-var values_number_field_name_X = map(dataset, function(item) {
+// transition from legacy: assign first to scope variable - just use the
+// chart_settings.fields.field_name var when refactoring
+var number_field_name_X = chart_settings.fields.field_name;
+
+var values_number_field_name_X = dataset.map(function(item) {
   return item[number_field_name_X];
 }).join("");
 
 if (values_number_field_name_X > 0) {
-  var line_chart_0X_title = document.getElementById('line_chart_0X_title')
+  var line_chart_0X_title = document.getElementById(chart_settings.elements.title)
     .innerHTML = number_field_name_X + " over time";
-  var line_chart_0X_chartTitle = document.getElementById('line_chart_0X_chartTitle').innerHTML = number_field_name_X + " over time";
+  var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = number_field_name_X + " over time";
 
-  var line_chart_0X = dc.lineChart("#d3_line_chart_0X");
+  var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
   var line_chart_0X_dimension = xf.dimension(function(d) {
     return +d3.time.day(d.dd);
   });
@@ -81,7 +88,7 @@ if (values_number_field_name_X > 0) {
     return d[number_field_name_X];
   });
 
-  line_chart_0X.width(scatterWidth)
+  line_chart_0X.width(chart_settings.scatterWidth)
     .height(chart_height)
     .margins({
       top: 0,
@@ -91,6 +98,7 @@ if (values_number_field_name_X > 0) {
     })
     .dimension(line_chart_0X_dimension)
     .group(line_chart_0X_group)
+    .transitionDuration(chart_transition_duration)
     .title(function(d) {
       return ('Total number of events: ' + d.value);
     })
@@ -114,10 +122,10 @@ if (values_number_field_name_X > 0) {
   line_chart_0X.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
   // AGGREGATE COUNT CHART
-  var agreggateCountTitle_0X = document.getElementById('agreggateCountTitle_0X').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
+  var agreggateCountTitle_0X = document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
 
-  var aggregate_count_0X = dc.numberDisplay("#d3_aggregate_count_0X");
-  aggregate_count_0X_dimension = xf.dimension(function(d) {
+  var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
+  var aggregate_count_0X_dimension = xf.dimension(function(d) {
     return +d[number_field_name_X];
   });
   aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
@@ -148,7 +156,7 @@ if (values_number_field_name_X > 0) {
     .formatNumber(d3.format("d"))
     .group(aggregate_count_0X_group);
 
-  var SliderChart_0X = dc.lineChart("#SliderChart_0X");
+  var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
   var SliderChart_0X_Dim = xf.dimension(function(d) {
     return +d[number_field_name_X];
   });
@@ -177,6 +185,9 @@ if (values_number_field_name_X > 0) {
       return filterOn.className = "glyphicon glyphicon-filter activeFilter";
     })
     .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));
+    // SliderChart_03 and SliderChart_05 in legacy code further concatenate a
+    // call to .xAxis() here - likely spurious, but to be reviewed
+
   SliderChart_0X.xAxis().ticks(3);
 }
 }

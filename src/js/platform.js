@@ -1604,506 +1604,544 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           boolean_chart_05.yAxis().ticks(3);
         }
 
-            // timeline by EVENTS
-                var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";
+        // timeline by EVENTS
+        var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";
 
-                var event_chart_01 = dc.lineChart("#d3_event_chart_01");
-                var event_chart_01_dimension = xf.dimension(function(d) { return +d3.time.day(d.dd);});
-                var event_chart_01_group = event_chart_01_dimension.group().reduceCount(function(d) { return +d3.time.day(d.dd);});
+        var event_chart_01 = dc.lineChart("#d3_event_chart_01");
+        var event_chart_01_dimension = xf.dimension(function(d) {
+          return +d3.time.day(d.dd);
+        });
+        var event_chart_01_group = event_chart_01_dimension.group().reduceCount(function(d) {
+          return +d3.time.day(d.dd);
+        });
 
-                event_chart_01.width(scatterWidth)
-                    .height(chartHeight)
-                    .margins({top: 0, right: 50, bottom: 50, left: 50})
-                    .dimension(event_chart_01_dimension)
-                    .group(event_chart_01_group)
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.time.scale().domain(d3.extent(dataset, function(d) { return d.dd; })))
-                    .renderHorizontalGridLines(true)
-                    .renderVerticalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .brushOn(true)
-                    .xAxis();
+        event_chart_01.width(scatterWidth)
+          .height(chartHeight)
+          .margins({
+            top: 0,
+            right: 50,
+            bottom: 50,
+            left: 50
+          })
+          .dimension(event_chart_01_dimension)
+          .group(event_chart_01_group)
+          .title(function(d) {
+            return ('Total number of events: ' + d.value);
+          })
+          .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+            return d.dd;
+          })))
+          .renderHorizontalGridLines(true)
+          .renderVerticalGridLines(true)
+          .yAxisLabel("no. of events")
+          .elasticY(true)
+          .on("filtered", function(d) {
+            return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+          })
+          .brushOn(true)
+          .xAxis();
 
-                event_chart_01.yAxis().ticks(3);
-                event_chart_01.turnOnControls(true);
-                event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+        event_chart_01.yAxis().ticks(3);
+        event_chart_01.turnOnControls(true);
+        event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-            // TOTAL EVENTS
-            var number_of_events = dc.dataCount("#number_total_events").dimension(xf).group(xf.groupAll());
+        // TOTAL EVENTS
+        var number_of_events = dc.dataCount("#number_total_events").dimension(xf).group(xf.groupAll());
 
 
-            // SOURCE CHART - TAGS
-            // REDUCE FUNCTION
-                function reduceAddTarget_source(p, v) {
-                    if(typeof v[source_field_name] !== 'string') return p;
-                    v[source_field_name].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
+        // SOURCE CHART - TAGS
+        // REDUCE FUNCTION
+        function reduceAddTarget_source(p, v) {
+          if (typeof v[source_field_name] !== 'string') return p;
+          v[source_field_name].split(',').forEach(function(val, idx) {
+            p[val] = (p[val] || 0) + 1; //increment counts
+          });
+          return p;
+        }
+
+        function reduceRemoveTarget_source(p, v) {
+          if (typeof v[source_field_name] !== 'string') return p;
+          v[source_field_name].split(',').forEach(function(val, idx) {
+            p[val] = (p[val] || 0) - 1; //decrement counts
+          });
+          return p;
+        }
+
+        function reduceInitialTarget_source() {
+          return {};
+        }
+
+
+        var source_chart = dc.barChart("#d3_source_chart");
+        var source_chart_dimension = xf.dimension(function(d) {
+          return d[source_field_name];
+        });
+        var source_chart_group = source_chart_dimension.groupAll().reduce(reduceAddTarget_source, reduceRemoveTarget_source, reduceInitialTarget_source).value();
+
+        source_chart_group.all = function() {
+          var newObject = [];
+          for (var key in this) {
+            if (this.hasOwnProperty(key) && key != "all") {
+              newObject.push({
+                key: key,
+                value: this[key]
+              });
+            }
+          }
+          return newObject;
+        };
+
+        source_chart
+          .width(scatterWidth)
+          .height(tagChartHeight)
+          .dimension(source_chart_dimension)
+          .group(source_chart_group)
+          .margins({
+            top: 0,
+            right: 50,
+            bottom: 200,
+            left: 50
+          })
+          .title(function(d) {
+            return ('Total number of events: ' + d.value);
+          })
+          .x(d3.scale.ordinal())
+          .xUnits(dc.units.ordinal)
+          // .xAxisPadding(500)
+          .renderHorizontalGridLines(true)
+          .yAxisLabel("no. of events")
+          .renderlet(function(chart) {
+            chart.selectAll("g.x text")
+              .style("text-anchor", "end")
+              .style("font-size", "10px")
+              .attr('dx', '0')
+              .attr('dy', '10')
+              .attr('transform', "rotate(-45)");
+            chart.selectAll('.x-axis-label')
+              .attr('transform', "translate(400, 250)");
+          })
+          .elasticY(true)
+          .on("filtered", function(d) {
+            return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+          })
+          .barPadding(0.1)
+          .outerPadding(0.05);
+
+        source_chart.yAxis().ticks(3);
+
+        // MEDIA CHART - TAGS ('empty')
+        if (media_field_name.length > 0) {
+
+
+          // CUSTOM REDUCE FUNCTION
+          function reduceAddTarget_media(p, v) {
+            if (typeof v[media_field_name] !== 'string') return p;
+            v[media_field_name].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
+
+          function reduceRemoveTarget_media(p, v) {
+            if (typeof v[media_field_name] !== 'string') return p;
+            v[media_field_name].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
+
+          function reduceInitialTarget_media() {
+            return {};
+          }
+
+
+          var media_chart = dc.barChart("#d3_media_chart");
+          var media_chart_dimension = xf.dimension(function(d) {
+            return d[media_field_name];
+          });
+          var media_chart_group = media_chart_dimension.groupAll().reduce(reduceAddTarget_media, reduceRemoveTarget_media, reduceInitialTarget_media).value();
+
+          media_chart_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
+            }
+            return newObject;
+          };
+
+          media_chart
+            .width(scatterWidth)
+            .height(chartHeight)
+            .dimension(media_chart_dimension)
+            .group(media_chart_group)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .xUnits(dc.units.ordinal)
+            .xAxisPadding(500)
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .elasticY(true)
+            .filterHandler(function(dimension, filters) {
+              dimension.filter(null);
+              dimension.filterFunction(function(d) {
+                for (var i = 0; i < filters.length; i++) {
+                  if (d.indexOf(filters[i]) < 0) return false;
+                }
+                return true;
+              });
+              return filters;
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
+
+          media_chart.yAxis().ticks(3);
+        }
+
+
+        // Resize charts
+        window.onresize = function(event) {
+          var newscatterWidth = document.getElementById('charts').offsetWidth;
+          event_chart_01.width(newscatterWidth);
+          line_chart_01.width(newscatterWidth);
+          line_chart_02.width(newscatterWidth);
+          line_chart_03.width(newscatterWidth);
+          line_chart_04.width(newscatterWidth);
+          line_chart_05.width(newscatterWidth);
+          line_chart_01.width(newscatterWidth);
+          line_chart_02.width(newscatterWidth);
+          line_chart_03.width(newscatterWidth);
+          line_chart_04.width(newscatterWidth);
+          line_chart_05.width(newscatterWidth);
+          bar_chart_01.width(newscatterWidth);
+          bar_chart_02.width(newscatterWidth);
+          bar_chart_03.width(newscatterWidth);
+          bar_chart_04.width(newscatterWidth);
+          bar_chart_05.width(newscatterWidth);
+          boolean_chart_01.width(newscatterWidth);
+          boolean_chart_02.width(newscatterWidth);
+          boolean_chart_03.width(newscatterWidth);
+          boolean_chart_04.width(newscatterWidth);
+          boolean_chart_05.width(newscatterWidth);
+          dc.renderAll();
+        };
+
+        // MARKERS
+        dataset.forEach(function(d, i) {
+          // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
+          var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
+
+          d.i = i;
+          var dayMonthFormat = d3.time.format("%d/%m/%y");
+          var fullDateFormat = d3.time.format("%A, %d %B %Y");
+
+          // Marker settings
+          d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude), {
+            title: "",
+            radius: 7,
+            color: marker_color,
+            opacity: 0.9,
+            fillOpacity: 0.8,
+            clickable: true,
+          });
+
+          d.marker.data = d;
+
+          // Tooltip content
+          var eventDetailsContent = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
+          if (is_defined(d.event_ID)) eventDetailsContent += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
+          if (is_defined(d.dd)) eventDetailsContent += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
+          if (is_defined(d.location_name)) eventDetailsContent += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
+          eventDetailsContent += "</div>";
+
+          // Summary content
+          var summaryContent = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
+          if (is_defined(d.event_summary)) summaryContent += "<p class='summary'>" + d.event_summary + "</p>";
+          if (is_defined(d.source_name)) summaryContent += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
+          summaryContent += (
+            "<div class='summaryTable'></div><br/>" +
+            "</div>"
+          );
+
+          // set empty popup to leverage leaflet functions
+          var hoverContent = "";
+          var popup = d.marker.popup = new L.popup()
+            .setLatLng(d.marker.getLatLng())
+            .setContent(hoverContent);
+
+          var content = document.getElementById('dateTime');
+          var Summary = document.getElementById('summary');
+          var Media = document.getElementById('media');
+
+          d.marker.on("click", function(e) {
+
+            var image_html = document.getElementById("image_gallery").innerHTML = '';
+            var video_html = document.getElementById("video_gallery").innerHTML = '';
+            var summary_table = document.getElementById("summaryTable").innerHTML = '';
+            var urls = document.getElementById("urls").innerHTML = '';
+            $('.edit_dropdown').remove();
+
+            if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
+              markerChart.filter(true);
+            } else {
+
+              $('#edit_dropdown').append(
+                "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
+              );
+
+              // Photos
+              d3.json(e.target.data.photos, function(D) {
+
+                var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
+
+                for (j = 0; j < json_photos.length; j++) {
+                  $('#image_gallery').append(
+                    '<li data-src="' + json_photos[j].src +
+                    '"data-sub-html="' + json_photos[j].subhtml + '" >' +
+                    '<img src="' + json_photos[j].thumb + '"/>' +
+                    '<br/>' +
+                    json_photos[j].caption +
+                    '<p>Source: ' + json_photos[j].source + '</p>' +
+                    '</li>'
+                  );
                 }
 
-                function reduceRemoveTarget_source(p, v) {
-                    if(typeof v[source_field_name] !== 'string') return p;
-                    v[source_field_name].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
+
+                $(document).ready(function() {
+                  $("#image_gallery").lightGallery();
+                });
+
+              });
+
+
+              // Videos
+              d3.json(e.target.data.videos, function(D) {
+
+                var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
+
+                for (j = 0; j < json_videos.length; j++) {
+                  $('#video_gallery').append(
+                    '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
+                    '"data-sub-html="' + json_videos[j].subhtml + '" id="image_link">' +
+                    '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
+                    '<p>Source: ' + json_videos[j].source + '</p>' +
+                    '</li>'
+                  );
                 }
 
-                function reduceInitialTarget_source() {
-                    return {};
+                $(document).ready(function() {
+                  $("#video_gallery").lightGallery();
+                });
+
+              });
+
+              // Urls
+              d3.json(e.target.data.links, function(D) {
+
+                var array_urls = $.parseJSON('[' + dataset[i].links + ']');
+
+                for (j = 0; j < array_urls.length; j++) {
+                  $('#urls').append(
+                    '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
+                  );
                 }
 
+              });
 
-                var source_chart = dc.barChart("#d3_source_chart");
-                var source_chart_dimension = xf.dimension(function(d) { return d[source_field_name]; });
-                var source_chart_group = source_chart_dimension.groupAll().reduce(reduceAddTarget_source, reduceRemoveTarget_source, reduceInitialTarget_source).value();
+              // Open popup
+              e.target.popup.openOn(markerChart.getMap());
 
-                source_chart_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+              // Change style of popup
+              $('.leaflet-popup-content-wrapper').addClass('transparent');
+              $('.leaflet-popup-tip').addClass('transparent');
+              $('.leaflet-popup-close-button').addClass('transparent');
 
-                source_chart
-                    .width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(source_chart_dimension)
-                    .group(source_chart_group)
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    // .xAxisPadding(500)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 250)");
-                    })
-                    .elasticY(true)
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
+              // Style marker on click
+              d.marker.setRadius(10);
+              d.marker.setStyle({
+                color: highlightColour,
+                fillColor: highlightColour,
+                fillOpacity: 0.8,
+              });
 
-                source_chart.yAxis().ticks(3);
+              // Add infowindow content
+              content.innerHTML = eventDetailsContent;
+              Summary.innerHTML = summaryContent;
 
-            // MEDIA CHART - TAGS ('empty')
-            if (media_field_name.length > 0) {
+              // Table content - generic functions
+              function appendIntegerValueToTable(field_name) {
+                $('#summaryTable').append(
+                  "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+                  "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
+                  "</p> </th> </tr>"
+                );
+              }
 
+              function appendTagValueToTable(field_name) {
+                if (!is_defined(d[field_name])) return;
+                $('#summaryTable').append(
+                  "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+                  "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
+                  "</p> </th> </tr>"
+                );
+              }
 
-                // CUSTOM REDUCE FUNCTION
-                function reduceAddTarget_media(p, v) {
-                    if(typeof v[media_field_name] !== 'string') return p;
-                    v[media_field_name].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
-                }
+              function appendGeoJSONPropertyToTable(key, value) {
+                $('#summaryTable').append(
+                  "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
+                  "</p></th><th class='col-sm-6' ><p class='white'> " + value +
+                  "</p> </th> </tr>"
+                );
+              }
 
-                function reduceRemoveTarget_media(p, v) {
-                    if(typeof v[media_field_name] !== 'string') return p;
-                    v[media_field_name].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
-
-                function reduceInitialTarget_media() {
-                    return {};
-                }
+              if ('geojson_file' === data_source_type) {
+                Object.keys(d.source_variables)
+                  .filter(function(value) {
+                    return !value.match(/^pattrn_[^_]{2,}/);
+                  })
+                  .forEach(function(value, index, array) {
+                    if (is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
+                  });
+              }
 
 
-                var media_chart = dc.barChart("#d3_media_chart");
-                var media_chart_dimension = xf.dimension(function(d) { return d[media_field_name]; });
-                var media_chart_group = media_chart_dimension.groupAll().reduce(reduceAddTarget_media, reduceRemoveTarget_media, reduceInitialTarget_media).value();
+              // Table content - Integers - hard coded to mirror spreadsheet structure
+              if (values_number_field_name_1 > 0) {
+                appendIntegerValueToTable(number_field_name_1);
+              }
 
-                media_chart_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+              if (values_number_field_name_2 > 0) {
+                appendIntegerValueToTable(number_field_name_2);
+              }
 
-                media_chart
-                    .width(scatterWidth)
-                    .height(chartHeight)
-                    .dimension(media_chart_dimension)
-                    .group(media_chart_group)
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    .xAxisPadding(500)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .filterHandler (function (dimension, filters) {
-                        dimension.filter(null);
-                        dimension.filterFunction(function (d) {
-                            for (var i=0; i < filters.length; i++) {
-                                if (d.indexOf(filters[i]) <0) return false;
-                            }
-                            return true;
-                        });
-                        return filters;
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
+              if (values_number_field_name_3 > 0) {
+                appendIntegerValueToTable(number_field_name_3);
+              }
 
-                media_chart.yAxis().ticks(3);
+              if (values_number_field_name_4 > 0) {
+                appendIntegerValueToTable(number_field_name_4);
+              }
+
+              if (values_number_field_name_5 > 0) {
+                appendIntegerValueToTable(number_field_name_5);
+              }
+
+              // Table content - Tags - hard coded to mirror spreadsheet structure
+              if (value_tags_field_name_1.length > 0) {
+                appendTagValueToTable(tags_field_name_1);
+              }
+
+              if (value_tags_field_name_2.length > 0) {
+                appendTagValueToTable(tags_field_name_2);
+              }
+
+              if (value_tags_field_name_3.length > 0) {
+                appendTagValueToTable(tags_field_name_3);
+              }
+
+              if (value_tags_field_name_4.length > 0) {
+                appendTagValueToTable(tags_field_name_4);
+              }
+
+              if (value_tags_field_name_5.length > 0) {
+                appendTagValueToTable(tags_field_name_5);
+              }
+
+              // Table content - booleans - hard coded to mirror spreadsheet structure
+              if (value_boolean_field_name_1.length > 0) {
+                appendTagValueToTable(boolean_field_name_1);
+              }
+
+              if (value_boolean_field_name_2.length > 0) {
+                appendTagValueToTable(boolean_field_name_2);
+              }
+
+              if (value_boolean_field_name_3.length > 0) {
+                appendTagValueToTable(boolean_field_name_3);
+              }
+
+              if (value_boolean_field_name_4.length > 0) {
+                appendTagValueToTable(boolean_field_name_4);
+              }
+
             }
 
+            _map.on("popupclose", function(e) {
+              // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
+              var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
 
-            // Resize charts
-            window.onresize = function(event) {
-                var newscatterWidth = document.getElementById('charts').offsetWidth;
-                event_chart_01.width(newscatterWidth);
-                line_chart_01.width(newscatterWidth);
-                line_chart_02.width(newscatterWidth);
-                line_chart_03.width(newscatterWidth);
-                line_chart_04.width(newscatterWidth);
-                line_chart_05.width(newscatterWidth);
-                line_chart_01.width(newscatterWidth);
-                line_chart_02.width(newscatterWidth);
-                line_chart_03.width(newscatterWidth);
-                line_chart_04.width(newscatterWidth);
-                line_chart_05.width(newscatterWidth);
-                bar_chart_01.width(newscatterWidth);
-                bar_chart_02.width(newscatterWidth);
-                bar_chart_03.width(newscatterWidth);
-                bar_chart_04.width(newscatterWidth);
-                bar_chart_05.width(newscatterWidth);
-                boolean_chart_01.width(newscatterWidth);
-                boolean_chart_02.width(newscatterWidth);
-                boolean_chart_03.width(newscatterWidth);
-                boolean_chart_04.width(newscatterWidth);
-                boolean_chart_05.width(newscatterWidth);
-                dc.renderAll();
-            };
-
-            // MARKERS
-            dataset.forEach(function(d, i) {
-                // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
-
-                d.i = i;
-                var dayMonthFormat = d3.time.format("%d/%m/%y");
-                var fullDateFormat = d3.time.format("%A, %d %B %Y");
-
-                // Marker settings
-                d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude),{
-                    title: "",
-                    radius: 7,
-                    color: marker_color,
-                    opacity: 0.9,
-                    fillOpacity:0.8,
-                    clickable: true,
-                });
-
-                d.marker.data = d;
-
-                // Tooltip content
-                var eventDetailsContent = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
-                if(is_defined(d.event_ID)) eventDetailsContent += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
-                if(is_defined(d.dd)) eventDetailsContent += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
-                if(is_defined(d.location_name)) eventDetailsContent += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
-                eventDetailsContent += "</div>";
-
-                // Summary content
-                var summaryContent = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
-                if(is_defined(d.event_summary)) summaryContent += "<p class='summary'>" + d.event_summary + "</p>";
-                if(is_defined(d.source_name)) summaryContent += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
-                summaryContent += (
-                    "<div class='summaryTable'></div><br/>" +
-                    "</div>"
-                );
-
-                // set empty popup to leverage leaflet functions
-                var hoverContent = "";
-                var popup = d.marker.popup = new L.popup()
-                    .setLatLng(d.marker.getLatLng())
-                    .setContent(hoverContent);
-
-                var content = document.getElementById('dateTime');
-                var Summary = document.getElementById('summary');
-                var Media = document.getElementById('media');
-
-                d.marker.on("click", function(e) {
-
-                    var image_html = document.getElementById("image_gallery").innerHTML = '';
-                    var video_html = document.getElementById("video_gallery").innerHTML = '';
-                    var summary_table = document.getElementById("summaryTable").innerHTML = '';
-                    var urls = document.getElementById("urls").innerHTML = '';
-                    $('.edit_dropdown').remove();
-
-                    if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
-                        markerChart.filter(true);
-                    } else {
-
-                        $('#edit_dropdown').append(
-                            "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
-                        );
-
-                        // Photos
-                        d3.json(e.target.data.photos, function(D) {
-
-                            var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
-
-                            for (j=0; j<json_photos.length; j++) {
-                                $('#image_gallery').append(
-                                    '<li data-src="' + json_photos[j].src +
-                                    '"data-sub-html="' + json_photos[j].subhtml + '" >' +
-                                    '<img src="' + json_photos[j].thumb + '"/>' +
-                                    '<br/>' +
-                                    json_photos[j].caption +
-                                    '<p>Source: ' + json_photos[j].source + '</p>' +
-                                    '</li>'
-                                );
-                            }
-
-
-                            $(document).ready(function() {
-                                $("#image_gallery").lightGallery();
-                            });
-
-                        });
-
-
-                        // Videos
-                        d3.json(e.target.data.videos, function(D) {
-
-                            var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
-
-                            for (j=0; j<json_videos.length; j++) {
-                                $('#video_gallery').append(
-                                    '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
-                                    '"data-sub-html="'+ json_videos[j].subhtml +'" id="image_link">' +
-                                    '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
-                                    '<p>Source: ' + json_videos[j].source + '</p>' +
-                                    '</li>'
-                                );
-                            }
-
-                            $(document).ready(function() {
-                                $("#video_gallery").lightGallery();
-                            });
-
-                        });
-
-                        // Urls
-                        d3.json(e.target.data.links, function(D) {
-
-                            var array_urls = $.parseJSON('[' + dataset[i].links + ']');
-
-                            for (j=0; j<array_urls.length; j++) {
-                                $('#urls').append(
-                                    '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
-                                );
-                            }
-
-                        });
-
-                        // Open popup
-                        e.target.popup.openOn(markerChart.getMap());
-
-                        // Change style of popup
-                        $('.leaflet-popup-content-wrapper').addClass('transparent');
-                        $('.leaflet-popup-tip').addClass('transparent');
-                        $('.leaflet-popup-close-button').addClass('transparent');
-
-                        // Style marker on click
-                        d.marker.setRadius(10);
-                        d.marker.setStyle({
-                            color: highlightColour,
-                            fillColor: highlightColour,
-                            fillOpacity: 0.8,
-                        });
-
-                        // Add infowindow content
-                        content.innerHTML = eventDetailsContent;
-                        Summary.innerHTML = summaryContent;
-
-                        // Table content - generic functions
-                        function appendIntegerValueToTable(field_name) {
-                            $('#summaryTable').append(
-                                "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-                                "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
-                                "</p> </th> </tr>"
-                            );
-                        }
-
-                        function appendTagValueToTable(field_name) {
-                          if(! is_defined(d[field_name])) return;
-                            $('#summaryTable').append(
-                                "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-                                "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
-                                "</p> </th> </tr>"
-                            );
-                        }
-
-			function appendGeoJSONPropertyToTable(key, value) {
-			    $('#summaryTable').append(
-                                "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
-                                "</p></th><th class='col-sm-6' ><p class='white'> " + value +
-                                "</p> </th> </tr>"
-                            );
-                        }
-
-                        if('geojson_file' === data_source_type) {
-			  Object.keys(d.source_variables)
-			    .filter(function(value) { return ! value.match(/^pattrn_[^_]{2,}/); })
-			    .forEach(function(value, index, array) {
-			    if(is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
-			  });
-                        }
-
-
-                        // Table content - Integers - hard coded to mirror spreadsheet structure
-                        if (values_number_field_name_1 > 0) {
-                            appendIntegerValueToTable(number_field_name_1);
-                        }
-
-                        if (values_number_field_name_2 > 0) {
-                            appendIntegerValueToTable(number_field_name_2);
-                        }
-
-                        if (values_number_field_name_3 > 0) {
-                            appendIntegerValueToTable(number_field_name_3);
-                        }
-
-                        if (values_number_field_name_4 > 0) {
-                            appendIntegerValueToTable(number_field_name_4);
-                        }
-
-                        if (values_number_field_name_5 > 0) {
-                            appendIntegerValueToTable(number_field_name_5);
-                        }
-
-                        // Table content - Tags - hard coded to mirror spreadsheet structure
-                        if (value_tags_field_name_1.length > 0) {
-                            appendTagValueToTable(tags_field_name_1);
-                        }
-
-                        if (value_tags_field_name_2.length > 0) {
-                            appendTagValueToTable(tags_field_name_2);
-                        }
-
-                        if (value_tags_field_name_3.length > 0) {
-                            appendTagValueToTable(tags_field_name_3);
-                        }
-
-                        if (value_tags_field_name_4.length > 0) {
-                            appendTagValueToTable(tags_field_name_4);
-                        }
-
-                        if (value_tags_field_name_5.length > 0) {
-                            appendTagValueToTable(tags_field_name_5);
-                        }
-
-                        // Table content - booleans - hard coded to mirror spreadsheet structure
-                        if (value_boolean_field_name_1.length > 0) {
-                            appendTagValueToTable(boolean_field_name_1);
-                        }
-
-                        if (value_boolean_field_name_2.length > 0) {
-                            appendTagValueToTable(boolean_field_name_2);
-                        }
-
-                        if (value_boolean_field_name_3.length > 0) {
-                            appendTagValueToTable(boolean_field_name_3);
-                        }
-
-                        if (value_boolean_field_name_4.length > 0) {
-                            appendTagValueToTable(boolean_field_name_4);
-                        }
-
-                    }
-
-                    _map.on("popupclose", function(e) {
-                        // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-                        var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
-
-                        d.marker.setRadius(7);
-                        d.marker.setStyle({
-                            fillColor: marker_color,
-                            color: marker_color,
-                            fillOpacity: instance_settings.map.markers.opacity
-                        });
-                        content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
-                        Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
-                        var summary_table = document.getElementById("summaryTable").innerHTML = '';
-                        var image_html = document.getElementById("image_gallery").innerHTML = '';
-                        var video_html = document.getElementById("video_gallery").innerHTML = '';
-                        var urls = document.getElementById("urls").innerHTML = '';
-                        $('.edit_dropdown').remove();
-                    });
-                });
+              d.marker.setRadius(7);
+              d.marker.setStyle({
+                fillColor: marker_color,
+                color: marker_color,
+                fillOpacity: instance_settings.map.markers.opacity
+              });
+              content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
+              Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
+              var summary_table = document.getElementById("summaryTable").innerHTML = '';
+              var image_html = document.getElementById("image_gallery").innerHTML = '';
+              var video_html = document.getElementById("video_gallery").innerHTML = '';
+              var urls = document.getElementById("urls").innerHTML = '';
+              $('.edit_dropdown').remove();
             });
+          });
+        });
 
-            // Define dimension of marker
-            var markerDimension = xf.dimension(function(d) { return d.eventID; });
+        // Define dimension of marker
+        var markerDimension = xf.dimension(function(d) {
+          return d.eventID;
+        });
 
-            // map reduce
-            var markerGroup = markerDimension.group().reduce(
+        // map reduce
+        var markerGroup = markerDimension.group().reduce(
 
-                function (p, v) {
-                    if (!p.indices[v.eventID] || p.indices[v.eventID] === 0) {
-                        p.markers[p.markers.length] = dataset[v.eventID].marker;
-                        p.indices[v.eventID] = 1;
-                    } else
-                        p.indices[v.eventID]++;
-                        return p;
-                    },
+          function(p, v) {
+            if (!p.indices[v.eventID] || p.indices[v.eventID] === 0) {
+              p.markers[p.markers.length] = dataset[v.eventID].marker;
+              p.indices[v.eventID] = 1;
+            } else
+              p.indices[v.eventID]++;
+            return p;
+          },
 
-                    function (p, v) {
-                        if (p.indices[v.eventID] && p.indices[v.eventID] > 0 ) {
-                            p.indices[v.eventID]--;
-                            if (p.indices[v.eventID] === 0) {
-                                var i = p.markers.indexOf(dataset[v.eventID].marker);
+          function(p, v) {
+            if (p.indices[v.eventID] && p.indices[v.eventID] > 0) {
+              p.indices[v.eventID]--;
+              if (p.indices[v.eventID] === 0) {
+                var i = p.markers.indexOf(dataset[v.eventID].marker);
 
-                                if (i != -1)
-                                    p.markers.splice(i, 1);
-                                }
-                            }
-                            return p;
-                        },
+                if (i != -1)
+                  p.markers.splice(i, 1);
+              }
+            }
+            return p;
+          },
 
-                        function () {
-                            return {markers:[], indices:[]};
-                        }
+          function() {
+            return {
+              markers: [],
+              indices: []
+            };
+          }
 
-                    );
+        );
 
-                    // MAP SETTINGS
-                    _map = L.map(instance_settings.map.root_selector, {
-                        touchZoom: false,
-                        scrollWheelZoom: false,
-                        maxZoom:14,
-                        minZoom:2}
-                    );
-
+        // MAP SETTINGS
+        _map = L.map(instance_settings.map.root_selector, {
+          touchZoom: false,
+          scrollWheelZoom: false,
+          maxZoom: 14,
+          minZoom: 2
+        });
       /**
        * Make dc.markerChart function, passing in L, dc and settings/configs
        *

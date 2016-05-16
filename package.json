@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bundle": "browserify --debug src/js/app.js | exorcist src/js/main.js.map > src/js/main.js",
-    "start": "http-server src/"
+    "start": "http-server dist/"
   },
   "repository": {
     "type": "git",

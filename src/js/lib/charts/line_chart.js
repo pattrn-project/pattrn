@@ -33,17 +33,27 @@ var d3 = require('d3');
  * counts of events over time. The aim of the v1->v2 refactor is to avoid
  * manual code duplication and to allow an arbitrary number of charts of this
  * type to be used in the Pattrn frontend.
+ * @x-modifies-dom
  * @param {Number} index Index (integer) of this line chart within the set of line charts in use
+ * @param {Object} dataset The master dataset (refactor - do we need this here?)
  * @param {Object} chart_settings Settings for this chart.
  *  * color_scale: a color scale for the chart, if not using the default one
  *    (https://github.com/dc-js/dc.js/blob/master/web/docs/api-1.6.0.md#colorscolorscale-or-colorarray)
  *  * turn_on_controls: [infer from legacy code (originally used only in line_chart_01)]
  *  * width: width of the chart (default: 300)
  *  * height: height of the chart (default: 200)
+ *  * transition_duration: duration of chart animation transition
+ *    (https://github.com/dc-js/dc.js/blob/master/web/docs/api-1.6.0.md#transitiondurationduration)
+ *  * elements: DOM elements to update
+ *    * title: chart title
+ *    * chart_title: chart chart title (ehrm legacy code?)
+ *    * d3_line_chart: d3 element of line chart
+ *  * fields:
+ *    * field_name: the name of the field in the dataset
  * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
- * @param {Object} cf The main Crossfilter instance used in the app [needs refactoring]
+ * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
  */
-function pattrn_line_chart(index, chart_settings, dc, cf) {
+function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 /**
  * Parameters passed in and defaults
  */

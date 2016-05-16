@@ -4,6 +4,12 @@ var is_defined = require('./is_defined.js');
 var marker_chart = require('./dc_markerchart.js');
 var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legacy.js');
 
+/**
+ * Pattrn chart types
+ * These are based on chart modules, abstracted from the duplicated code (5x) in Pattrn v1
+ */
+var pattrn_line_chart = require('./lib/charts/line_chart.js');
+
 module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
     var _map = {};
@@ -306,6 +312,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         });
 
         // Set up charts
+        // scatterWidth: refactor (v2): pass as configuration item to chart functions
         var scatterWidth = document.getElementById('charts').offsetWidth;
         var chartHeight = 200;
         var tagChartHeight = 350;
@@ -365,6 +372,24 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           });
         }
 
+        pattrn_line_chart(1,
+          { elements: {
+              title: "line_chart_01_title",
+              chart_title: "line_chart_01_chartTitle",
+              d3_line_chart: "#d3_line_chart_01",
+              aggregate_count_title: "agreggateCountTitle_01",
+              d3_aggregate_count: "#d3_aggregate_count_01",
+              slider_chart: "#SliderChart_01"
+            },
+            fields: {
+              field_name: number_field_name_1
+            },
+            scatterWidth: scatterWidth
+          },
+          dataset,
+          dc,
+          xf);
+/*
         // LINE CHART 1 - Integer
         var values_number_field_name_1 = map(dataset, function(item) {
           return item[number_field_name_1];
@@ -482,6 +507,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             .x(d3.scale.linear().domain([0, (SliderChart_01_Max_Value + 1)]));
           SliderChart_01.xAxis().ticks(3);
         }
+*/
 
         // LINE CHART 2 - Integer
         var values_number_field_name_2 = map(dataset, function(item) {

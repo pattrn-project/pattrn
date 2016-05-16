@@ -36,7 +36,7 @@ var config = {
 
 gulp.task('bundle', function () {
     return browserify({entries: config.app_main, debug: true})
-        .transform(babelify)
+        .transform(babelify, {presets: ["es2015"]})
         .bundle()
         .pipe(source(config.bundle))
         .pipe(gulp.dest('dist'));

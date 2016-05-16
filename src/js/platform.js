@@ -365,8 +365,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           });
         }
 
-        var values_number_field_name_4 = map(dataset, function(item) { return item[number_field_name_4]; }).join("");
-
         // LINE CHART 1 - Integer
         var values_number_field_name_1 = map(dataset, function(item) {
           return item[number_field_name_1];

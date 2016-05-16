@@ -955,407 +955,462 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             SliderChart_05.xAxis().ticks(3);
 
         }
-            // BAR CHART 01 - TAGS
-            if (value_tags_field_name_1.length > 0) {
 
-                var bar_chart_01_title = document.getElementById('bar_chart_01_title');
-                bar_chart_01_title.innerHTML = "Events by " + tags_field_name_1;
-                var bar_chart_01_chartTitle = document.getElementById('bar_chart_01_chartTitle').innerHTML = "Events by " + tags_field_name_1;
+        // BAR CHART 01 - TAGS
+        if (value_tags_field_name_1.length > 0) {
 
-                var bar_chart_01 = dc.barChart("#d3_bar_chart_01");
-                var bar_chart_01_dimension = xf.dimension(function(d) { return d[tags_field_name_1]; });
+          var bar_chart_01_title = document.getElementById('bar_chart_01_title');
+          bar_chart_01_title.innerHTML = "Events by " + tags_field_name_1;
+          var bar_chart_01_chartTitle = document.getElementById('bar_chart_01_chartTitle').innerHTML = "Events by " + tags_field_name_1;
 
-                // REDUCE FUNCTION
-                function reduceAddTarget_01(p, v) {
-                    if(typeof v[tags_field_name_1] !== 'string') return p;
-                    v[tags_field_name_1].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
-                }
+          var bar_chart_01 = dc.barChart("#d3_bar_chart_01");
+          var bar_chart_01_dimension = xf.dimension(function(d) {
+            return d[tags_field_name_1];
+          });
 
-                function reduceRemoveTarget_01(p, v) {
-                    if(typeof v[tags_field_name_1] !== 'string') return p;
-                    v[tags_field_name_1].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
+          // REDUCE FUNCTION
+          function reduceAddTarget_01(p, v) {
+            if (typeof v[tags_field_name_1] !== 'string') return p;
+            v[tags_field_name_1].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
 
-                function reduceInitialTarget_01() {
-                    return {};
-                }
+          function reduceRemoveTarget_01(p, v) {
+            if (typeof v[tags_field_name_1] !== 'string') return p;
+            v[tags_field_name_1].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
 
-                var bar_chart_01_group = bar_chart_01_dimension.groupAll().reduce(reduceAddTarget_01, reduceRemoveTarget_01, reduceInitialTarget_01).value();
+          function reduceInitialTarget_01() {
+            return {};
+          }
 
-                bar_chart_01_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+          var bar_chart_01_group = bar_chart_01_dimension.groupAll().reduce(reduceAddTarget_01, reduceRemoveTarget_01, reduceInitialTarget_01).value();
 
-                bar_chart_01
-                    .width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(bar_chart_01_dimension)
-                    .group(bar_chart_01_group)
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 250)");
-                    })
-                    .filterHandler (function (dimension, filters) {
-                        dimension.filter(null);
-                        dimension.filterFunction(function (d) {
-                            for (var i=0; i < filters.length; i++) {
-                                if (d.indexOf(filters[i]) <0) return false;
-                            }
-                            return true;
-                        });
-                        return filters;
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
-
-                bar_chart_01.yAxis().ticks(3);
-
+          bar_chart_01_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
             }
+            return newObject;
+          };
 
-
-            // BAR CHART 02 - TAGS
-            if (value_tags_field_name_2.length > 0) {
-
-                // REDUCE FUNCTION
-                function reduceAddTarget_02(p, v) {
-                    if(typeof v[tags_field_name_2] !== 'string') return p;
-                    v[tags_field_name_2].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
+          bar_chart_01
+            .width(scatterWidth)
+            .height(tagChartHeight)
+            .dimension(bar_chart_01_dimension)
+            .group(bar_chart_01_group)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .xUnits(dc.units.ordinal)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 200,
+              left: 50
+            })
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .elasticY(true)
+            .renderlet(function(chart) {
+              chart.selectAll("g.x text")
+                .style("text-anchor", "end")
+                .style("font-size", "10px")
+                .attr('dx', '0')
+                .attr('dy', '10')
+                .attr('transform', "rotate(-45)");
+              chart.selectAll('.x-axis-label')
+                .attr('transform', "translate(400, 250)");
+            })
+            .filterHandler(function(dimension, filters) {
+              dimension.filter(null);
+              dimension.filterFunction(function(d) {
+                for (var i = 0; i < filters.length; i++) {
+                  if (d.indexOf(filters[i]) < 0) return false;
                 }
+                return true;
+              });
+              return filters;
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
 
-                function reduceRemoveTarget_02(p, v) {
-                    if(typeof v[tags_field_name_2] !== 'string') return p;
-                    v[tags_field_name_2].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
+          bar_chart_01.yAxis().ticks(3);
 
-                function reduceInitialTarget_02() {
-                    return {};
-                }
+        }
 
-                var bar_chart_02_title = document.getElementById('bar_chart_02_title')
-                bar_chart_02_title.innerHTML = "Events by " + tags_field_name_2;
 
-                var bar_chart_02_chartTitle = document.getElementById('bar_chart_02_chartTitle').innerHTML = "Events by " + tags_field_name_2;
+        // BAR CHART 02 - TAGS
+        if (value_tags_field_name_2.length > 0) {
 
-                var bar_chart_02 = dc.barChart("#d3_bar_chart_02");
-                var bar_chart_02_dimension = xf.dimension(function(d) { return d[tags_field_name_2]; });
-                var bar_chart_02_group = bar_chart_02_dimension.groupAll().reduce(reduceAddTarget_02, reduceRemoveTarget_02, reduceInitialTarget_02).value();
+          // REDUCE FUNCTION
+          function reduceAddTarget_02(p, v) {
+            if (typeof v[tags_field_name_2] !== 'string') return p;
+            v[tags_field_name_2].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
 
-                bar_chart_02_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+          function reduceRemoveTarget_02(p, v) {
+            if (typeof v[tags_field_name_2] !== 'string') return p;
+            v[tags_field_name_2].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
 
-                bar_chart_02.width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(bar_chart_02_dimension)
-                    .group(bar_chart_02_group)
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .xUnits(dc.units.ordinal)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 250)");
-                    })
-                    .elasticY(true)
-                    .filterHandler (function (dimension, filters) {
-                        dimension.filter(null);
-                        dimension.filterFunction(function (d) {
-                            for (var i=0; i < filters.length; i++) {
-                                if (d.indexOf(filters[i]) <0) return false;
-                            }
-                            return true;
-                        });
-                        return filters;
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
+          function reduceInitialTarget_02() {
+            return {};
+          }
 
-                bar_chart_02.yAxis().ticks(3);
+          var bar_chart_02_title = document.getElementById('bar_chart_02_title')
+          bar_chart_02_title.innerHTML = "Events by " + tags_field_name_2;
 
+          var bar_chart_02_chartTitle = document.getElementById('bar_chart_02_chartTitle').innerHTML = "Events by " + tags_field_name_2;
+
+          var bar_chart_02 = dc.barChart("#d3_bar_chart_02");
+          var bar_chart_02_dimension = xf.dimension(function(d) {
+            return d[tags_field_name_2];
+          });
+          var bar_chart_02_group = bar_chart_02_dimension.groupAll().reduce(reduceAddTarget_02, reduceRemoveTarget_02, reduceInitialTarget_02).value();
+
+          bar_chart_02_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
             }
+            return newObject;
+          };
 
-
-            // BAR CHART 03 - TAGS
-            if (value_tags_field_name_3.length > 0) {
-
-                // REDUCE FUNCTION
-                function reduceAddTarget_03(p, v) {
-                    if(typeof v[tags_field_name_3] !== 'string') return p;
-                    v[tags_field_name_3].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
+          bar_chart_02.width(scatterWidth)
+            .height(tagChartHeight)
+            .dimension(bar_chart_02_dimension)
+            .group(bar_chart_02_group)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 200,
+              left: 50
+            })
+            .xUnits(dc.units.ordinal)
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .renderlet(function(chart) {
+              chart.selectAll("g.x text")
+                .style("text-anchor", "end")
+                .style("font-size", "10px")
+                .attr('dx', '0')
+                .attr('dy', '10')
+                .attr('transform', "rotate(-45)");
+              chart.selectAll('.x-axis-label')
+                .attr('transform', "translate(400, 250)");
+            })
+            .elasticY(true)
+            .filterHandler(function(dimension, filters) {
+              dimension.filter(null);
+              dimension.filterFunction(function(d) {
+                for (var i = 0; i < filters.length; i++) {
+                  if (d.indexOf(filters[i]) < 0) return false;
                 }
+                return true;
+              });
+              return filters;
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
 
-                function reduceRemoveTarget_03(p, v) {
-                    if(typeof v[tags_field_name_3] !== 'string') return p;
-                    v[tags_field_name_3].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
+          bar_chart_02.yAxis().ticks(3);
 
-                function reduceInitialTarget_03() {
-                    return {};
-                }
+        }
 
-                var bar_chart_03_title = document.getElementById('bar_chart_03_title');
-                bar_chart_03_title.innerHTML = "Events by " + tags_field_name_3;
-                var bar_chart_03_chartTitle = document.getElementById('bar_chart_03_chartTitle').innerHTML = "Events by " + tags_field_name_3;
 
-                var bar_chart_03 = dc.barChart("#d3_bar_chart_03");
-                var bar_chart_03_dimension = xf.dimension(function(d) { return d[tags_field_name_3]; });
-                var bar_chart_03_group = bar_chart_03_dimension.groupAll().reduce(reduceAddTarget_03, reduceRemoveTarget_03, reduceInitialTarget_03).value();
+        // BAR CHART 03 - TAGS
+        if (value_tags_field_name_3.length > 0) {
 
-                bar_chart_03_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+          // REDUCE FUNCTION
+          function reduceAddTarget_03(p, v) {
+            if (typeof v[tags_field_name_3] !== 'string') return p;
+            v[tags_field_name_3].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
 
-                bar_chart_03
-                    .width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(bar_chart_03_dimension)
-                    .group(bar_chart_03_group)
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    .xAxisPadding(500)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
+          function reduceRemoveTarget_03(p, v) {
+            if (typeof v[tags_field_name_3] !== 'string') return p;
+            v[tags_field_name_3].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
 
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 250)");
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
+          function reduceInitialTarget_03() {
+            return {};
+          }
 
-                bar_chart_03.yAxis().ticks(3);
+          var bar_chart_03_title = document.getElementById('bar_chart_03_title');
+          bar_chart_03_title.innerHTML = "Events by " + tags_field_name_3;
+          var bar_chart_03_chartTitle = document.getElementById('bar_chart_03_chartTitle').innerHTML = "Events by " + tags_field_name_3;
+
+          var bar_chart_03 = dc.barChart("#d3_bar_chart_03");
+          var bar_chart_03_dimension = xf.dimension(function(d) {
+            return d[tags_field_name_3];
+          });
+          var bar_chart_03_group = bar_chart_03_dimension.groupAll().reduce(reduceAddTarget_03, reduceRemoveTarget_03, reduceInitialTarget_03).value();
+
+          bar_chart_03_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
             }
+            return newObject;
+          };
 
-            // BAR CHART 04 - TAGS
-            if (value_tags_field_name_4.length > 0) {
+          bar_chart_03
+            .width(scatterWidth)
+            .height(tagChartHeight)
+            .dimension(bar_chart_03_dimension)
+            .group(bar_chart_03_group)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 200,
+              left: 50
+            })
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .xUnits(dc.units.ordinal)
+            .xAxisPadding(500)
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .elasticY(true)
+            .renderlet(function(chart) {
+              chart.selectAll("g.x text")
+                .style("text-anchor", "end")
+                .style("font-size", "10px")
+                .attr('dx', '0')
+                .attr('dy', '10')
+                .attr('transform', "rotate(-45)");
+
+              chart.selectAll('.x-axis-label')
+                .attr('transform', "translate(400, 250)");
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
+
+          bar_chart_03.yAxis().ticks(3);
+        }
+
+        // BAR CHART 04 - TAGS
+        if (value_tags_field_name_4.length > 0) {
 
 
-                // REDUCE FUNCTION
-                function reduceAddTarget_04(p, v) {
-                    if(typeof v[tags_field_name_4] !== 'string') return p;
-                    v[tags_field_name_4].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
-                }
+          // REDUCE FUNCTION
+          function reduceAddTarget_04(p, v) {
+            if (typeof v[tags_field_name_4] !== 'string') return p;
+            v[tags_field_name_4].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
 
-                function reduceRemoveTarget_04(p, v) {
-                    if(typeof v[tags_field_name_4] !== 'string') return p;
-                    v[tags_field_name_4].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
+          function reduceRemoveTarget_04(p, v) {
+            if (typeof v[tags_field_name_4] !== 'string') return p;
+            v[tags_field_name_4].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
 
-                function reduceInitialTarget_04() {
-                    return {};
-                }
+          function reduceInitialTarget_04() {
+            return {};
+          }
 
-                var bar_chart_04_title = document.getElementById('bar_chart_04_title').innerHTML = "Events by " + tags_field_name_4;
-                var bar_chart_04_chartTitle = document.getElementById('bar_chart_04_chartTitle').innerHTML = "Events by " + tags_field_name_4;
+          var bar_chart_04_title = document.getElementById('bar_chart_04_title').innerHTML = "Events by " + tags_field_name_4;
+          var bar_chart_04_chartTitle = document.getElementById('bar_chart_04_chartTitle').innerHTML = "Events by " + tags_field_name_4;
 
-                var bar_chart_04 = dc.barChart("#d3_bar_chart_04");
-                var bar_chart_04_dimension = xf.dimension(function(d) { return d[tags_field_name_4]; });
-                var bar_chart_04_group = bar_chart_04_dimension.groupAll().reduce(reduceAddTarget_04, reduceRemoveTarget_04, reduceInitialTarget_04).value();
+          var bar_chart_04 = dc.barChart("#d3_bar_chart_04");
+          var bar_chart_04_dimension = xf.dimension(function(d) {
+            return d[tags_field_name_4];
+          });
+          var bar_chart_04_group = bar_chart_04_dimension.groupAll().reduce(reduceAddTarget_04, reduceRemoveTarget_04, reduceInitialTarget_04).value();
 
-                bar_chart_04_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
-
-                bar_chart_04
-                    .width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(bar_chart_04_dimension)
-                    .group(bar_chart_04_group)
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    .xAxisPadding(500)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
-
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 358)");
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
-
-                bar_chart_04.yAxis().ticks(3);
+          bar_chart_04_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
             }
+            return newObject;
+          };
 
-            // BAR CHART 05 - TAGS
+          bar_chart_04
+            .width(scatterWidth)
+            .height(tagChartHeight)
+            .dimension(bar_chart_04_dimension)
+            .group(bar_chart_04_group)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 200,
+              left: 50
+            })
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .xUnits(dc.units.ordinal)
+            .xAxisPadding(500)
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .elasticY(true)
+            .renderlet(function(chart) {
+              chart.selectAll("g.x text")
+                .style("text-anchor", "end")
+                .style("font-size", "10px")
+                .attr('dx', '0')
+                .attr('dy', '10')
+                .attr('transform', "rotate(-45)");
 
-            if (value_tags_field_name_5.length > 0) {
+              chart.selectAll('.x-axis-label')
+                .attr('transform', "translate(400, 358)");
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
 
-                // CUSTOM REDUCE FUNCTION
-                function reduceAddTarget_05(p, v) {
-                    if(typeof v[tags_field_name_5] !== 'string') return p;
-                    v[tags_field_name_5].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
-                }
+          bar_chart_04.yAxis().ticks(3);
+        }
 
-                function reduceRemoveTarget_05(p, v) {
-                    if(typeof v[tags_field_name_5] !== 'string') return p;
-                    v[tags_field_name_5].split(',').forEach (function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
-                }
+        // BAR CHART 05 - TAGS
 
-                function reduceInitialTarget_05() {
-                    return {};
-                }
+        if (value_tags_field_name_5.length > 0) {
 
-                var bar_chart_05_title = document.getElementById('bar_chart_05_title').innerHTML = "Events by " + tags_field_name_5;
-                var bar_chart_05_chartTitle = document.getElementById('bar_chart_05_chartTitle').innerHTML = "Events by " + tags_field_name_5;
+          // CUSTOM REDUCE FUNCTION
+          function reduceAddTarget_05(p, v) {
+            if (typeof v[tags_field_name_5] !== 'string') return p;
+            v[tags_field_name_5].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+          }
 
-                var bar_chart_05 = dc.barChart("#d3_bar_chart_05");
-                var bar_chart_05_dimension = xf.dimension(function(d) { return d[tags_field_name_5]; });
-                var bar_chart_05_group = bar_chart_05_dimension.groupAll().reduce(reduceAddTarget_05, reduceRemoveTarget_05, reduceInitialTarget_05).value();
+          function reduceRemoveTarget_05(p, v) {
+            if (typeof v[tags_field_name_5] !== 'string') return p;
+            v[tags_field_name_5].split(',').forEach(function(val, idx) {
+              p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+          }
 
-                bar_chart_05_group.all = function() {
-                    var newObject = [];
-                    for (var key in this) {
-                        if (this.hasOwnProperty(key) && key != "all") {
-                            newObject.push({
-                                key: key,
-                                value: this[key]
-                            });
-                        }
-                    }
-                    return newObject;
-                };
+          function reduceInitialTarget_05() {
+            return {};
+          }
 
-                bar_chart_05
-                    .width(scatterWidth)
-                    .height(tagChartHeight)
-                    .dimension(bar_chart_05_dimension)
-                    .group(bar_chart_05_group)
-                    .margins({top: 0, right: 50, bottom: 200, left: 50})
-                    .title(function(d) { return ('Total number of events: ' + d.value ); })
-                    .x(d3.scale.ordinal())
-                    .xUnits(dc.units.ordinal)
-                    .xAxisPadding(500)
-                    .renderHorizontalGridLines(true)
-                    .yAxisLabel("no. of events")
-                    .elasticY(true)
-                    .renderlet(function (chart) {
-                        chart.selectAll("g.x text")
-                        .style("text-anchor", "end")
-                        .style("font-size", "10px")
-                        .attr('dx', '0')
-                        .attr('dy', '10')
-                        .attr('transform', "rotate(-45)");
+          var bar_chart_05_title = document.getElementById('bar_chart_05_title').innerHTML = "Events by " + tags_field_name_5;
+          var bar_chart_05_chartTitle = document.getElementById('bar_chart_05_chartTitle').innerHTML = "Events by " + tags_field_name_5;
 
-                        chart.selectAll('.x-axis-label')
-                        .attr('transform', "translate(400, 358)");
-                    })
-                    .on("filtered", function (d) { return filterOn.className = "glyphicon glyphicon-filter activeFilter";})
-                    .barPadding(0.1)
-                    .outerPadding(0.05);
+          var bar_chart_05 = dc.barChart("#d3_bar_chart_05");
+          var bar_chart_05_dimension = xf.dimension(function(d) {
+            return d[tags_field_name_5];
+          });
+          var bar_chart_05_group = bar_chart_05_dimension.groupAll().reduce(reduceAddTarget_05, reduceRemoveTarget_05, reduceInitialTarget_05).value();
 
-                bar_chart_05.yAxis().ticks(3);
+          bar_chart_05_group.all = function() {
+            var newObject = [];
+            for (var key in this) {
+              if (this.hasOwnProperty(key) && key != "all") {
+                newObject.push({
+                  key: key,
+                  value: this[key]
+                });
+              }
             }
+            return newObject;
+          };
 
+          bar_chart_05
+            .width(scatterWidth)
+            .height(tagChartHeight)
+            .dimension(bar_chart_05_dimension)
+            .group(bar_chart_05_group)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 200,
+              left: 50
+            })
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.scale.ordinal())
+            .xUnits(dc.units.ordinal)
+            .xAxisPadding(500)
+            .renderHorizontalGridLines(true)
+            .yAxisLabel("no. of events")
+            .elasticY(true)
+            .renderlet(function(chart) {
+              chart.selectAll("g.x text")
+                .style("text-anchor", "end")
+                .style("font-size", "10px")
+                .attr('dx', '0')
+                .attr('dy', '10')
+                .attr('transform', "rotate(-45)");
+
+              chart.selectAll('.x-axis-label')
+                .attr('transform', "translate(400, 358)");
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .barPadding(0.1)
+            .outerPadding(0.05);
+
+          bar_chart_05.yAxis().ticks(3);
+        }
             // BOOLEAN CHART 01 - BOOLEAN
             if (value_boolean_field_name_1.length > 0) {
 

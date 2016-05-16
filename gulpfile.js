@@ -25,13 +25,36 @@ var jade = require('gulp-jade');
 var jsonlint = require('gulp-json-lint');
 var webserver = require('gulp-webserver');
 
+var browserify = require('browserify');
+var babelify = require('babelify');
+var source = require('vinyl-source-stream');
+
+var config = {
+  app_main: 'src/js/app.js',
+  bundle: 'js/main.js'
+};
+
+gulp.task('bundle', function () {
+    return browserify({entries: config.app_main, debug: true})
+        .transform(babelify)
+        .bundle()
+        .pipe(source(config.bundle))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('watch', ['bundle'], function () {
+    gulp.watch('*.js', ['build']);
+});
+
+gulp.task('default', ['watch']);
+
 gulp.task('jsonlint', function(){
       gulp.src('js/config.json')
         .pipe(jsonlint())
         .pipe(jsonlint.report('verbose'));
 });
 
-gulp.task('build', ['jsonlint'], function() {
+gulp.task('build', ['jsonlint', 'bundle'], function() {
   gulp.src(['src/**/*'])
     .pipe(gulp.dest('dist'));
 });

@@ -47,10 +47,14 @@
     "tabletop": "^1.4.2"
   },
   "devDependencies": {
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1",
     "docco": "^0.7.0",
     "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
     "gulp-json-lint": "^0.1.0",
-    "http-server": "^0.8.5"
+    "gulp-webserver": "^0.9.1",
+    "http-server": "^0.8.5",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

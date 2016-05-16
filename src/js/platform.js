@@ -1955,6 +1955,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                         }
 
                         function appendTagValueToTable(field_name) {
+                          if(! is_defined(d[field_name])) return;
                             $('#summaryTable').append(
                                 "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
                                 "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +

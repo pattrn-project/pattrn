@@ -369,593 +369,592 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
         // LINE CHART 1 - Integer
         var values_number_field_name_1 = map(dataset, function(item) {
-            return item[number_field_name_1];
+          return item[number_field_name_1];
         }).join("");
 
         if (values_number_field_name_1 > 0) {
-            // Menu item
-            var line_chart_01_title = document.getElementById('line_chart_01_title')
-                .innerHTML = number_field_name_1 + " over time";
+          // Menu item
+          var line_chart_01_title = document.getElementById('line_chart_01_title')
+            .innerHTML = number_field_name_1 + " over time";
 
-            var line_chart_01_chartTitle = document.getElementById('line_chart_01_chartTitle').innerHTML = number_field_name_1 + " over time";
+          var line_chart_01_chartTitle = document.getElementById('line_chart_01_chartTitle').innerHTML = number_field_name_1 + " over time";
 
-            var line_chart_01 = dc.lineChart("#d3_line_chart_01");
-            var line_chart_01_dimension = xf.dimension(function(d) {
-                return +d3.time.day(d.dd);
-            });
-            var line_chart_01_group = line_chart_01_dimension.group().reduceSum(function(d) {
-                return d[number_field_name_1];
-            });
+          var line_chart_01 = dc.lineChart("#d3_line_chart_01");
+          var line_chart_01_dimension = xf.dimension(function(d) {
+            return +d3.time.day(d.dd);
+          });
+          var line_chart_01_group = line_chart_01_dimension.group().reduceSum(function(d) {
+            return d[number_field_name_1];
+          });
 
-            line_chart_01.width(scatterWidth)
-                .height(chartHeight)
-                .margins({
-                    top: 0,
-                    right: 50,
-                    bottom: 50,
-                    left: 50
-                })
-                .dimension(line_chart_01_dimension)
-                .group(line_chart_01_group)
-                .title(function(d) {
-                    return ('Total number of events: ' + d.value);
-                })
-                .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-                    return d.dd;
-                })))
-                .renderHorizontalGridLines(true)
-                .renderVerticalGridLines(true)
-                .yAxisLabel("no. of" + line_chart_01_title)
-                .elasticY(true)
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .brushOn(true)
-                .xAxis();
+          line_chart_01.width(scatterWidth)
+            .height(chartHeight)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 50,
+              left: 50
+            })
+            .dimension(line_chart_01_dimension)
+            .group(line_chart_01_group)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+              return d.dd;
+            })))
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true)
+            .yAxisLabel("no. of" + line_chart_01_title)
+            .elasticY(true)
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .brushOn(true)
+            .xAxis();
 
-            line_chart_01.yAxis().ticks(3);
-            line_chart_01.turnOnControls(true);
-            line_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+          line_chart_01.yAxis().ticks(3);
+          line_chart_01.turnOnControls(true);
+          line_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-            // AGGREGATE COUNT CHART
-            var agreggateCountTitle_01 = document.getElementById('agreggateCountTitle_01')
-                .innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_1 + "'";
+          // AGGREGATE COUNT CHART
+          var agreggateCountTitle_01 = document.getElementById('agreggateCountTitle_01')
+            .innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_1 + "'";
 
-            var aggregate_count_01 = dc.numberDisplay("#d3_aggregate_count_01");
-            aggregate_count_01_dimension = xf.dimension(function(d) {
-                return +d[number_field_name_1];
-            });
-            aggregate_count_01_group = aggregate_count_01_dimension.groupAll().reduce(
-                function(p, v) {
-                    ++p.n;
-                    p.tot += parseInt(v[number_field_name_1]);
-                    return p;
-                },
-                function(p, v) {
-                    --p.n;
-                    p.tot -= parseInt(v[number_field_name_1]);
-                    return p;
-                },
-                function() {
-                    return {
-                        n: 0,
-                        tot: 0
-                    };
-                }
-            );
+          var aggregate_count_01 = dc.numberDisplay("#d3_aggregate_count_01");
+          aggregate_count_01_dimension = xf.dimension(function(d) {
+            return +d[number_field_name_1];
+          });
+          aggregate_count_01_group = aggregate_count_01_dimension.groupAll().reduce(
+            function(p, v) {
+              ++p.n;
+              p.tot += parseInt(v[number_field_name_1]);
+              return p;
+            },
+            function(p, v) {
+              --p.n;
+              p.tot -= parseInt(v[number_field_name_1]);
+              return p;
+            },
+            function() {
+              return {
+                n: 0,
+                tot: 0
+              };
+            }
+          );
 
-            var average_value = function(d) {
-                return d.n ? d.tot : 0;
-            };
+          var average_value = function(d) {
+            return d.n ? d.tot : 0;
+          };
 
-            aggregate_count_01
-                .valueAccessor(average_value)
-                .formatNumber(d3.format("d"))
-                .group(aggregate_count_01_group);
+          aggregate_count_01
+            .valueAccessor(average_value)
+            .formatNumber(d3.format("d"))
+            .group(aggregate_count_01_group);
 
-            var SliderChart_01 = dc.lineChart("#SliderChart_01");
-            var SliderChart_01_Dim = xf.dimension(function(d) {
-                return +d[number_field_name_1];
-            });
-            var SliderChart_01_Group = SliderChart_01_Dim.group();
-            var SliderChart_01_Max_Value = d3.max(dataset, function(d) {
-                return +d[number_field_name_1];
-            });
+          var SliderChart_01 = dc.lineChart("#SliderChart_01");
+          var SliderChart_01_Dim = xf.dimension(function(d) {
+            return +d[number_field_name_1];
+          });
+          var SliderChart_01_Group = SliderChart_01_Dim.group();
+          var SliderChart_01_Max_Value = d3.max(dataset, function(d) {
+            return +d[number_field_name_1];
+          });
 
-            SliderChart_01.width(125)
-                .height(chartHeight / 3)
-                .transitionDuration(500)
-                .margins({
-                    top: 0,
-                    right: 10,
-                    bottom: 30,
-                    left: 4
-                })
-                .dimension(SliderChart_01_Dim)
-                .group(SliderChart_01_Group)
-                .colors(["red"])
-                .renderlet(function(chart) {
-                    // set svg background colour
-                    chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
-                })
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .x(d3.scale.linear().domain([0, (SliderChart_01_Max_Value + 1)]));
-            SliderChart_01.xAxis().ticks(3);
+          SliderChart_01.width(125)
+            .height(chartHeight / 3)
+            .transitionDuration(500)
+            .margins({
+              top: 0,
+              right: 10,
+              bottom: 30,
+              left: 4
+            })
+            .dimension(SliderChart_01_Dim)
+            .group(SliderChart_01_Group)
+            .colors(["red"])
+            .renderlet(function(chart) {
+              // set svg background colour
+              chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .x(d3.scale.linear().domain([0, (SliderChart_01_Max_Value + 1)]));
+          SliderChart_01.xAxis().ticks(3);
         }
 
         // LINE CHART 2 - Integer
         var values_number_field_name_2 = map(dataset, function(item) {
-            return item[number_field_name_2];
+          return item[number_field_name_2];
         }).join("");
 
         if (values_number_field_name_2 > 0) {
 
-            var line_chart_02_title = document.getElementById('line_chart_02_title')
-                .innerHTML = number_field_name_2 + " over time";
-            var line_chart_02_chartTitle = document.getElementById('line_chart_02_chartTitle').innerHTML = number_field_name_2 + " over time";
+          var line_chart_02_title = document.getElementById('line_chart_02_title')
+            .innerHTML = number_field_name_2 + " over time";
+          var line_chart_02_chartTitle = document.getElementById('line_chart_02_chartTitle').innerHTML = number_field_name_2 + " over time";
 
-            var line_chart_02 = dc.lineChart("#d3_line_chart_02");
-            var line_chart_02_dimension = xf.dimension(function(d) {
-                return +d3.time.day(d.dd);
-            });
-            var line_chart_02_group = line_chart_02_dimension.group().reduceSum(function(d) {
-                return d[number_field_name_2];
-            });
+          var line_chart_02 = dc.lineChart("#d3_line_chart_02");
+          var line_chart_02_dimension = xf.dimension(function(d) {
+            return +d3.time.day(d.dd);
+          });
+          var line_chart_02_group = line_chart_02_dimension.group().reduceSum(function(d) {
+            return d[number_field_name_2];
+          });
 
-            line_chart_02.width(scatterWidth)
-                .height(chartHeight)
-                .margins({
-                    top: 0,
-                    right: 50,
-                    bottom: 50,
-                    left: 50
-                })
-                .dimension(line_chart_02_dimension)
-                .group(line_chart_02_group)
-                .title(function(d) {
-                    return ('Total number of events: ' + d.value);
-                })
-                .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-                    return d.dd;
-                })))
-                .renderHorizontalGridLines(true)
-                .renderVerticalGridLines(true)
-                .yAxisLabel("no. of" + line_chart_02_title)
-                .elasticY(true)
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .brushOn(true)
-                .xAxis();
+          line_chart_02.width(scatterWidth)
+            .height(chartHeight)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 50,
+              left: 50
+            })
+            .dimension(line_chart_02_dimension)
+            .group(line_chart_02_group)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+              return d.dd;
+            })))
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true)
+            .yAxisLabel("no. of" + line_chart_02_title)
+            .elasticY(true)
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .brushOn(true)
+            .xAxis();
 
-            line_chart_02.yAxis().ticks(3);
-            line_chart_02.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+          line_chart_02.yAxis().ticks(3);
+          line_chart_02.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-            // AGGREGATE COUNT CHART
-            var agreggateCountTitle_02 = document.getElementById('agreggateCountTitle_02').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_2 + "'";
+          // AGGREGATE COUNT CHART
+          var agreggateCountTitle_02 = document.getElementById('agreggateCountTitle_02').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_2 + "'";
 
-            var aggregate_count_02 = dc.numberDisplay("#d3_aggregate_count_02");
-            aggregate_count_02_dimension = xf.dimension(function(d) {
-                return +d[number_field_name_2];
-            });
-            aggregate_count_02_group = aggregate_count_02_dimension.groupAll().reduce(
-                function(p, v) {
-                    ++p.n;
-                    p.tot += parseInt(v[number_field_name_2]);
-                    return p;
-                },
-                function(p, v) {
-                    --p.n;
-                    p.tot -= parseInt(v[number_field_name_2]);
-                    return p;
-                },
-                function() {
-                    return {
-                        n: 0,
-                        tot: 0
-                    };
-                }
-            );
+          var aggregate_count_02 = dc.numberDisplay("#d3_aggregate_count_02");
+          aggregate_count_02_dimension = xf.dimension(function(d) {
+            return +d[number_field_name_2];
+          });
+          aggregate_count_02_group = aggregate_count_02_dimension.groupAll().reduce(
+            function(p, v) {
+              ++p.n;
+              p.tot += parseInt(v[number_field_name_2]);
+              return p;
+            },
+            function(p, v) {
+              --p.n;
+              p.tot -= parseInt(v[number_field_name_2]);
+              return p;
+            },
+            function() {
+              return {
+                n: 0,
+                tot: 0
+              };
+            }
+          );
 
-            var average_02 = function(d) {
-                return d.n ? d.tot : 0;
-            };
+          var average_02 = function(d) {
+            return d.n ? d.tot : 0;
+          };
 
-            aggregate_count_02
-                .valueAccessor(average_02)
-                .formatNumber(d3.format("d"))
-                .group(aggregate_count_02_group);
+          aggregate_count_02
+            .valueAccessor(average_02)
+            .formatNumber(d3.format("d"))
+            .group(aggregate_count_02_group);
 
-            var SliderChart_02 = dc.lineChart("#SliderChart_02");
-            var SliderChart_02_Dim = xf.dimension(function(d) {
-                return d[number_field_name_2];
-            });
-            var SliderChart_02_Group = SliderChart_02_Dim.group();
-            var SliderChart_02_Max_Value = d3.max(dataset, function(d) {
-                return +d[number_field_name_2];
-            });
+          var SliderChart_02 = dc.lineChart("#SliderChart_02");
+          var SliderChart_02_Dim = xf.dimension(function(d) {
+            return d[number_field_name_2];
+          });
+          var SliderChart_02_Group = SliderChart_02_Dim.group();
+          var SliderChart_02_Max_Value = d3.max(dataset, function(d) {
+            return +d[number_field_name_2];
+          });
 
-            SliderChart_02.width(125)
-                .height(chartHeight / 3)
-                .transitionDuration(500)
-                .margins({
-                    top: 0,
-                    right: 10,
-                    bottom: 30,
-                    left: 4
-                })
-                .dimension(SliderChart_02_Dim)
-                .group(SliderChart_02_Group)
-                .renderlet(function(chart) {
-                    chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
-                })
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .x(d3.scale.linear().domain([0, (SliderChart_02_Max_Value + 1)]));
-            SliderChart_02.xAxis().ticks(3);
+          SliderChart_02.width(125)
+            .height(chartHeight / 3)
+            .transitionDuration(500)
+            .margins({
+              top: 0,
+              right: 10,
+              bottom: 30,
+              left: 4
+            })
+            .dimension(SliderChart_02_Dim)
+            .group(SliderChart_02_Group)
+            .renderlet(function(chart) {
+              chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .x(d3.scale.linear().domain([0, (SliderChart_02_Max_Value + 1)]));
+          SliderChart_02.xAxis().ticks(3);
         }
 
         // LINE CHART 3 - Integer
         var values_number_field_name_3 = map(dataset, function(item) {
-            return item[number_field_name_3];
+          return item[number_field_name_3];
         }).join("");
 
         if (values_number_field_name_3 > 0) {
 
-            var line_chart_03_title = document.getElementById('line_chart_03_title').innerHTML = number_field_name_3 + " over time";
-            var line_chart_03_chartTitle = document.getElementById('line_chart_03_chartTitle').innerHTML = number_field_name_3 + " over time";
+          var line_chart_03_title = document.getElementById('line_chart_03_title').innerHTML = number_field_name_3 + " over time";
+          var line_chart_03_chartTitle = document.getElementById('line_chart_03_chartTitle').innerHTML = number_field_name_3 + " over time";
 
-            var line_chart_03 = dc.lineChart("#d3_line_chart_03");
-            var line_chart_03_dimension = xf.dimension(function(d) {
-                return +d3.time.day(d.dd);
-            });
-            var line_chart_03_group = line_chart_03_dimension.group().reduceSum(function(d) {
-                return d[number_field_name_3];
-            });
+          var line_chart_03 = dc.lineChart("#d3_line_chart_03");
+          var line_chart_03_dimension = xf.dimension(function(d) {
+            return +d3.time.day(d.dd);
+          });
+          var line_chart_03_group = line_chart_03_dimension.group().reduceSum(function(d) {
+            return d[number_field_name_3];
+          });
 
-            line_chart_03.width(scatterWidth)
-                .height(chartHeight)
-                .margins({
-                    top: 0,
-                    right: 50,
-                    bottom: 50,
-                    left: 50
-                })
-                .dimension(line_chart_03_dimension)
-                .group(line_chart_03_group)
-                .transitionDuration(500)
-                .title(function(d) {
-                    return ('Total number of events: ' + d.value);
-                })
-                .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-                    return d.dd;
-                })))
-                .yAxisLabel("no. of" + line_chart_03_title)
-                .elasticY(true)
-                .renderHorizontalGridLines(true)
-                .renderVerticalGridLines(true)
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .brushOn(true)
-                .xAxis();
+          line_chart_03.width(scatterWidth)
+            .height(chartHeight)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 50,
+              left: 50
+            })
+            .dimension(line_chart_03_dimension)
+            .group(line_chart_03_group)
+            .transitionDuration(500)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+              return d.dd;
+            })))
+            .yAxisLabel("no. of" + line_chart_03_title)
+            .elasticY(true)
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true)
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .brushOn(true)
+            .xAxis();
 
-            line_chart_03.yAxis().ticks(3);
-            line_chart_03.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+          line_chart_03.yAxis().ticks(3);
+          line_chart_03.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-            // AGGREGATE COUNT CHART
-            var agreggateCountTitle_03 = document.getElementById('agreggateCountTitle_03').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_3 + "'";
+          // AGGREGATE COUNT CHART
+          var agreggateCountTitle_03 = document.getElementById('agreggateCountTitle_03').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_3 + "'";
 
-            var aggregate_count_03 = dc.numberDisplay("#d3_aggregate_count_03");
-            aggregate_count_03_dimension = xf.dimension(function(d) {
-                return +d[number_field_name_3];
-            });
-            aggregate_count_03_group = aggregate_count_03_dimension.groupAll().reduce(
-                function(p, v) {
-                    ++p.n;
-                    p.tot += parseInt(v[number_field_name_3]);
-                    return p;
-                },
-                function(p, v) {
-                    --p.n;
-                    p.tot -= parseInt(v[number_field_name_3]);
-                    return p;
-                },
-                function() {
-                    return {
-                        n: 0,
-                        tot: 0
-                    };
-                }
-            );
+          var aggregate_count_03 = dc.numberDisplay("#d3_aggregate_count_03");
+          aggregate_count_03_dimension = xf.dimension(function(d) {
+            return +d[number_field_name_3];
+          });
+          aggregate_count_03_group = aggregate_count_03_dimension.groupAll().reduce(
+            function(p, v) {
+              ++p.n;
+              p.tot += parseInt(v[number_field_name_3]);
+              return p;
+            },
+            function(p, v) {
+              --p.n;
+              p.tot -= parseInt(v[number_field_name_3]);
+              return p;
+            },
+            function() {
+              return {
+                n: 0,
+                tot: 0
+              };
+            }
+          );
 
-            var average_03 = function(d) {
-                return d.n ? d.tot : 0;
-            };
+          var average_03 = function(d) {
+            return d.n ? d.tot : 0;
+          };
 
-            aggregate_count_03
-                .valueAccessor(average_03)
-                .formatNumber(d3.format("d"))
-                .group(aggregate_count_03_group);
+          aggregate_count_03
+            .valueAccessor(average_03)
+            .formatNumber(d3.format("d"))
+            .group(aggregate_count_03_group);
 
-            var SliderChart_03 = dc.lineChart("#SliderChart_03");
-            var SliderChart_03_Dim = xf.dimension(function(d) {
-                return +d[number_field_name_3];
-            });
-            var SliderChart_03_Group = SliderChart_03_Dim.group();
-            var SliderChart_03_Max_Value = d3.max(dataset, function(d) {
-                return +d[number_field_name_3];
-            });
+          var SliderChart_03 = dc.lineChart("#SliderChart_03");
+          var SliderChart_03_Dim = xf.dimension(function(d) {
+            return +d[number_field_name_3];
+          });
+          var SliderChart_03_Group = SliderChart_03_Dim.group();
+          var SliderChart_03_Max_Value = d3.max(dataset, function(d) {
+            return +d[number_field_name_3];
+          });
 
 
-            SliderChart_03.width(125)
-                .height(chartHeight / 3)
-                .transitionDuration(500)
-                .margins({
-                    top: 0,
-                    right: 10,
-                    bottom: 30,
-                    left: 4
-                })
-                .dimension(SliderChart_03_Dim)
-                .group(SliderChart_03_Group)
-                .colors(["red"])
-                .renderlet(function(chart) {
-                    chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 150);
-                })
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .x(d3.scale.linear().domain([0, (SliderChart_03_Max_Value + 1)]))
-                .xAxis();
-            SliderChart_03.xAxis().ticks(3);
+          SliderChart_03.width(125)
+            .height(chartHeight / 3)
+            .transitionDuration(500)
+            .margins({
+              top: 0,
+              right: 10,
+              bottom: 30,
+              left: 4
+            })
+            .dimension(SliderChart_03_Dim)
+            .group(SliderChart_03_Group)
+            .colors(["red"])
+            .renderlet(function(chart) {
+              chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 150);
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .x(d3.scale.linear().domain([0, (SliderChart_03_Max_Value + 1)]))
+            .xAxis();
+          SliderChart_03.xAxis().ticks(3);
 
         }
 
 
         // LINE CHART 4 - Integer
         var values_number_field_name_4 = map(dataset, function(item) {
-            return item[number_field_name_4];
+          return item[number_field_name_4];
         }).join("");
 
         if (values_number_field_name_4 > 0) {
-            var line_chart_04_contents = document.getElementById('line_chart_04_title').innerHTML = number_field_name_4 + " over time";
+          var line_chart_04_contents = document.getElementById('line_chart_04_title').innerHTML = number_field_name_4 + " over time";
 
-            var line_chart_04_chartTitle = document.getElementById('line_chart_04_chartTitle').innerHTML = number_field_name_4 + " over time";
+          var line_chart_04_chartTitle = document.getElementById('line_chart_04_chartTitle').innerHTML = number_field_name_4 + " over time";
 
-            var line_chart_04 = dc.lineChart("#d3_line_chart_04");
-            var line_chart_04_dimension = xf.dimension(function(d) {
-                return +d3.time.day(d.dd);
-            });
-            var line_chart_04_group = line_chart_04_dimension.group().reduceSum(function(d) {
-                return d[number_field_name_3];
-            });
+          var line_chart_04 = dc.lineChart("#d3_line_chart_04");
+          var line_chart_04_dimension = xf.dimension(function(d) {
+            return +d3.time.day(d.dd);
+          });
+          var line_chart_04_group = line_chart_04_dimension.group().reduceSum(function(d) {
+            return d[number_field_name_3];
+          });
 
-            line_chart_04.width(scatterWidth)
-                .height(chartHeight)
-                .margins({
-                    top: 0,
-                    right: 50,
-                    bottom: 50,
-                    left: 50
-                })
-                .dimension(line_chart_04_dimension)
-                .group(line_chart_04_group)
-                .transitionDuration(500)
-                .title(function(d) {
-                    return ('Total number of events: ' + d.value);
-                })
-                .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-                    return d.dd;
-                })))
-                .yAxisLabel("no. of" + line_chart_04_title)
-                .elasticY(true)
-                .renderHorizontalGridLines(true)
-                .renderVerticalGridLines(true)
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .brushOn(true)
-                .xAxis();
+          line_chart_04.width(scatterWidth)
+            .height(chartHeight)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 50,
+              left: 50
+            })
+            .dimension(line_chart_04_dimension)
+            .group(line_chart_04_group)
+            .transitionDuration(500)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+              return d.dd;
+            })))
+            .yAxisLabel("no. of" + line_chart_04_title)
+            .elasticY(true)
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true)
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .brushOn(true)
+            .xAxis();
 
-            line_chart_04.yAxis().ticks(3);
-            line_chart_04.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+          line_chart_04.yAxis().ticks(3);
+          line_chart_04.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-            // AGGREGATE COUNT CHART
-            var agreggateCountTitle_04 = document.getElementById('agreggateCountTitle_04').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_4 + "'";
+          // AGGREGATE COUNT CHART
+          var agreggateCountTitle_04 = document.getElementById('agreggateCountTitle_04').innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_4 + "'";
 
-            var aggregate_count_04 = dc.numberDisplay("#d3_aggregate_count_04");
-            aggregate_count_04_dimension = xf.dimension(function(d) {
-                return +d[number_field_name_4];
-            });
-            aggregate_count_04_group = aggregate_count_04_dimension.groupAll().reduce(
-                function(p, v) {
-                    ++p.n;
-                    p.tot += parseInt(v[number_field_name_4]);
-                    return p;
-                },
-                function(p, v) {
-                    --p.n;
-                    p.tot -= parseInt(v[number_field_name_4]);
-                    return p;
-                },
-                function() {
-                    return {
-                        n: 0,
-                        tot: 0
-                    };
-                }
-            );
+          var aggregate_count_04 = dc.numberDisplay("#d3_aggregate_count_04");
+          aggregate_count_04_dimension = xf.dimension(function(d) {
+            return +d[number_field_name_4];
+          });
+          aggregate_count_04_group = aggregate_count_04_dimension.groupAll().reduce(
+            function(p, v) {
+              ++p.n;
+              p.tot += parseInt(v[number_field_name_4]);
+              return p;
+            },
+            function(p, v) {
+              --p.n;
+              p.tot -= parseInt(v[number_field_name_4]);
+              return p;
+            },
+            function() {
+              return {
+                n: 0,
+                tot: 0
+              };
+            }
+          );
 
-            var average_04 = function(d) {
-                return d.n ? d.tot : 0;
-            };
+          var average_04 = function(d) {
+            return d.n ? d.tot : 0;
+          };
 
-            aggregate_count_04
-                .valueAccessor(average_04)
-                .formatNumber(d3.format("d"))
-                .group(aggregate_count_04_group);
+          aggregate_count_04
+            .valueAccessor(average_04)
+            .formatNumber(d3.format("d"))
+            .group(aggregate_count_04_group);
 
-            var SliderChart_04 = dc.lineChart("#SliderChart_04");
-            var SliderChart_04_Dim = xf.dimension(function(d) {
-                return +d[number_field_name_4];
-            });
-            var SliderChart_04_Group = SliderChart_04_Dim.group();
-            var SliderChart_04_Max_Value = d3.max(dataset, function(d) {
-                return +d[number_field_name_4];
-            });
+          var SliderChart_04 = dc.lineChart("#SliderChart_04");
+          var SliderChart_04_Dim = xf.dimension(function(d) {
+            return +d[number_field_name_4];
+          });
+          var SliderChart_04_Group = SliderChart_04_Dim.group();
+          var SliderChart_04_Max_Value = d3.max(dataset, function(d) {
+            return +d[number_field_name_4];
+          });
 
 
-            SliderChart_04.width(125)
-                .height(chartHeight / 3)
-                .transitionDuration(500)
-                .margins({
-                    top: 0,
-                    right: 10,
-                    bottom: 30,
-                    left: 4
-                })
-                .dimension(SliderChart_04_Dim)
-                .group(SliderChart_04_Group)
-                .colors(["red"])
-                .renderlet(function(chart) {
-                    chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
-                })
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .x(d3.scale.linear().domain([0, (SliderChart_04_Max_Value + 1)]));
+          SliderChart_04.width(125)
+            .height(chartHeight / 3)
+            .transitionDuration(500)
+            .margins({
+              top: 0,
+              right: 10,
+              bottom: 30,
+              left: 4
+            })
+            .dimension(SliderChart_04_Dim)
+            .group(SliderChart_04_Group)
+            .colors(["red"])
+            .renderlet(function(chart) {
+              chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .x(d3.scale.linear().domain([0, (SliderChart_04_Max_Value + 1)]));
 
-            SliderChart_04.xAxis().ticks(3);
+          SliderChart_04.xAxis().ticks(3);
 
         }
 
 
         // LINE CHART 5 - Integer
         var values_number_field_name_5 = map(dataset, function(item) {
-            return item[number_field_name_5];
+          return item[number_field_name_5];
         }).join("");
 
         if (values_number_field_name_5 > 0) {
 
-            var line_chart_05_title = document.getElementById('line_chart_05_title')
-                .innerHTML = number_field_name_5 + " over time";
+          var line_chart_05_title = document.getElementById('line_chart_05_title')
+            .innerHTML = number_field_name_5 + " over time";
 
-            var line_chart_05_chartTitle = document.getElementById('line_chart_05_chartTitle').innerHTML = number_field_name_5 + " over time";
+          var line_chart_05_chartTitle = document.getElementById('line_chart_05_chartTitle').innerHTML = number_field_name_5 + " over time";
 
-            var line_chart_05 = dc.lineChart("#d3_line_chart_05");
-            var line_chart_05_dimension = xf.dimension(function(d) {
-                return +d3.time.day(d.dd);
-            });
-            var line_chart_05_group = line_chart_05_dimension.group().reduceSum(function(d) {
-                return d[number_field_name_3];
-            });
+          var line_chart_05 = dc.lineChart("#d3_line_chart_05");
+          var line_chart_05_dimension = xf.dimension(function(d) {
+            return +d3.time.day(d.dd);
+          });
+          var line_chart_05_group = line_chart_05_dimension.group().reduceSum(function(d) {
+            return d[number_field_name_3];
+          });
 
-            line_chart_05.width(scatterWidth)
-                .height(chartHeight)
-                .margins({
-                    top: 0,
-                    right: 50,
-                    bottom: 50,
-                    left: 50
-                })
-                .dimension(line_chart_05_dimension)
-                .group(line_chart_05_group)
-                .transitionDuration(500)
-                .title(function(d) {
-                    return ('Total number of events: ' + d.value);
-                })
-                .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-                    return d.dd;
-                })))
-                .yAxisLabel("no. of" + line_chart_05_title)
-                .elasticY(true)
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                .renderHorizontalGridLines(true)
-                .renderVerticalGridLines(true)
-                .brushOn(true)
-                .xAxis();
+          line_chart_05.width(scatterWidth)
+            .height(chartHeight)
+            .margins({
+              top: 0,
+              right: 50,
+              bottom: 50,
+              left: 50
+            })
+            .dimension(line_chart_05_dimension)
+            .group(line_chart_05_group)
+            .transitionDuration(500)
+            .title(function(d) {
+              return ('Total number of events: ' + d.value);
+            })
+            .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+              return d.dd;
+            })))
+            .yAxisLabel("no. of" + line_chart_05_title)
+            .elasticY(true)
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true)
+            .brushOn(true)
+            .xAxis();
 
-            line_chart_05.yAxis().ticks(3);
-            line_chart_05.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+          line_chart_05.yAxis().ticks(3);
+          line_chart_05.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
 
-            // AGGREGATE COUNT CHART
-            var agreggateCountTitle_05 = document.getElementById('agreggateCountTitle_05')
-                .innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_5 + "'";
+          // AGGREGATE COUNT CHART
+          var agreggateCountTitle_05 = document.getElementById('agreggateCountTitle_05')
+            .innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_5 + "'";
 
-            var aggregate_count_05 = dc.numberDisplay("#d3_aggregate_count_05");
-            aggregate_count_05_dimension = xf.dimension(function(d) {
-                return +d[number_field_name_5];
-            });
-            aggregate_count_05_group = aggregate_count_05_dimension.groupAll().reduce(
-                function(p, v) {
-                    ++p.n;
-                    p.tot += parseInt(v[number_field_name_5]);
-                    return p;
-                },
-                function(p, v) {
-                    --p.n;
-                    p.tot -= parseInt(v[number_field_name_5]);
-                    return p;
-                },
-                function() {
-                    return {
-                        n: 0,
-                        tot: 0
-                    };
-                }
-            );
+          var aggregate_count_05 = dc.numberDisplay("#d3_aggregate_count_05");
+          aggregate_count_05_dimension = xf.dimension(function(d) {
+            return +d[number_field_name_5];
+          });
+          aggregate_count_05_group = aggregate_count_05_dimension.groupAll().reduce(
+            function(p, v) {
+              ++p.n;
+              p.tot += parseInt(v[number_field_name_5]);
+              return p;
+            },
+            function(p, v) {
+              --p.n;
+              p.tot -= parseInt(v[number_field_name_5]);
+              return p;
+            },
+            function() {
+              return {
+                n: 0,
+                tot: 0
+              };
+            }
+          );
 
-            var average_05 = function(d) {
-                return d.n ? d.tot : 0;
-            };
+          var average_05 = function(d) {
+            return d.n ? d.tot : 0;
+          };
 
-            aggregate_count_05
-                .valueAccessor(average_05)
-                .formatNumber(d3.format("d"))
-                .group(aggregate_count_05_group);
+          aggregate_count_05
+            .valueAccessor(average_05)
+            .formatNumber(d3.format("d"))
+            .group(aggregate_count_05_group);
 
-            var SliderChart_05 = dc.lineChart("#SliderChart_05");
-            var SliderChart_05_Dim = xf.dimension(function(d) {
-                return +d[number_field_name_5];
-            });
-            var SliderChart_05_Group = SliderChart_05_Dim.group();
-            var SliderChart_05_Max_Value = d3.max(dataset, function(d) {
-                return +d[number_field_name_5];
-            });
+          var SliderChart_05 = dc.lineChart("#SliderChart_05");
+          var SliderChart_05_Dim = xf.dimension(function(d) {
+            return +d[number_field_name_5];
+          });
+          var SliderChart_05_Group = SliderChart_05_Dim.group();
+          var SliderChart_05_Max_Value = d3.max(dataset, function(d) {
+            return +d[number_field_name_5];
+          });
 
-            SliderChart_05.width(125)
-                .height(chartHeight / 3)
-                .transitionDuration(500)
-                .margins({
-                    top: 0,
-                    right: 10,
-                    bottom: 30,
-                    left: 4
-                })
-                .dimension(SliderChart_05_Dim)
-                .group(SliderChart_05_Group)
-                .colors(["red"])
-                .renderlet(function(chart) {
-                    chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
-                })
-                .on("filtered", function(d) {
-                    return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-                })
-                // .x(d3.scale.linear().domain(d3.extent(dataset, function(d) { return +d[number_field_name_1]; })))
-                .x(d3.scale.linear().domain([0, (SliderChart_05_Max_Value + 1)]))
-                .xAxis();
+          SliderChart_05.width(125)
+            .height(chartHeight / 3)
+            .transitionDuration(500)
+            .margins({
+              top: 0,
+              right: 10,
+              bottom: 30,
+              left: 4
+            })
+            .dimension(SliderChart_05_Dim)
+            .group(SliderChart_05_Group)
+            .colors(["red"])
+            .renderlet(function(chart) {
+              chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chartHeight).attr('width', 300);
+            })
+            .on("filtered", function(d) {
+              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            })
+            // .x(d3.scale.linear().domain(d3.extent(dataset, function(d) { return +d[number_field_name_1]; })))
+            .x(d3.scale.linear().domain([0, (SliderChart_05_Max_Value + 1)]))
+            .xAxis();
 
-            SliderChart_05.xAxis().ticks(3);
+          SliderChart_05.xAxis().ticks(3);
 
         }
-
         // BAR CHART 01 - TAGS
         if (value_tags_field_name_1.length > 0) {
 

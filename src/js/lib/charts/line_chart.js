@@ -128,7 +128,7 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
     var aggregate_count_0X_dimension = xf.dimension(function(d) {
       return +d[number_field_name_X];
     });
-    aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
+    var aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
       function(p, v) {
         ++p.n;
         p.tot += parseInt(v[number_field_name_X]);

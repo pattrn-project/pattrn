@@ -16,11 +16,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
     var _map = {};
     var markerChart = null;
     var bounds;
-    var filterByBounds = false;
-    var innerFilter=false;
-    var brushOn = true;
-    var zooming=false;
-    var blockpopup = false;
+
     var platform_settings = {
       "default" : {
         "release_status" : "beta",
@@ -351,7 +347,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         }
 
         var filterOn = document.getElementById("filterList");
-        tooltip = "Tooltip Text";
+        var tooltip = "Tooltip Text";
         $('.activeFilter').attr('title', tooltip);
 
         function map(array, callback) {

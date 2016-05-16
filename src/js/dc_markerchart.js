@@ -34,6 +34,18 @@ function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config
     var markerList = [];
     var blockpopup = false;
 
+    /**
+     * @x-technical-debt: we need these in strict mode, but we need to check
+     * these variables in this scope are what the marker_chart code was
+     * indeed supposed to handle. These were originally defined in the main
+     * scope of the omnibus IIFE
+     */
+     var filterByBounds = false;
+     var innerFilter = false;
+     var brushOn = true;
+     var zooming = false;
+     var blockpopup = false;
+
     // Render function
     _chart._doRender = function() {
 
@@ -45,9 +57,8 @@ function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config
         }).addTo(_map);
 
         var basemaps = {};
-        for (i=0; i<config.base_layers.length; i++){
-            layerName = config.base_layers[i].name;
-            basemaps[layerName] = L.tileLayer(config.base_layers[i].url);
+        for (var i=0; i<config.base_layers.length; i++){
+            basemaps[config.base_layers[i].name] = L.tileLayer(config.base_layers[i].url);
         }
 
         var overlaymaps = {};

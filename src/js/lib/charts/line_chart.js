@@ -54,142 +54,142 @@ var d3 = require('d3');
  * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
  */
 function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
-/**
- * Parameters passed in and defaults
- */
-var slider_chart_color_scale = chart_settings.color_scale || d3.scale.category20c();
-var turn_on_controls = chart_settings.turn_on_controls || false;
-// default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
-var chart_width = chart_settings.width || 300;
-// default from legacy code, defined as chartHeight within the main consume_table() function
-var chart_height = chart_settings.height || 200;
-// legacy code uses 500ms for charts 3, 4 and 5 and doesn't override default for
-// charts 1 and 2
-var chart_transition_duration = chart_settings.transition_duration || 750;
+  /**
+   * Parameters passed in and defaults
+   */
+  var slider_chart_color_scale = chart_settings.color_scale || d3.scale.category20c();
+  var turn_on_controls = chart_settings.turn_on_controls || false;
+  // default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
+  var chart_width = chart_settings.width || 300;
+  // default from legacy code, defined as chartHeight within the main consume_table() function
+  var chart_height = chart_settings.height || 200;
+  // legacy code uses 500ms for charts 3, 4 and 5 and doesn't override default for
+  // charts 1 and 2
+  var chart_transition_duration = chart_settings.transition_duration || 750;
 
-// transition from legacy: assign first to scope variable - just use the
-// chart_settings.fields.field_name var when refactoring
-var number_field_name_X = chart_settings.fields.field_name;
+  // transition from legacy: assign first to scope variable - just use the
+  // chart_settings.fields.field_name var when refactoring
+  var number_field_name_X = chart_settings.fields.field_name;
 
-var values_number_field_name_X = dataset.map(function(item) {
-  return item[number_field_name_X];
-}).join("");
+  var values_number_field_name_X = dataset.map(function(item) {
+    return item[number_field_name_X];
+  }).join("");
 
-if (values_number_field_name_X > 0) {
-  var line_chart_0X_title = document.getElementById(chart_settings.elements.title)
-    .innerHTML = number_field_name_X + " over time";
-  var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = number_field_name_X + " over time";
+  if (values_number_field_name_X > 0) {
+    var line_chart_0X_title = document.getElementById(chart_settings.elements.title)
+      .innerHTML = number_field_name_X + " over time";
+    var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = number_field_name_X + " over time";
 
-  var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
-  var line_chart_0X_dimension = xf.dimension(function(d) {
-    return +d3.time.day(d.dd);
-  });
-  var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
-    return d[number_field_name_X];
-  });
+    var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
+    var line_chart_0X_dimension = xf.dimension(function(d) {
+      return +d3.time.day(d.dd);
+    });
+    var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
+      return d[number_field_name_X];
+    });
 
-  line_chart_0X.width(chart_settings.scatterWidth)
-    .height(chart_height)
-    .margins({
-      top: 0,
-      right: 50,
-      bottom: 50,
-      left: 50
-    })
-    .dimension(line_chart_0X_dimension)
-    .group(line_chart_0X_group)
-    .transitionDuration(chart_transition_duration)
-    .title(function(d) {
-      return ('Total number of events: ' + d.value);
-    })
-    .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
-      return d.dd;
-    })))
-    .renderHorizontalGridLines(true)
-    .renderVerticalGridLines(true)
-    .yAxisLabel("no. of" + line_chart_0X_title)
-    .elasticY(true)
-    .on("filtered", function(d) {
-      return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-    })
-    .brushOn(true)
-    .xAxis();
+    line_chart_0X.width(chart_settings.scatterWidth)
+      .height(chart_height)
+      .margins({
+        top: 0,
+        right: 50,
+        bottom: 50,
+        left: 50
+      })
+      .dimension(line_chart_0X_dimension)
+      .group(line_chart_0X_group)
+      .transitionDuration(chart_transition_duration)
+      .title(function(d) {
+        return ('Total number of events: ' + d.value);
+      })
+      .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+        return d.dd;
+      })))
+      .renderHorizontalGridLines(true)
+      .renderVerticalGridLines(true)
+      .yAxisLabel("no. of" + line_chart_0X_title)
+      .elasticY(true)
+      .on("filtered", function(d) {
+        return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+      })
+      .brushOn(true)
+      .xAxis();
 
-  line_chart_0X.yAxis().ticks(3);
-  if(chart_settings.turn_on_controls === true) {
-    line_chart_0X.turnOnControls(true);
-  }
-  line_chart_0X.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
-
-  // AGGREGATE COUNT CHART
-  var agreggateCountTitle_0X = document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
-
-  var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
-  var aggregate_count_0X_dimension = xf.dimension(function(d) {
-    return +d[number_field_name_X];
-  });
-  aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
-    function(p, v) {
-      ++p.n;
-      p.tot += parseInt(v[number_field_name_X]);
-      return p;
-    },
-    function(p, v) {
-      --p.n;
-      p.tot -= parseInt(v[number_field_name_X]);
-      return p;
-    },
-    function() {
-      return {
-        n: 0,
-        tot: 0
-      };
+    line_chart_0X.yAxis().ticks(3);
+    if (chart_settings.turn_on_controls === true) {
+      line_chart_0X.turnOnControls(true);
     }
-  );
+    line_chart_0X.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
-  var average_0X = function(d) {
-    return d.n ? d.tot : 0;
-  };
+    // AGGREGATE COUNT CHART
+    var agreggateCountTitle_0X = document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
 
-  aggregate_count_0X
-    .valueAccessor(average_0X)
-    .formatNumber(d3.format("d"))
-    .group(aggregate_count_0X_group);
+    var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
+    var aggregate_count_0X_dimension = xf.dimension(function(d) {
+      return +d[number_field_name_X];
+    });
+    aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
+      function(p, v) {
+        ++p.n;
+        p.tot += parseInt(v[number_field_name_X]);
+        return p;
+      },
+      function(p, v) {
+        --p.n;
+        p.tot -= parseInt(v[number_field_name_X]);
+        return p;
+      },
+      function() {
+        return {
+          n: 0,
+          tot: 0
+        };
+      }
+    );
 
-  var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
-  var SliderChart_0X_Dim = xf.dimension(function(d) {
-    return +d[number_field_name_X];
-  });
-  var SliderChart_0X_Group = SliderChart_0X_Dim.group();
-  var SliderChart_0X_Max_Value = d3.max(dataset, function(d) {
-    return +d[number_field_name_X];
-  });
+    var average_0X = function(d) {
+      return d.n ? d.tot : 0;
+    };
 
-  SliderChart_0X.width(125)
-    .height(chart_height / 3)
-    .transitionDuration(500)
-    .margins({
-      top: 0,
-      right: 10,
-      bottom: 30,
-      left: 4
-    })
-    .dimension(SliderChart_0X_Dim)
-    .group(SliderChart_0X_Group)
-    .colors(slider_chart_color_scale)
-    .renderlet(function(chart) {
-      // set svg background colour
-      chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chart_height).attr('width', chart_width);
-    })
-    .on("filtered", function(d) {
-      return filterOn.className = "glyphicon glyphicon-filter activeFilter";
-    })
-    .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));
+    aggregate_count_0X
+      .valueAccessor(average_0X)
+      .formatNumber(d3.format("d"))
+      .group(aggregate_count_0X_group);
+
+    var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
+    var SliderChart_0X_Dim = xf.dimension(function(d) {
+      return +d[number_field_name_X];
+    });
+    var SliderChart_0X_Group = SliderChart_0X_Dim.group();
+    var SliderChart_0X_Max_Value = d3.max(dataset, function(d) {
+      return +d[number_field_name_X];
+    });
+
+    SliderChart_0X.width(125)
+      .height(chart_height / 3)
+      .transitionDuration(500)
+      .margins({
+        top: 0,
+        right: 10,
+        bottom: 30,
+        left: 4
+      })
+      .dimension(SliderChart_0X_Dim)
+      .group(SliderChart_0X_Group)
+      .colors(slider_chart_color_scale)
+      .renderlet(function(chart) {
+        // set svg background colour
+        chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chart_height).attr('width', chart_width);
+      })
+      .on("filtered", function(d) {
+        return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+      })
+      .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));
     // SliderChart_03 and SliderChart_05 in legacy code further concatenate a
     // call to .xAxis() here - likely spurious, but to be reviewed
 
-  SliderChart_0X.xAxis().ticks(3);
-}
+    SliderChart_0X.xAxis().ticks(3);
+  }
 }
 
 module.exports = pattrn_line_chart;

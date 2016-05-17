@@ -192,20 +192,10 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var headers = Object.keys(dataset[0]);
 
         // Extract columns for integers (hardcoded to mirror spreadsheet)
-        // @x-wtf = why are these off by four?
-        var integer_fields_names = [headers[11], headers[12], headers[13], headers[14], headers[15]];
-
         // refactor: from number_field_name_X to number_field_names[X]
         var number_field_names = [headers[8], headers[9], headers[10], headers[11], headers[12]];
-        var number_field_name_1 = headers[8];
-        var number_field_name_2 = headers[9];
-        var number_field_name_3 = headers[10];
-        var number_field_name_4 = headers[11];
-        var number_field_name_5 = headers[12];
 
         // Extract columns for tags (hardcoded to mirror spreadsheet)
-        // @x-wtf = why are these off by four?
-        var tag_fields_names = [headers[16], headers[17], headers[18], headers[19], headers[20]];
         var tags_field_name_1 = headers[13];
         var tags_field_name_2 = headers[14];
         var tags_field_name_3 = headers[15];

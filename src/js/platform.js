@@ -1475,24 +1475,24 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
 
               // Table content - Integers - hard coded to mirror spreadsheet structure
-              if (values_number_field_name_1 > 0) {
-                appendIntegerValueToTable(number_field_name_1);
+              if (count_of_rows_with_data_by_integer_variable[0] > 0) {
+                appendIntegerValueToTable(number_field_names[0]);
               }
 
-              if (values_number_field_name_2 > 0) {
-                appendIntegerValueToTable(number_field_name_2);
+              if (count_of_rows_with_data_by_integer_variable[1] > 0) {
+                appendIntegerValueToTable(number_field_names[1]);
               }
 
-              if (values_number_field_name_3 > 0) {
-                appendIntegerValueToTable(number_field_name_3);
+              if (count_of_rows_with_data_by_integer_variable[2] > 0) {
+                appendIntegerValueToTable(number_field_names[2]);
               }
 
-              if (values_number_field_name_4 > 0) {
-                appendIntegerValueToTable(number_field_name_4);
+              if (count_of_rows_with_data_by_integer_variable[3] > 0) {
+                appendIntegerValueToTable(number_field_names[3]);
               }
 
-              if (values_number_field_name_5 > 0) {
-                appendIntegerValueToTable(number_field_name_5);
+              if (count_of_rows_with_data_by_integer_variable[4] > 0) {
+                appendIntegerValueToTable(number_field_names[4]);
               }
 
               // Table content - Tags - hard coded to mirror spreadsheet structure

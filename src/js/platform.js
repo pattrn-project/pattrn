@@ -192,6 +192,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var headers = Object.keys(dataset[0]);
 
         // Extract columns for integers (hardcoded to mirror spreadsheet)
+        // @x-wtf = why are these off by four?
         var integer_fields_names = [headers[11], headers[12], headers[13], headers[14], headers[15]];
 
         var number_field_name_1 = headers[8];
@@ -201,6 +202,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var number_field_name_5 = headers[12];
 
         // Extract columns for tags (hardcoded to mirror spreadsheet)
+        // @x-wtf = why are these off by four?
         var tag_fields_names = [headers[16], headers[17], headers[18], headers[19], headers[20]];
         var tags_field_name_1 = headers[13];
         var tags_field_name_2 = headers[14];

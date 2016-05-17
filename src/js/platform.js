@@ -195,6 +195,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         // @x-wtf = why are these off by four?
         var integer_fields_names = [headers[11], headers[12], headers[13], headers[14], headers[15]];
 
+        // refactor: from number_field_name_X to number_field_names[X]
+        var number_field_names = [headers[8], headers[9], headers[10], headers[11], headers[12]];
         var number_field_name_1 = headers[8];
         var number_field_name_2 = headers[9];
         var number_field_name_3 = headers[10];
@@ -275,20 +277,20 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
         // Fill nan - Replace null value with zeros
         for (i=0; i<dataset.length; i++) {
-          if (dataset[i][number_field_name_1] === "") {
-            dataset[i][number_field_name_1] = 0;
+          if (dataset[i][number_field_names[0]] === "") {
+            dataset[i][number_field_names[0]] = 0;
           }
-          if (dataset[i][number_field_name_2] === "") {
-            dataset[i][number_field_name_2] = 0;
+          if (dataset[i][number_field_names[1]] === "") {
+            dataset[i][number_field_names[1]] = 0;
           }
-          if (dataset[i][number_field_name_3] === "") {
-            dataset[i][number_field_name_3] = 0;
+          if (dataset[i][number_field_names[2]] === "") {
+            dataset[i][number_field_names[2]] = 0;
           }
-          if (dataset[i][number_field_name_4] === "") {
-            dataset[i][number_field_name_4] = 0;
+          if (dataset[i][number_field_names[3]] === "") {
+            dataset[i][number_field_names[3]] = 0;
           }
-          if (dataset[i][number_field_name_5] === "") {
-            dataset[i][number_field_name_5] = 0;
+          if (dataset[i][number_field_names[4]] === "") {
+            dataset[i][number_field_names[4]] = 0;
           }
         }
 
@@ -398,7 +400,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 slider_chart: `#SliderChart_${index_padded}`
               },
               fields: {
-                field_name: number_field_name_1
+                field_name: number_field_names[index - 1]
               },
               scatterWidth: scatterWidth
             },

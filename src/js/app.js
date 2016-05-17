@@ -27,7 +27,7 @@ var jquery = require('jquery'),
     tabletop = require('tabletop');
 
 // expose jquery as global.jQuery; this is needed for jQuery plugins
-global.jQuery = jQuery;
+global.jQuery = jquery;
 
 // require bootstrap (menus etc) - needs jQuery global
 require('bootstrap');

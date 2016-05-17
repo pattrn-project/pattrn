@@ -24,10 +24,13 @@ var jquery = require('jquery'),
     q = require('d3-queue').queue(),
     dc = require('dc'),
     crossfilter = require('crossfilter'),
-    Tabletop = require('tabletop');
+    tabletop = require('tabletop');
 
 // expose jquery as global.jQuery; this is needed for jQuery plugins
-global.jQuery = jquery;
+global.jQuery = jQuery;
+
+// require bootstrap (menus etc) - needs jQuery global
+require('bootstrap');
 
 // leaflet.marketcluster Leaflet plugin
 require('leaflet.markercluster');
@@ -43,4 +46,4 @@ var pattrn = require('./platform.js');
  * TECHNICAL_DEBT: until the full pattrn() function is refactored, we pass in
  * its dependencies, in order to shim the legacy Pattrn code
  */
-pattrn(jquery, d3, q, dc, crossfilter, Tabletop);
+pattrn(jquery, d3, q, dc, crossfilter, tabletop);

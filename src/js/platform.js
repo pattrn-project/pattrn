@@ -225,6 +225,12 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         // Extract columns for media available
         var media_field_name = headers[26];
 
+        var count_of_rows_with_data_by_integer_variable = number_field_names.map(function(item) {
+          return dataset.reduce(function(pv, cv, ci, a) {
+            return (is_defined(cv[item]) && cv[item] !== "") ? pv + 1 : pv;
+          }, 0);
+        });
+
         var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
         var value_tags_field_name_2 = map(dataset, function(item) { return item[tags_field_name_2]; }).join("");
         var value_tags_field_name_3 = map(dataset, function(item) { return item[tags_field_name_3]; }).join("");

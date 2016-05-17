@@ -1358,65 +1358,70 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
               );
 
-              // Photos
-              d3.json(e.target.data.photos, function(D) {
+              if(is_defined(e.target.data.photos)) {
+                // Photos
+                d3.json(e.target.data.photos, function(D) {
 
-                var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
+                  var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
 
-                for (j = 0; j < json_photos.length; j++) {
-                  $('#image_gallery').append(
-                    '<li data-src="' + json_photos[j].src +
-                    '"data-sub-html="' + json_photos[j].subhtml + '" >' +
-                    '<img src="' + json_photos[j].thumb + '"/>' +
-                    '<br/>' +
-                    json_photos[j].caption +
-                    '<p>Source: ' + json_photos[j].source + '</p>' +
-                    '</li>'
-                  );
-                }
+                  for (j = 0; j < json_photos.length; j++) {
+                    $('#image_gallery').append(
+                      '<li data-src="' + json_photos[j].src +
+                      '"data-sub-html="' + json_photos[j].subhtml + '" >' +
+                      '<img src="' + json_photos[j].thumb + '"/>' +
+                      '<br/>' +
+                      json_photos[j].caption +
+                      '<p>Source: ' + json_photos[j].source + '</p>' +
+                      '</li>'
+                    );
+                  }
 
 
-                $(document).ready(function() {
-                  $("#image_gallery").lightGallery();
+                  $(document).ready(function() {
+                    $("#image_gallery").lightGallery();
+                  });
+
                 });
+              }
 
-              });
+              if(is_defined(e.target.data.videos)) {
+                // Videos
+                d3.json(e.target.data.videos, function(D) {
 
+                  var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
 
-              // Videos
-              d3.json(e.target.data.videos, function(D) {
+                  for (j = 0; j < json_videos.length; j++) {
+                    $('#video_gallery').append(
+                      '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
+                      '"data-sub-html="' + json_videos[j].subhtml + '" id="image_link">' +
+                      '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
+                      '<p>Source: ' + json_videos[j].source + '</p>' +
+                      '</li>'
+                    );
+                  }
 
-                var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
+                  $(document).ready(function() {
+                    $("#video_gallery").lightGallery();
+                  });
 
-                for (j = 0; j < json_videos.length; j++) {
-                  $('#video_gallery').append(
-                    '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
-                    '"data-sub-html="' + json_videos[j].subhtml + '" id="image_link">' +
-                    '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
-                    '<p>Source: ' + json_videos[j].source + '</p>' +
-                    '</li>'
-                  );
-                }
-
-                $(document).ready(function() {
-                  $("#video_gallery").lightGallery();
                 });
+              }
 
-              });
+              if(is_defined(e.target.data.links)) {
+                // Urls
+                d3.json(e.target.data.links, function(D) {
 
-              // Urls
-              d3.json(e.target.data.links, function(D) {
+                  var array_urls = $.parseJSON('[' + dataset[i].links + ']');
 
-                var array_urls = $.parseJSON('[' + dataset[i].links + ']');
+                  for (j = 0; j < array_urls.length; j++) {
+                    $('#urls').append(
+                      '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
+                    );
+                  }
 
-                for (j = 0; j < array_urls.length; j++) {
-                  $('#urls').append(
-                    '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
-                  );
-                }
-
-              });
-
+                });
+              }
+              
               // Open popup
               e.target.popup.openOn(markerChart.getMap());
 

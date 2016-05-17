@@ -362,10 +362,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         }
 
         // Make array of string values of the whole columns for line charts
+        // @x-wtf: what for?
         var line_charts_string_values = [];
-        for (i = 0; i<integer_fields_names.length; i++) {
+        for (i = 0; i< number_field_names.length; i++) {
           line_charts_string_values.push({
-            "string_values_chart" : map(dataset, function(item) { return item[integer_fields_names[i]]; }).join("")
+            "string_values_chart" : map(dataset, function(item) { return item[number_field_names[i]]; }).join("")
           });
         }
 
@@ -1411,7 +1412,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
                 });
               }
-              
+
               // Open popup
               e.target.popup.openOn(markerChart.getMap());
 

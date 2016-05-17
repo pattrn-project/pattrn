@@ -82,7 +82,7 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 
     var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
     var line_chart_0X_dimension = xf.dimension(function(d) {
-      return +d3.time.day(d.dd);
+      return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
     });
     var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
       return d[number_field_name_X];
@@ -127,7 +127,7 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 
     var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
     var aggregate_count_0X_dimension = xf.dimension(function(d) {
-      return +d[number_field_name_X];
+      return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
     });
     var aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
       function(p, v) {
@@ -159,11 +159,11 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 
     var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
     var SliderChart_0X_Dim = xf.dimension(function(d) {
-      return +d[number_field_name_X];
+      return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
     });
     var SliderChart_0X_Group = SliderChart_0X_Dim.group();
     var SliderChart_0X_Max_Value = d3.max(dataset, function(d) {
-      return +d[number_field_name_X];
+      return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
     });
 
     SliderChart_0X.width(125)

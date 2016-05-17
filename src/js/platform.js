@@ -215,10 +215,35 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         // Extract columns for media available
         var media_field_name = headers[26];
 
+        /**
+         * Handle variables of type integer: first check whether they
+         * contain any data (or at least this is what the legacy code seems to
+         * mean to be trying to do)...
+         */
         var count_of_rows_with_data_by_integer_variable = number_field_names.map(function(item) {
           return dataset.reduce(function(pv, cv, ci, a) {
             return (is_defined(cv[item]) && cv[item] !== "") ? pv + 1 : pv;
           }, 0);
+        });
+
+        /**
+         * ...and then replace blanks and undefined values with zeros. This
+         * step helps to ensure that Crossfilter filter functions can work
+         * properly without NaNs breaking sorting.
+         *
+         * @x-legacy-comment: Fill nan - Replace null value with zeros
+         * @x-technical-debt: The legacy for + hardcoded series of ifs has been
+         * replaced with the two combined forEach below, but once the tag and
+         * bool variable handling has been refactored, we should probably
+         * use maps here. If this hack cannot be removed altogether (see issue
+         * #14 for different values of uncertainty of data).
+         */
+        dataset.forEach(function(row, index) {
+          number_field_names.forEach(function(variable) {
+            if (!is_defined(row[variable]) || row[variable] === "") {
+              dataset[index][variable] = 0;
+            }
+          });
         });
 
         var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
@@ -268,25 +293,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           }
           if (!is_defined(dataset[i][boolean_field_name_5]) || dataset[i][boolean_field_name_5].length === 0) {
             dataset[i][boolean_field_name_5] = 'Unknown';
-          }
-        }
-
-        // Fill nan - Replace null value with zeros
-        for (i=0; i<dataset.length; i++) {
-          if (!is_defined(dataset[i][number_field_names[0]]) || dataset[i][number_field_names[0]] === "") {
-            dataset[i][number_field_names[0]] = 0;
-          }
-          if (!is_defined(dataset[i][number_field_names[1]]) || dataset[i][number_field_names[1]] === "") {
-            dataset[i][number_field_names[1]] = 0;
-          }
-          if (!is_defined(dataset[i][number_field_names[2]]) || dataset[i][number_field_names[2]] === "") {
-            dataset[i][number_field_names[2]] = 0;
-          }
-          if (!is_defined(dataset[i][number_field_names[3]]) || dataset[i][number_field_names[3]] === "") {
-            dataset[i][number_field_names[3]] = 0;
-          }
-          if (!is_defined(dataset[i][number_field_names[4]]) || dataset[i][number_field_names[4]] === "") {
-            dataset[i][number_field_names[4]] = 0;
           }
         }
 

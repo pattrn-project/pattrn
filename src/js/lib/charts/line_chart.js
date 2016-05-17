@@ -110,7 +110,8 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
       .yAxisLabel("no. of" + line_chart_0X_title)
       .elasticY(true)
       .on("filtered", function(d) {
-        return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+        // @x-technical-debt: do not hardcode the element id
+        return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
       })
       .brushOn(true)
       .xAxis();
@@ -182,7 +183,8 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
         chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chart_height).attr('width', chart_width);
       })
       .on("filtered", function(d) {
-        return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+        // @x-technical-debt: do not hardcode the element id
+        return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
       })
       .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));
     // SliderChart_03 and SliderChart_05 in legacy code further concatenate a

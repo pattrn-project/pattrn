@@ -412,6 +412,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             xf);
         });
 
+
         // BAR CHART 01 - TAGS
         if (value_tags_field_name_1.length > 0) {
 
@@ -509,7 +510,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
         }
 
-
         // BAR CHART 02 - TAGS
         if (value_tags_field_name_2.length > 0) {
 
@@ -605,7 +605,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           bar_chart_02.yAxis().ticks(3);
 
         }
-
 
         // BAR CHART 03 - TAGS
         if (value_tags_field_name_3.length > 0) {

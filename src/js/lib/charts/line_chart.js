@@ -178,7 +178,7 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
       .dimension(SliderChart_0X_Dim)
       .group(SliderChart_0X_Group)
       .colors(slider_chart_color_scale)
-      .renderlet(function(chart) {
+      .on(`renderlet.${chart_settings.elements.title}`, function(chart) {
         // set svg background colour
         chart.svg().select('.chart-body').append('rect').attr('fill', '#3e4651').attr('height', chart_height).attr('width', chart_width);
       })

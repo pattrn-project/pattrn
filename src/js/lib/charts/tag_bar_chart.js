@@ -133,7 +133,7 @@ export function pattrn_tag_bar_chart(index, chart_settings, dataset, dc, xf) {
     .renderHorizontalGridLines(true)
     .yAxisLabel("no. of events")
     .elasticY(true)
-    .renderlet(function(chart) {
+    .on(`renderlet.${chart_settings.elements.title}`, function(chart) {
       chart.selectAll("g.x text")
         .style("text-anchor", "end")
         .style("font-size", "10px")

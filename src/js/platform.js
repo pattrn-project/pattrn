@@ -298,10 +298,14 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var xf = crossfilter(dataset);
 
         // Search
+        // @x-technical-debt: test that the array concatenation added below
+        // whilst refactoring makes sense and works as expected
         var searchDimension = xf.dimension(function(d) {
-          return [d.event_ID, d.event_summary, d.source_name, d.location_name,
-            d[tags_field_name_1], d[tags_field_name_2], d[tags_field_name_3],
-            d[tags_field_name_4], d[tags_field_name_5]];
+          var tag_variables = non_empty_tag_variables.map(function(item) {
+            return d[item];
+          });
+
+          return [d.event_ID, d.event_summary, d.source_name, d.location_name].concat(tag_variables);
         });
 
         $("#tableSearch").on('input', function () {

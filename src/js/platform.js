@@ -270,44 +270,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var value_boolean_field_name_4 = map(dataset, function(item) { return item[boolean_field_name_4]; }).join("");
         var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
 
-        // Add 'Unknown' to empty tag fields
-        for (var i = 0; i < dataset.length; i++) {
-          if (!is_defined(dataset[i][tags_field_name_1]) || dataset[i][tags_field_name_1].length === 0) {
-            dataset[i][tags_field_name_1] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][tags_field_name_2]) || dataset[i][tags_field_name_2].length === 0) {
-            dataset[i][tags_field_name_2] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][tags_field_name_3]) || dataset[i][tags_field_name_3].length === 0) {
-            dataset[i][tags_field_name_3] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][tags_field_name_4]) || dataset[i][tags_field_name_4].length === 0) {
-            dataset[i][tags_field_name_4] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][tags_field_name_5]) || dataset[i][tags_field_name_5].length === 0) {
-            dataset[i][tags_field_name_5] = 'Unknown';
-          }
-        }
-
-        // Add 'Unknown' to empty boolean fields
-        for (i=0; i<dataset.length; i++) {
-          if (!is_defined(dataset[i][boolean_field_name_1]) || dataset[i][boolean_field_name_1].length === 0) {
-            dataset[i][boolean_field_name_1] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][boolean_field_name_2]) || dataset[i][boolean_field_name_2].length === 0) {
-            dataset[i][boolean_field_name_2] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][boolean_field_name_3]) || dataset[i][boolean_field_name_3].length === 0) {
-            dataset[i][boolean_field_name_3] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][boolean_field_name_4]) || dataset[i][boolean_field_name_4].length === 0) {
-            dataset[i][boolean_field_name_4] = 'Unknown';
-          }
-          if (!is_defined(dataset[i][boolean_field_name_5]) || dataset[i][boolean_field_name_5].length === 0) {
-            dataset[i][boolean_field_name_5] = 'Unknown';
-          }
-        }
-
         // Parse time
         var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
 

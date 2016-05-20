@@ -214,22 +214,12 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var boolean_field_name_4 = headers[21];
         var boolean_field_name_5 = headers[22];
 
-        // Extract columns for source
-        var source_field_name = headers[7];
-
-        // Extract columns for media available
-        var media_field_name = headers[26];
-
         /**
          * Handle variables of type integer: first check whether they
          * contain any data (or at least this is what the legacy code seems to
          * mean to be trying to do)...
          */
-        var count_of_rows_with_data_by_integer_variable = number_field_names.map(function(item) {
-          return dataset.reduce(function(pv, cv, ci, a) {
-            return (is_defined(cv[item]) && cv[item] !== "") ? pv + 1 : pv;
-          }, 0);
-        });
+        var count_of_rows_with_data_by_integer_variable = number_field_names.map(count_rows_with_data.bind(undefined, dataset));
 
         /**
          * ...and then replace blanks and undefined values with zeros. This
@@ -244,12 +234,28 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * #14 for different values of uncertainty of data).
          */
         dataset.forEach(function(row, index) {
-          number_field_names.forEach(function(variable) {
-            if (!is_defined(row[variable]) || row[variable] === "") {
-              dataset[index][variable] = 0;
-            }
-          });
+          number_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 0 }));
+          tag_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
+          boolean_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
         });
+
+        /**
+         * Similarly to variables of type integer above, handle variables of
+         * type tag.
+         */
+        var count_of_rows_with_data_by_tag_variable = tag_field_names.map(count_rows_with_data.bind(undefined, dataset));
+
+        /**
+         * Similarly to variables of type integer above, handle variables of
+         * type boolean.
+         */
+        var count_of_rows_with_data_by_boolean_variable = tag_field_names.map(count_rows_with_data.bind(undefined, dataset));
+
+        // Extract columns for source
+        var source_field_name = headers[7];
+
+        // Extract columns for media available
+        var media_field_name = headers[26];
 
         var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
         var value_tags_field_name_2 = map(dataset, function(item) { return item[tags_field_name_2]; }).join("");

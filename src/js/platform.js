@@ -5,7 +5,7 @@ var marker_chart = require('./dc_markerchart.js');
 var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legacy.js');
 var range = require('lodash.range');
 
-import { count_rows_with_data, replace_undefined_values } from "./lib/pattrn_data";
+import { is_column_not_empty, replace_undefined_values } from "./lib/pattrn_data";
 
 /**
  * Pattrn chart types
@@ -219,7 +219,19 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * contain any data (or at least this is what the legacy code seems to
          * mean to be trying to do)...
          */
-        var count_of_rows_with_data_by_integer_variable = number_field_names.map(count_rows_with_data.bind(undefined, dataset));
+        var non_empty_number_variables = number_field_names.filter(is_column_not_empty.bind(undefined, dataset));
+
+        /**
+         * Similarly to variables of type integer above, handle variables of
+         * type tag.
+         */
+        var non_empty_tag_variables = tag_field_names.filter(is_column_not_empty.bind(undefined, dataset));
+
+        /**
+         * Similarly to variables of type integer above, handle variables of
+         * type boolean.
+         */
+        var non_empty_boolean_variables = tag_field_names.filter(is_column_not_empty.bind(undefined, dataset));
 
         /**
          * ...and then replace blanks and undefined values with zeros. This
@@ -234,22 +246,10 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * #14 for different values of uncertainty of data).
          */
         dataset.forEach(function(row, index) {
-          number_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 0 }));
-          tag_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
-          boolean_field_names.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
+          non_empty_number_variables.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 0 }));
+          non_empty_tag_variables.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
+          non_empty_boolean_variables.forEach(replace_undefined_values.bind(undefined, { dataset: dataset, row: row, index: index, empty_value: 'Unknown' }));
         });
-
-        /**
-         * Similarly to variables of type integer above, handle variables of
-         * type tag.
-         */
-        var count_of_rows_with_data_by_tag_variable = tag_field_names.map(count_rows_with_data.bind(undefined, dataset));
-
-        /**
-         * Similarly to variables of type integer above, handle variables of
-         * type boolean.
-         */
-        var count_of_rows_with_data_by_boolean_variable = tag_field_names.map(count_rows_with_data.bind(undefined, dataset));
 
         // Extract columns for source
         var source_field_name = headers[7];
@@ -399,12 +399,12 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * need to be computationally generated to match the number of variables
          * of integer type actually in use.
          */
-        range(1, 5).forEach(function(index) {
+        non_empty_number_variables.forEach(function(currentValue, index) {
           // @x-technical-debt: get rid of this way of labelling elements by
           // appending a left-0-padding to the index of each chart
-          var index_padded = '0' + index;
+          var index_padded = '0' + (index + 1);
 
-          pattrn_line_chart(index,
+          pattrn_line_chart(index + 1,
             { elements: {
                 title: `line_chart_${index_padded}_title`,
                 chart_title: `line_chart_${index_padded}_chartTitle`,
@@ -414,7 +414,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 slider_chart: `#SliderChart_${index_padded}`
               },
               fields: {
-                field_name: number_field_names[index - 1]
+                field_name: non_empty_number_variables[index]
               },
               scatterWidth: scatterWidth
             },

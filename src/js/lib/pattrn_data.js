@@ -33,3 +33,7 @@ export function replace_undefined_values (parameters, variable) {
     parameters.dataset[parameters.index][variable] = parameters.empty_value;
   }
 }
+
+export function is_column_not_empty(dataset, item) {
+  return count_rows_with_data(dataset, item) > 0;
+}

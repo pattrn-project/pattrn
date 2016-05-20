@@ -348,11 +348,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         // Make array of string values of the whole columns for line charts
         // @x-wtf: what for?
         var line_charts_string_values = [];
-        for (i = 0; i< number_field_names.length; i++) {
+        number_field_names.forEach(function(item, index) {
           line_charts_string_values.push({
-            "string_values_chart" : map(dataset, function(item) { return item[number_field_names[i]]; }).join("")
+            "string_values_chart" : map(dataset, function(item) { return item[number_field_names[index]]; }).join("")
           });
-        }
+        });
 
         /**
          * @x-technical-debt: this forEach thingy is saner than the legacy

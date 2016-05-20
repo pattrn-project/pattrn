@@ -186,9 +186,10 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         initialize_ui(instance_settings);
 
         // Make new column with eventID for the charts / markers
-        for (i = 0; i < dataset.length; i++) {
-            dataset[i].eventID = i;
-        }
+        dataset = dataset.map(function(item, index) {
+          item['eventID'] = index;
+          return item;
+        });
 
         // Get the headers in an array of strings
         var headers = Object.keys(dataset[0]);

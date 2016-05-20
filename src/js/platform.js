@@ -366,7 +366,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * need to be computationally generated to match the number of variables
          * of integer type actually in use.
          */
-        non_empty_number_variables.forEach(function(currentValue, index) {
+        non_empty_number_variables.forEach(function(item, index) {
           // @x-technical-debt: get rid of this way of labelling elements by
           // appending a left-0-padding to the index of each chart
           var index_padded = '0' + (index + 1);
@@ -1453,8 +1453,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                   });
               }
 
-              non_empty_number_variables.forEach(function(currentValue, index) {
-                appendIntegerValueToTable(currentValue);
+              non_empty_number_variables.forEach(function(item, index) {
+                appendIntegerValueToTable(item);
               });
 
               non_empty_tag_variables.forEach(function(item, index) {

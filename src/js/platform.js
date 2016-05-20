@@ -5,6 +5,8 @@ var marker_chart = require('./dc_markerchart.js');
 var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legacy.js');
 var range = require('lodash.range');
 
+import { count_rows_with_data, replace_undefined_values } from "./lib/pattrn_data";
+
 /**
  * Pattrn chart types
  * These are based on chart modules, abstracted from the duplicated code (5x) in Pattrn v1

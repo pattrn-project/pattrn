@@ -1453,66 +1453,17 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                   });
               }
 
+              non_empty_number_variables.forEach(function(currentValue, index) {
+                appendIntegerValueToTable(currentValue);
+              });
 
-              // Table content - Integers - hard coded to mirror spreadsheet structure
-              if (count_of_rows_with_data_by_integer_variable[0] > 0) {
-                appendIntegerValueToTable(number_field_names[0]);
-              }
+              non_empty_tag_variables.forEach(function(item, index) {
+                appendTagValueToTable(item);
+              });
 
-              if (count_of_rows_with_data_by_integer_variable[1] > 0) {
-                appendIntegerValueToTable(number_field_names[1]);
-              }
-
-              if (count_of_rows_with_data_by_integer_variable[2] > 0) {
-                appendIntegerValueToTable(number_field_names[2]);
-              }
-
-              if (count_of_rows_with_data_by_integer_variable[3] > 0) {
-                appendIntegerValueToTable(number_field_names[3]);
-              }
-
-              if (count_of_rows_with_data_by_integer_variable[4] > 0) {
-                appendIntegerValueToTable(number_field_names[4]);
-              }
-
-              // Table content - Tags - hard coded to mirror spreadsheet structure
-              if (value_tags_field_name_1.length > 0) {
-                appendTagValueToTable(tags_field_name_1);
-              }
-
-              if (value_tags_field_name_2.length > 0) {
-                appendTagValueToTable(tags_field_name_2);
-              }
-
-              if (value_tags_field_name_3.length > 0) {
-                appendTagValueToTable(tags_field_name_3);
-              }
-
-              if (value_tags_field_name_4.length > 0) {
-                appendTagValueToTable(tags_field_name_4);
-              }
-
-              if (value_tags_field_name_5.length > 0) {
-                appendTagValueToTable(tags_field_name_5);
-              }
-
-              // Table content - booleans - hard coded to mirror spreadsheet structure
-              if (value_boolean_field_name_1.length > 0) {
-                appendTagValueToTable(boolean_field_name_1);
-              }
-
-              if (value_boolean_field_name_2.length > 0) {
-                appendTagValueToTable(boolean_field_name_2);
-              }
-
-              if (value_boolean_field_name_3.length > 0) {
-                appendTagValueToTable(boolean_field_name_3);
-              }
-
-              if (value_boolean_field_name_4.length > 0) {
-                appendTagValueToTable(boolean_field_name_4);
-              }
-
+              non_empty_boolean_variables.forEach(function(item, index) {
+                appendTagValueToTable(item);
+              });
             }
 
             _map.on("popupclose", function(e) {

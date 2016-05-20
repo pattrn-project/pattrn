@@ -1,10 +1,10 @@
-var initialize_ui = require('./pattrn_ui.js');
 var process_settings = require('./settings.js');
 var is_defined = require('./is_defined.js');
 var marker_chart = require('./dc_markerchart.js');
 var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legacy.js');
 var range = require('lodash.range');
 
+import { initialize_ui } from './pattrn_ui.js';
 import { is_column_not_empty, replace_undefined_values } from "./lib/pattrn_data";
 
 /**

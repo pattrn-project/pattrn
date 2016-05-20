@@ -32,7 +32,7 @@ var $ = require('jquery');
  * @x-modifies-dom
  * @param {Object} instance_settings The settings for this Pattrn instance
  */
-function initialize_ui(instance_settings) {
+export function initialize_ui(instance_settings) {
   var release_status_el;
   var highlight_el;
 
@@ -66,5 +66,3 @@ function initialize_ui(instance_settings) {
   highlight_el.style.backgroundColor = instance_settings.colour;
   $('.filter').css('color', instance_settings.colour);
 }
-
-module.exports = initialize_ui;

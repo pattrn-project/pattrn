@@ -365,6 +365,13 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
          * Likewise, the HTML elements now hardcoded in the index.html file
          * need to be computationally generated to match the number of variables
          * of integer type actually in use.
+         * @x-technical-debt: in legacy code, a variable for each chart was
+         * created in this scope, with its only effective use being in
+         * window.onresize() to trigger a repaint of each chart affected. This
+         * breaks with the refactored code and needs to be restored, while
+         * also investigating whether a different way to handle this could be
+         * more perfomant (e.g. do we need to repaint both visible and invisible
+         * charts?).
          */
         non_empty_number_variables.forEach(function(item, index) {
           // @x-technical-debt: get rid of this way of labelling elements by

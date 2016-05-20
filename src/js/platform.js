@@ -198,6 +198,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var number_field_names = [headers[8], headers[9], headers[10], headers[11], headers[12]];
 
         // Extract columns for tags (hardcoded to mirror spreadsheet)
+        var tag_field_names = [headers[13], headers[14], headers[15], headers[16], headers[17]];
         var tags_field_name_1 = headers[13];
         var tags_field_name_2 = headers[14];
         var tags_field_name_3 = headers[15];
@@ -205,6 +206,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         var tags_field_name_5 = headers[17];
 
         // Extract columns for booleans (hardcoded to mirror spreadsheet)
+        var boolean_field_names = [headers[18], headers[19], headers[20], headers[21], headers[22]];
+
         var boolean_field_name_1 = headers[18];
         var boolean_field_name_2 = headers[19];
         var boolean_field_name_3 = headers[20];

@@ -5,7 +5,7 @@ var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legac
 var range = require('lodash.range');
 
 import { initialize_ui } from './pattrn_ui.js';
-import { is_column_not_empty, replace_undefined_values } from "./lib/pattrn_data";
+import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables } from "./lib/pattrn_data";
 
 /**
  * Pattrn chart types
@@ -334,6 +334,11 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           return result;
         }
 
+        /**
+         * get flat list of Pattrn (b/i/t) variables
+         */
+        var variable_list = list_all_pattrn_variables(variables);
+
         // Make array of string values of the whole columns for line charts
         // @x-wtf: what for?
         var line_charts_string_values = [];
@@ -377,7 +382,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 slider_chart: `#SliderChart_${index_padded}`
               },
               fields: {
-                field_name: non_empty_number_variables[index]
+                field_name: non_empty_number_variables[index],
+                field_title: is_defined(variable_list.find(item => item.id === non_empty_number_variables[index])) ? variable_list.find(item => item.id === non_empty_number_variables[index]).name : non_empty_number_variables[index]
               },
               scatterWidth: scatterWidth
             },
@@ -418,7 +424,8 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
                 aggregate_count_title: `agreggateCountTitle_${index_padded}`
               },
               fields: {
-                field_name: non_empty_tag_variables[index]
+                field_name: non_empty_tag_variables[index],
+                field_title: is_defined(variable_list.find(item => item.id === non_empty_tag_variables[index])) ? variable_list.find(item => item.id === non_empty_tag_variables[index]).name : non_empty_tag_variables[index]
               },
               scatterWidth: scatterWidth
             },

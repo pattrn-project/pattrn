@@ -77,8 +77,8 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 
   if (values_number_field_name_X > 0) {
     var line_chart_0X_title = document.getElementById(chart_settings.elements.title)
-      .innerHTML = number_field_name_X + " over time";
-    var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = number_field_name_X + " over time";
+      .innerHTML = chart_settings.fields.field_title + " over time";
+    var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
 
     var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
     var line_chart_0X_dimension = xf.dimension(function(d) {

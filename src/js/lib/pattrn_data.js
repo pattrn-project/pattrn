@@ -37,3 +37,13 @@ export function replace_undefined_values (parameters, variable) {
 export function is_column_not_empty(dataset, item) {
   return count_rows_with_data(dataset, item) > 0;
 }
+
+export function list_all_pattrn_variables(variables) {
+  var variable_list = [];
+
+  Object.keys(variables).forEach(function(variable_type) {
+    variable_list = variable_list.concat(variables[variable_type]);
+  });
+
+  return variable_list;
+}

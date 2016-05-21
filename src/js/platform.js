@@ -259,18 +259,6 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         // Extract columns for media available
         var media_field_name = headers[26];
 
-        var value_tags_field_name_1 = map(dataset, function(item) { return item[tags_field_name_1]; }).join("");
-        var value_tags_field_name_2 = map(dataset, function(item) { return item[tags_field_name_2]; }).join("");
-        var value_tags_field_name_3 = map(dataset, function(item) { return item[tags_field_name_3]; }).join("");
-        var value_tags_field_name_4 = map(dataset, function(item) { return item[tags_field_name_4]; }).join("");
-        var value_tags_field_name_5 = map(dataset, function(item) { return item[tags_field_name_5]; }).join("");
-
-        var value_boolean_field_name_1 = map(dataset, function(item) { return item[boolean_field_name_1]; }).join("");
-        var value_boolean_field_name_2 = map(dataset, function(item) { return item[boolean_field_name_2]; }).join("");
-        var value_boolean_field_name_3 = map(dataset, function(item) { return item[boolean_field_name_3]; }).join("");
-        var value_boolean_field_name_4 = map(dataset, function(item) { return item[boolean_field_name_4]; }).join("");
-        var value_boolean_field_name_5 = map(dataset, function(item) { return item[boolean_field_name_5]; }).join("");
-
         // Parse time
         var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
 

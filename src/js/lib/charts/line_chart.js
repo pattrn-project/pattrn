@@ -53,7 +53,7 @@ var d3 = require('d3');
  * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
  * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
  */
-function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
+export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
   /**
    * Parameters passed in and defaults
    */
@@ -193,5 +193,3 @@ function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
     SliderChart_0X.xAxis().ticks(3);
   }
 }
-
-module.exports = pattrn_line_chart;

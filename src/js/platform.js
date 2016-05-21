@@ -13,6 +13,7 @@ import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variable
  */
 var pattrn_line_chart = require('./lib/charts/line_chart.js');
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
+import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 
 module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
 
@@ -423,198 +424,47 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             xf);
         });
 
-        // BOOLEAN CHART 01 - BOOLEAN
-        if (value_boolean_field_name_1.length > 0) {
+        /**
+         * @x-technical-debt: this forEach thingy is saner than the legacy
+         * copy+paste of identical code minus random differences, but to
+         * complete the v1->v2 refactor we need to limit the range to the actual
+         * number of integer type variables in the dataset (or to extend it to
+         * their count, as applicable)
+         * So, range(1, 5) below is just an hardcoded artifact retrofitting the new
+         * modular code to the arbitrary repetitions of the legacy code.
+         * Likewise, the HTML elements now hardcoded in the index.html file
+         * need to be computationally generated to match the number of variables
+         * of integer type actually in use.
+         * @x-technical-debt: in legacy code, a variable for each chart was
+         * created in this scope, with its only effective use being in
+         * window.onresize() to trigger a repaint of each chart affected. This
+         * breaks with the refactored code and needs to be restored, while
+         * also investigating whether a different way to handle this could be
+         * more perfomant (e.g. do we need to repaint both visible and invisible
+         * charts?).
+         */
+        non_empty_boolean_variables.forEach(function(item, index) {
+          // @x-technical-debt: get rid of this way of labelling elements by
+          // appending a left-0-padding to the index of each chart
+          var index_padded = '0' + (index + 1);
 
-          var boolean_chart_01_title = document.getElementById('boolean_chart_01_title').innerHTML = boolean_field_name_1;
-          var boolean_chart_01_chartTitle = document.getElementById('boolean_chart_01_chartTitle').innerHTML = "Events by " + boolean_field_name_1;
-
-          var boolean_chart_01 = dc.barChart("#d3_boolean_chart_01");
-          var boolean_chart_01_dimension = xf.dimension(function(d) {
-            return d[boolean_field_name_1];
-          });
-          var boolean_chart_01_group = boolean_chart_01_dimension.group().reduceCount();
-
-          boolean_chart_01.width(scatterWidth)
-            .height(chartHeight)
-            .margins({
-              top: 0,
-              right: 50,
-              bottom: 50,
-              left: 50
-            })
-            .dimension(boolean_chart_01_dimension)
-            .group(boolean_chart_01_group)
-            .title(function(d) {
-              return ('Total number of events: ' + d.value);
-            })
-            .x(d3.scale.ordinal())
-            .xUnits(dc.units.ordinal)
-            .renderHorizontalGridLines(true)
-            .yAxisLabel("no. of events")
-            .elasticY(true)
-            .barPadding(0.1)
-            .outerPadding(0.05);
-
-          boolean_chart_01.yAxis().ticks(3);
-
-        }
-
-        // BOOLEAN CHART 02 - BOOLEAN
-        if (value_boolean_field_name_2.length > 0) {
-
-          var boolean_chart_02_title = document.getElementById('boolean_chart_02_title').innerHTML = boolean_field_name_2;
-          var boolean_chart_02_chartTitle = document.getElementById('boolean_chart_02_chartTitle').innerHTML = "Events by " + boolean_field_name_2;
-
-          var boolean_chart_02 = dc.barChart("#d3_boolean_chart_02");
-          var boolean_chart_02_dimension = xf.dimension(function(d) {
-            return d[boolean_field_name_2];
-          });
-          var boolean_chart_02_group = boolean_chart_02_dimension.group().reduceCount();
-
-          boolean_chart_02.width(scatterWidth)
-            .height(chartHeight)
-            .margins({
-              top: 0,
-              right: 50,
-              bottom: 50,
-              left: 50
-            })
-            .dimension(boolean_chart_02_dimension)
-            .group(boolean_chart_02_group)
-            .title(function(d) {
-              return ('Total number of events: ' + d.value);
-            })
-            .x(d3.scale.ordinal())
-            .xUnits(dc.units.ordinal)
-            .renderHorizontalGridLines(true)
-            .yAxisLabel("no. of events")
-            .elasticY(true)
-            .on("filtered", function(d) {
-              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-            })
-            .barPadding(0.1)
-            .outerPadding(0.05);
-
-          boolean_chart_02.yAxis().ticks(3);
-        }
-
-        // BOOLEAN CHART 03 - BOOLEAN
-        if (value_boolean_field_name_3.length > 0) {
-
-          var boolean_chart_03_title = document.getElementById('boolean_chart_03_title').innerHTML = boolean_field_name_3;
-          var boolean_chart_03_chartTitle = document.getElementById('boolean_chart_03_chartTitle').innerHTML = "Events by " + boolean_field_name_3;
-
-          var boolean_chart_03 = dc.barChart("#d3_boolean_chart_03");
-          var boolean_chart_03_dimension = xf.dimension(function(d) {
-            return d[boolean_field_name_3];
-          });
-          var boolean_chart_03_group = boolean_chart_03_dimension.group().reduceCount();
-
-          boolean_chart_03.width(scatterWidth)
-            .height(chartHeight)
-            .margins({
-              top: 0,
-              right: 50,
-              bottom: 50,
-              left: 50
-            })
-            .dimension(boolean_chart_03_dimension)
-            .group(boolean_chart_03_group)
-            .title(function(d) {
-              return ('Total number of events: ' + d.value);
-            })
-            .x(d3.scale.ordinal())
-            .xUnits(dc.units.ordinal)
-            .renderHorizontalGridLines(true)
-            // .xAxisLabel(boolean_chart_03_title)
-            .yAxisLabel("no. of events")
-            .elasticY(true)
-            .on("filtered", function(d) {
-              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-            })
-            .barPadding(0.1)
-            .outerPadding(0.05);
-
-          boolean_chart_03.yAxis().ticks(3);
-        }
-
-        // BOOLEAN CHART 04 - BOOLEAN
-        if (value_boolean_field_name_4.length > 0) {
-
-          var boolean_chart_04_title = document.getElementById('boolean_chart_04_title').innerHTML = boolean_field_name_4;
-          var boolean_chart_04_chartTitle = document.getElementById('boolean_chart_04_chartTitle').innerHTML = "Events by " + boolean_field_name_4;
-
-          var boolean_chart_04 = dc.barChart("#d3_boolean_chart_04");
-          var boolean_chart_04_dimension = xf.dimension(function(d) {
-            return d[boolean_field_name_4];
-          });
-          var boolean_chart_04_group = boolean_chart_04_dimension.group().reduceCount();
-
-          boolean_chart_04.width(scatterWidth)
-            .height(chartHeight)
-            .margins({
-              top: 0,
-              right: 50,
-              bottom: 50,
-              left: 50
-            })
-            .dimension(boolean_chart_04_dimension)
-            .group(boolean_chart_04_group)
-            .title(function(d) {
-              return ('Total number of events: ' + d.value);
-            })
-            .x(d3.scale.ordinal())
-            .xUnits(dc.units.ordinal)
-            .renderHorizontalGridLines(true)
-            .yAxisLabel("no. of events")
-            .elasticY(true)
-            .on("filtered", function(d) {
-              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-            })
-            .barPadding(0.1)
-            .outerPadding(0.05);
-
-          boolean_chart_04.yAxis().ticks(3);
-
-        }
-        // BOOLEAN CHART 05 - BOOLEAN
-        if (value_boolean_field_name_5.length > 0) {
-
-          var boolean_chart_05_title = document.getElementById('boolean_chart_05_title').innerHTML = boolean_field_name_5;
-          var boolean_chart_05_chartTitle = document.getElementById('boolean_chart_05_chartTitle').innerHTML = "Events by " + boolean_field_name_5;
-
-          var boolean_chart_05 = dc.barChart("#d3_boolean_chart_05");
-          var boolean_chart_05_dimension = xf.dimension(function(d) {
-            return d[boolean_field_name_5];
-          });
-          var boolean_chart_05_group = boolean_chart_05_dimension.group().reduceCount();
-
-          boolean_chart_05.width(scatterWidth)
-            .height(chartHeight)
-            .margins({
-              top: 0,
-              right: 50,
-              bottom: 50,
-              left: 50
-            })
-            .dimension(boolean_chart_05_dimension)
-            .group(boolean_chart_05_group)
-            .title(function(d) {
-              return ('Total number of events: ' + d.value);
-            })
-            .x(d3.scale.ordinal())
-            .xUnits(dc.units.ordinal)
-            .renderHorizontalGridLines(true)
-            .yAxisLabel("no. of events")
-            .elasticY(true)
-            .on("filtered", function(d) {
-              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-            })
-            .barPadding(0.1)
-            .outerPadding(0.05);
-          boolean_chart_05.yAxis().ticks(3);
-        }
+          pattrn_tag_bar_chart(index + 1,
+            { elements: {
+                title: `bar_chart_${index_padded}_title`,
+                chart_title: `bar_chart_${index_padded}_chartTitle`,
+                d3_bar_chart: `#d3_bar_chart_${index_padded}`,
+                aggregate_count_title: `agreggateCountTitle_${index_padded}`
+              },
+              fields: {
+                field_name: non_empty_boolean_variables[index],
+                field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ? variable_list.find(item => item.id === non_empty_boolean_variables[index]).name : non_empty_boolean_variables[index]
+              },
+              scatterWidth: scatterWidth
+            },
+            dataset,
+            dc,
+            xf);
+        });
 
         // timeline by EVENTS
         var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";

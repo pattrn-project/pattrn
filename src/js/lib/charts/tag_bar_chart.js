@@ -154,7 +154,7 @@ export function pattrn_tag_bar_chart(index, chart_settings, dataset, dc, xf) {
       return filters;
     })
     .on("filtered", function(d) {
-      return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+      return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
     })
     .barPadding(0.1)
     .outerPadding(0.05);

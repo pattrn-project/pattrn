@@ -507,7 +507,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             .yAxisLabel("no. of events")
             .elasticY(true)
             .on("filtered", function(d) {
-              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
             })
             .barPadding(0.1)
             .outerPadding(0.05);
@@ -547,7 +547,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             .yAxisLabel("no. of events")
             .elasticY(true)
             .on("filtered", function(d) {
-              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
             })
             .barPadding(0.1)
             .outerPadding(0.05);
@@ -586,7 +586,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             .yAxisLabel("no. of events")
             .elasticY(true)
             .on("filtered", function(d) {
-              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
             })
             .barPadding(0.1)
             .outerPadding(0.05);
@@ -625,7 +625,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
             .yAxisLabel("no. of events")
             .elasticY(true)
             .on("filtered", function(d) {
-              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
             })
             .barPadding(0.1)
             .outerPadding(0.05);
@@ -664,7 +664,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           .yAxisLabel("no. of events")
           .elasticY(true)
           .on("filtered", function(d) {
-            return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
           })
           .brushOn(true)
           .xAxis();
@@ -750,7 +750,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
           })
           .elasticY(true)
           .on("filtered", function(d) {
-            return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+            return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
           })
           .barPadding(0.1)
           .outerPadding(0.05);
@@ -827,7 +827,7 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
               return filters;
             })
             .on("filtered", function(d) {
-              return filterOn.className = "glyphicon glyphicon-filter activeFilter";
+              return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
             })
             .barPadding(0.1)
             .outerPadding(0.05);

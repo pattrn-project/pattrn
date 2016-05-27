@@ -82,10 +82,10 @@ export function point_data(pattrn_data_sets, markerChart, item, index) {
     media: document.getElementById('media')
   }
 
-  item.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, item));
+  item.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, item, index));
 }
 
-function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e) {
+function point_data_click(elements, content, pattrn_data_sets, markerChart, item, index, e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';
@@ -97,14 +97,14 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
   } else {
 
     $('#edit_dropdown').append(
-      "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
+      "<li><a target='_blank' href=" + config.script_url + item.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
     );
 
     if (is_defined(e.target.data.photos)) {
       // Photos
       d3.json(e.target.data.photos, function(D) {
 
-        var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
+        var json_photos = $.parseJSON('[' + item.photos + ']');
 
         for (j = 0; j < json_photos.length; j++) {
           $('#image_gallery').append(
@@ -130,7 +130,7 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
       // Videos
       d3.json(e.target.data.videos, function(D) {
 
-        var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
+        var json_videos = $.parseJSON('[' + item.videos + ']');
 
         for (j = 0; j < json_videos.length; j++) {
           $('#video_gallery').append(
@@ -153,7 +153,7 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
       // Urls
       d3.json(e.target.data.links, function(D) {
 
-        var array_urls = $.parseJSON('[' + dataset[i].links + ']');
+        var array_urls = $.parseJSON('[' + item.links + ']');
 
         for (j = 0; j < array_urls.length; j++) {
           $('#urls').append(
@@ -173,8 +173,8 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
     $('.leaflet-popup-close-button').addClass('transparent');
 
     // Style marker on click
-    d.marker.setRadius(10);
-    d.marker.setStyle({
+    item.marker.setRadius(10);
+    item.marker.setStyle({
       color: highlightColour,
       fillColor: highlightColour,
       fillOpacity: 0.8,
@@ -186,12 +186,12 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
 
 
     if ('geojson_file' === data_source_type) {
-      Object.keys(d.source_variables)
+      Object.keys(item.source_variables)
         .filter(function(value) {
           return !value.match(/^pattrn_[^_]{2,}/);
         })
         .forEach(function(value, index, array) {
-          if (is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
+          if (is_defined(item.source_variables[value])) appendGeoJSONPropertyToTable(value, item.source_variables[value]);
         });
     }
 
@@ -210,10 +210,10 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
 
   _map.on("popupclose", function(e) {
     // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-    var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
+    var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ? pattrn_data_sets[item.pattrn_data_set] : instance_settings.map.markers.color;
 
-    d.marker.setRadius(7);
-    d.marker.setStyle({
+    item.marker.setRadius(7);
+    item.marker.setStyle({
       fillColor: marker_color,
       color: marker_color,
       fillOpacity: instance_settings.map.markers.opacity

@@ -1,9 +1,15 @@
+var $ = require('jquery'),
+    d3 = require('d3'),
+    q = require('d3-queue').queue(),
+    dc = require('dc'),
+    crossfilter = require('crossfilter'),
+    tabletop = require('tabletop'),
+    range = require('lodash.range');
+
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
 import { marker_chart } from './lib/data/dc_markerchart.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
-
-var range = require('lodash.range');
 
 import { initialize_ui } from './lib/pattrn_ui.js';
 import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables } from "./lib/pattrn_data";
@@ -23,8 +29,7 @@ import { pattrn_line_chart } from './lib/charts/line_chart.js';
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 
-module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
-
+export function pattrn() {
     var _map = {};
     var markerChart = null;
     var bounds;

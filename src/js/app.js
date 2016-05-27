@@ -18,13 +18,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // require dependencies
-var jquery = require('jquery'),
-    L = require('leaflet'),
-    d3 = require('d3'),
-    q = require('d3-queue').queue(),
-    dc = require('dc'),
-    crossfilter = require('crossfilter'),
-    tabletop = require('tabletop');
+var jquery = require('jquery');
 
 // expose jquery as global.jQuery; this is needed for jQuery plugins
 global.jQuery = jquery;
@@ -32,18 +26,22 @@ global.jQuery = jquery;
 // require bootstrap (menus etc) - needs jQuery global
 require('bootstrap');
 
-// leaflet.marketcluster Leaflet plugin
+// Leaflet:
+// main library (for global L)
+require('leaflet');
+// and leaflet.marketcluster plugin
 require('leaflet.markercluster');
+
 // lightgallery jQuery plugin
 require('lightgallery');
 
-// require the core Pattrn code
+// Lastly, import the main pattrn() function
 // TECHNICAL_DEBT: this will be broken down in manageable modules
-var pattrn = require('./platform.js');
+import { pattrn }  from './platform.js';
 
 /**
  * finally, invoke the actual monolithic pattrn() function
  * TECHNICAL_DEBT: until the full pattrn() function is refactored, we pass in
  * its dependencies, in order to shim the legacy Pattrn code
  */
-pattrn(jquery, d3, q, dc, crossfilter, tabletop);
+pattrn();

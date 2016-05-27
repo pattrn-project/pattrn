@@ -347,16 +347,9 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         });
 
         /**
-         * @x-technical-debt: this forEach thingy is saner than the legacy
-         * copy+paste of identical code minus random differences, but to
-         * complete the v1->v2 refactor we need to limit the range to the actual
-         * number of integer type variables in the dataset (or to extend it to
-         * their count, as applicable)
-         * So, range(1, 5) below is just an hardcoded artifact retrofitting the new
-         * modular code to the arbitrary repetitions of the legacy code.
-         * Likewise, the HTML elements now hardcoded in the index.html file
-         * need to be computationally generated to match the number of variables
-         * of integer type actually in use.
+         * @x-technical-debt: the HTML elements now hardcoded in the index.html
+         * file need to be computationally generated to match the number of
+         * variables of integer type actually in use.
          * @x-technical-debt: in legacy code, a variable for each chart was
          * created in this scope, with its only effective use being in
          * window.onresize() to trigger a repaint of each chart affected. This
@@ -391,16 +384,9 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         });
 
         /**
-         * @x-technical-debt: this forEach thingy is saner than the legacy
-         * copy+paste of identical code minus random differences, but to
-         * complete the v1->v2 refactor we need to limit the range to the actual
-         * number of integer type variables in the dataset (or to extend it to
-         * their count, as applicable)
-         * So, range(1, 5) below is just an hardcoded artifact retrofitting the new
-         * modular code to the arbitrary repetitions of the legacy code.
-         * Likewise, the HTML elements now hardcoded in the index.html file
-         * need to be computationally generated to match the number of variables
-         * of integer type actually in use.
+        * @x-technical-debt: the HTML elements now hardcoded in the index.html
+        * file need to be computationally generated to match the number of
+        * variables of tag type actually in use.
          * @x-technical-debt: in legacy code, a variable for each chart was
          * created in this scope, with its only effective use being in
          * window.onresize() to trigger a repaint of each chart affected. This
@@ -433,16 +419,9 @@ module.exports = function ($, d3, q, dc, crossfilter, Tabletop){
         });
 
         /**
-         * @x-technical-debt: this forEach thingy is saner than the legacy
-         * copy+paste of identical code minus random differences, but to
-         * complete the v1->v2 refactor we need to limit the range to the actual
-         * number of integer type variables in the dataset (or to extend it to
-         * their count, as applicable)
-         * So, range(1, 5) below is just an hardcoded artifact retrofitting the new
-         * modular code to the arbitrary repetitions of the legacy code.
-         * Likewise, the HTML elements now hardcoded in the index.html file
-         * need to be computationally generated to match the number of variables
-         * of integer type actually in use.
+        * @x-technical-debt: the HTML elements now hardcoded in the index.html
+        * file need to be computationally generated to match the number of
+        * variables of boolean type actually in use.
          * @x-technical-debt: in legacy code, a variable for each chart was
          * created in this scope, with its only effective use being in
          * window.onresize() to trigger a repaint of each chart affected. This

@@ -27,7 +27,34 @@ var $ = require('jquery');
 
 import { is_defined } from '../utils/is_defined.js';
 
-export function point_data(pattrn_data_sets, d, i) {
+// Table content - generic functions
+function appendIntegerValueToTable(d, field_name) {
+  if (!is_defined(d[field_name])) return;
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
+    "</p> </th> </tr>"
+  );
+}
+
+function appendTagValueToTable(d, field_name) {
+  if (!is_defined(d[field_name])) return;
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
+    "</p> </th> </tr>"
+  );
+}
+
+function appendGeoJSONPropertyToTable(key, value) {
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
+    "</p></th><th class='col-sm-6' ><p class='white'> " + value +
+    "</p> </th> </tr>"
+  );
+}
+
+export function point_data(pattrn_data_sets, markerChart, d, i) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ?
     pattrn_data_sets[d.pattrn_data_set] :
@@ -176,32 +203,6 @@ export function point_data(pattrn_data_sets, d, i) {
       content.innerHTML = eventDetailsContent;
       Summary.innerHTML = summaryContent;
 
-      // Table content - generic functions
-      function appendIntegerValueToTable(field_name) {
-        if (!is_defined(d[field_name])) return;
-        $('#summaryTable').append(
-          "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-          "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
-          "</p> </th> </tr>"
-        );
-      }
-
-      function appendTagValueToTable(field_name) {
-        if (!is_defined(d[field_name])) return;
-        $('#summaryTable').append(
-          "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-          "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
-          "</p> </th> </tr>"
-        );
-      }
-
-      function appendGeoJSONPropertyToTable(key, value) {
-        $('#summaryTable').append(
-          "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
-          "</p></th><th class='col-sm-6' ><p class='white'> " + value +
-          "</p> </th> </tr>"
-        );
-      }
 
       if ('geojson_file' === data_source_type) {
         Object.keys(d.source_variables)
@@ -214,15 +215,15 @@ export function point_data(pattrn_data_sets, d, i) {
       }
 
       non_empty_number_variables.forEach(function(item, index) {
-        appendIntegerValueToTable(item);
+        appendIntegerValueToTable(d, item);
       });
 
       non_empty_tag_variables.forEach(function(item, index) {
-        appendTagValueToTable(item);
+        appendTagValueToTable(d, item);
       });
 
       non_empty_boolean_variables.forEach(function(item, index) {
-        appendTagValueToTable(item);
+        appendTagValueToTable(d, item);
       });
     }
 

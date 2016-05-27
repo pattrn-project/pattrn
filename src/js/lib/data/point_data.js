@@ -25,7 +25,9 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 
 var $ = require('jquery');
 
-import { is_defined } from '../utils/is_defined.js';
+import {
+  is_defined
+} from '../utils/is_defined.js';
 
 export function point_data(pattrn_data_sets, markerChart, d, i) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults

@@ -78,17 +78,19 @@ export function point_data(pattrn_data_sets, markerChart, d, i) {
   d.marker.data = d;
 
   // Tooltip content
-  var eventDetailsContent = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
-  if (is_defined(d.event_ID)) eventDetailsContent += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
-  if (is_defined(d.dd)) eventDetailsContent += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
-  if (is_defined(d.location_name)) eventDetailsContent += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
-  eventDetailsContent += "</div>";
+  var content = {};
+
+  content.event_details = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
+  if (is_defined(d.event_ID)) content.event_details += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
+  if (is_defined(d.dd)) content.event_details += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
+  if (is_defined(d.location_name)) content.event_details += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
+  content.event_details += "</div>";
 
   // Summary content
-  var summaryContent = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
-  if (is_defined(d.event_summary)) summaryContent += "<p class='summary'>" + d.event_summary + "</p>";
-  if (is_defined(d.source_name)) summaryContent += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
-  summaryContent += (
+  content.eventSummary = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
+  if (is_defined(d.event_summary)) content.event_summary += "<p class='summary'>" + d.event_summary + "</p>";
+  if (is_defined(d.source_name)) content.event_summary += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
+  content.event_summary += (
     "<div class='summaryTable'></div><br/>" +
     "</div>"
   );
@@ -99,151 +101,154 @@ export function point_data(pattrn_data_sets, markerChart, d, i) {
     .setLatLng(d.marker.getLatLng())
     .setContent(hoverContent);
 
-  var content = document.getElementById('dateTime');
-  var Summary = document.getElementById('summary');
-  var Media = document.getElementById('media');
+  var elements = {
+    details: document.getElementById('dateTime'),
+    summary: document.getElementById('summary'),
+    media: document.getElementById('media')
+  }
 
-  d.marker.on("click", function(e) {
+  d.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, d));
+}
 
-    var image_html = document.getElementById("image_gallery").innerHTML = '';
-    var video_html = document.getElementById("video_gallery").innerHTML = '';
-    var summary_table = document.getElementById("summaryTable").innerHTML = '';
-    var urls = document.getElementById("urls").innerHTML = '';
-    $('.edit_dropdown').remove();
+function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e) {
+  var image_html = document.getElementById("image_gallery").innerHTML = '';
+  var video_html = document.getElementById("video_gallery").innerHTML = '';
+  var summary_table = document.getElementById("summaryTable").innerHTML = '';
+  var urls = document.getElementById("urls").innerHTML = '';
+  $('.edit_dropdown').remove();
 
-    if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
-      markerChart.filter(true);
-    } else {
+  if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
+    markerChart.filter(true);
+  } else {
 
-      $('#edit_dropdown').append(
-        "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
-      );
+    $('#edit_dropdown').append(
+      "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
+    );
 
-      if(is_defined(e.target.data.photos)) {
-        // Photos
-        d3.json(e.target.data.photos, function(D) {
+    if(is_defined(e.target.data.photos)) {
+      // Photos
+      d3.json(e.target.data.photos, function(D) {
 
-          var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
+        var json_photos = $.parseJSON('[' + dataset[i].photos + ']');
 
-          for (j = 0; j < json_photos.length; j++) {
-            $('#image_gallery').append(
-              '<li data-src="' + json_photos[j].src +
-              '"data-sub-html="' + json_photos[j].subhtml + '" >' +
-              '<img src="' + json_photos[j].thumb + '"/>' +
-              '<br/>' +
-              json_photos[j].caption +
-              '<p>Source: ' + json_photos[j].source + '</p>' +
-              '</li>'
-            );
-          }
+        for (j = 0; j < json_photos.length; j++) {
+          $('#image_gallery').append(
+            '<li data-src="' + json_photos[j].src +
+            '"data-sub-html="' + json_photos[j].subhtml + '" >' +
+            '<img src="' + json_photos[j].thumb + '"/>' +
+            '<br/>' +
+            json_photos[j].caption +
+            '<p>Source: ' + json_photos[j].source + '</p>' +
+            '</li>'
+          );
+        }
 
 
-          $(document).ready(function() {
-            $("#image_gallery").lightGallery();
-          });
-
+        $(document).ready(function() {
+          $("#image_gallery").lightGallery();
         });
-      }
 
-      if(is_defined(e.target.data.videos)) {
-        // Videos
-        d3.json(e.target.data.videos, function(D) {
-
-          var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
-
-          for (j = 0; j < json_videos.length; j++) {
-            $('#video_gallery').append(
-              '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
-              '"data-sub-html="' + json_videos[j].subhtml + '" id="image_link">' +
-              '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
-              '<p>Source: ' + json_videos[j].source + '</p>' +
-              '</li>'
-            );
-          }
-
-          $(document).ready(function() {
-            $("#video_gallery").lightGallery();
-          });
-
-        });
-      }
-
-      if(is_defined(e.target.data.links)) {
-        // Urls
-        d3.json(e.target.data.links, function(D) {
-
-          var array_urls = $.parseJSON('[' + dataset[i].links + ']');
-
-          for (j = 0; j < array_urls.length; j++) {
-            $('#urls').append(
-              '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
-            );
-          }
-
-        });
-      }
-
-      // Open popup
-      e.target.popup.openOn(markerChart.getMap());
-
-      // Change style of popup
-      $('.leaflet-popup-content-wrapper').addClass('transparent');
-      $('.leaflet-popup-tip').addClass('transparent');
-      $('.leaflet-popup-close-button').addClass('transparent');
-
-      // Style marker on click
-      d.marker.setRadius(10);
-      d.marker.setStyle({
-        color: highlightColour,
-        fillColor: highlightColour,
-        fillOpacity: 0.8,
-      });
-
-      // Add infowindow content
-      content.innerHTML = eventDetailsContent;
-      Summary.innerHTML = summaryContent;
-
-
-      if ('geojson_file' === data_source_type) {
-        Object.keys(d.source_variables)
-          .filter(function(value) {
-            return !value.match(/^pattrn_[^_]{2,}/);
-          })
-          .forEach(function(value, index, array) {
-            if (is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
-          });
-      }
-
-      non_empty_number_variables.forEach(function(item, index) {
-        appendIntegerValueToTable(d, item);
-      });
-
-      non_empty_tag_variables.forEach(function(item, index) {
-        appendTagValueToTable(d, item);
-      });
-
-      non_empty_boolean_variables.forEach(function(item, index) {
-        appendTagValueToTable(d, item);
       });
     }
 
-    _map.on("popupclose", function(e) {
-      // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-      var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
+    if(is_defined(e.target.data.videos)) {
+      // Videos
+      d3.json(e.target.data.videos, function(D) {
 
-      d.marker.setRadius(7);
-      d.marker.setStyle({
-        fillColor: marker_color,
-        color: marker_color,
-        fillOpacity: instance_settings.map.markers.opacity
+        var json_videos = $.parseJSON('[' + dataset[i].videos + ']');
+
+        for (j = 0; j < json_videos.length; j++) {
+          $('#video_gallery').append(
+            '<li style= "list-style-type: none;" data-src="' + json_videos[j].src +
+            '"data-sub-html="' + json_videos[j].subhtml + '" id="image_link">' +
+            '<a href="#"><p>Video: <strong>' + json_videos[j].caption + '</strong></p></a>' +
+            '<p>Source: ' + json_videos[j].source + '</p>' +
+            '</li>'
+          );
+        }
+
+        $(document).ready(function() {
+          $("#video_gallery").lightGallery();
+        });
+
       });
-      content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
-      Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
-      var summary_table = document.getElementById("summaryTable").innerHTML = '';
-      var image_html = document.getElementById("image_gallery").innerHTML = '';
-      var video_html = document.getElementById("video_gallery").innerHTML = '';
-      var urls = document.getElementById("urls").innerHTML = '';
-      $('.edit_dropdown').remove();
+    }
+
+    if(is_defined(e.target.data.links)) {
+      // Urls
+      d3.json(e.target.data.links, function(D) {
+
+        var array_urls = $.parseJSON('[' + dataset[i].links + ']');
+
+        for (j = 0; j < array_urls.length; j++) {
+          $('#urls').append(
+            '<li><a target="_blank" href="' + array_urls[j].url + '"> Title: ' + array_urls[j].title + '</a></li><p style="line-height: 100%"><br/>Subtitle: ' + array_urls[j].subtitle + '</p>'
+          );
+        }
+
+      });
+    }
+
+    // Open popup
+    e.target.popup.openOn(markerChart.getMap());
+
+    // Change style of popup
+    $('.leaflet-popup-content-wrapper').addClass('transparent');
+    $('.leaflet-popup-tip').addClass('transparent');
+    $('.leaflet-popup-close-button').addClass('transparent');
+
+    // Style marker on click
+    d.marker.setRadius(10);
+    d.marker.setStyle({
+      color: highlightColour,
+      fillColor: highlightColour,
+      fillOpacity: 0.8,
     });
+
+    // Add infowindow content
+    elements.details.innerHTML = content.event_details;
+    elements.summary.innerHTML = content.event_summary;
+
+
+    if ('geojson_file' === data_source_type) {
+      Object.keys(d.source_variables)
+        .filter(function(value) {
+          return !value.match(/^pattrn_[^_]{2,}/);
+        })
+        .forEach(function(value, index, array) {
+          if (is_defined(d.source_variables[value])) appendGeoJSONPropertyToTable(value, d.source_variables[value]);
+        });
+    }
+
+    non_empty_number_variables.forEach(function(item, index) {
+      appendIntegerValueToTable(d, item);
+    });
+
+    non_empty_tag_variables.forEach(function(item, index) {
+      appendTagValueToTable(d, item);
+    });
+
+    non_empty_boolean_variables.forEach(function(item, index) {
+      appendTagValueToTable(d, item);
+    });
+  }
+
+  _map.on("popupclose", function(e) {
+    // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
+    var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
+
+    d.marker.setRadius(7);
+    d.marker.setStyle({
+      fillColor: marker_color,
+      color: marker_color,
+      fillOpacity: instance_settings.map.markers.opacity
+    });
+    content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
+    Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
+    var summary_table = document.getElementById("summaryTable").innerHTML = '';
+    var image_html = document.getElementById("image_gallery").innerHTML = '';
+    var video_html = document.getElementById("video_gallery").innerHTML = '';
+    var urls = document.getElementById("urls").innerHTML = '';
+    $('.edit_dropdown').remove();
   });
 }

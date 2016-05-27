@@ -100,7 +100,7 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
       "<li><a target='_blank' href=" + config.script_url + d.event_ID + " class='edit_dropdown noMargin'>Edit this event</a><li>"
     );
 
-    if(is_defined(e.target.data.photos)) {
+    if (is_defined(e.target.data.photos)) {
       // Photos
       d3.json(e.target.data.photos, function(D) {
 
@@ -126,7 +126,7 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
       });
     }
 
-    if(is_defined(e.target.data.videos)) {
+    if (is_defined(e.target.data.videos)) {
       // Videos
       d3.json(e.target.data.videos, function(D) {
 
@@ -149,7 +149,7 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
       });
     }
 
-    if(is_defined(e.target.data.links)) {
+    if (is_defined(e.target.data.links)) {
       // Urls
       d3.json(e.target.data.links, function(D) {
 

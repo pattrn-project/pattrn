@@ -25,39 +25,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 
 var $ = require('jquery');
 
-import d3 from 'd3';
-
-import {
-  is_defined
-} from '../utils/is_defined.js';
-
-/**
- * Handle data and setup of events for each data point
- *
- * @x-technical-debt: this function was taken out of the legacy code's single
- * scope while refactoring, but as we need several (7+, depending on how we
- * count) variables from the parent scope, we should really pass these in
- * as an object.
- */
-export function point_data(
-    config,
-    instance_settings,
-    layer_group,
-    layer_data,
-    _map,
-    data_source_type,
-    variable_list,
-    pattrn_data_sets,
-    non_empty_variables,
-    markerChart,
-    item,
-    index) {
-
-  // If data on source data set is available, set colour and fill pattern of
-  // markers accordingly, otherwise use defaults
-  let [ marker_fill, marker_stroke, marker_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
-
-  item.i = index;
+import { is_defined } from '../utils/is_defined.js';
 
 export function point_data(pattrn_data_sets, d, i) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults

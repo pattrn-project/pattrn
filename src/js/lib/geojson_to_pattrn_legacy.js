@@ -27,7 +27,7 @@ import { is_defined } from'./utils/is_defined.js';
  * @param Object data The GeoJSON feature collection
  * @param Object The dataset structured as Pattrn v1 expects
  */
-var geojson_to_pattrn_legacy_data_structure = function(data, variables, config, settings) {
+export function geojson_to_pattrn_legacy_data_structure(data, variables, config, settings) {
   var features = [];
 
   if(! is_defined(data) || ! is_defined(data.features) || ! Array.isArray(data.features)) {
@@ -140,5 +140,3 @@ var geojson_to_pattrn_legacy_data_structure = function(data, variables, config, 
 
   return features;
 }
-
-module.exports = geojson_to_pattrn_legacy_data_structure;

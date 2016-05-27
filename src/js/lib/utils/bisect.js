@@ -1,28 +1,9 @@
-/*
-Copyright (C) 2016 andrea rota <a@xelera.eu>
-
-This file is part of Pattrn - http://pattrn.co/.
-
-Pattrn is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Pattrn is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 import { is_defined } from './is_defined.js';
 
 /**
  * MONKEYPATCH - bisect as needed until dc works
  */
-function bisect_features(features, config) {
+export function bisect_features(features, config) {
   if(is_defined(config)
     && is_defined(config.data_sources)
     && is_defined(config.data_sources.geojson_data)
@@ -51,5 +32,3 @@ function bisect_features(features, config) {
 
   return features;
 }
-
-module.exports = bisect_features;

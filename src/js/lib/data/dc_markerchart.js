@@ -26,7 +26,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 // Many thanks to Boyan Yurukov for his emails and help,
 // check out his project - dc-leaflet: https://github.com/yurukov/dc.leaflet.js
 
-function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config) {
+export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config) {
 
     // Create an empty chart
     var _chart = dc.baseChart({});
@@ -193,5 +193,3 @@ function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config
     var cha = _chart.anchor(parent, chartGroup);
     return cha;
 }
-
-module.exports = marker_chart;

@@ -1,8 +1,5 @@
 /*
 Copyright (C) 2016 andrea rota <a@xelera.eu>
-The array_equals() function is Copyright (C) 2013 Tomáš Zato,
-distributed under CC-BY-SA-3.0 and published here:
-http://stackoverflow.com/a/14853974/550077
 
 This file is part of Pattrn - http://pattrn.co/.
 

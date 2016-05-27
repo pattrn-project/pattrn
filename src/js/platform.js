@@ -1,17 +1,25 @@
-var process_settings = require('./settings.js');
-var is_defined = require('./is_defined.js');
-var marker_chart = require('./dc_markerchart.js');
-var geojson_to_pattrn_legacy_data_structure = require('./geojson_to_pattrn_legacy.js');
+import { process_settings } from './lib/settings.js';
+import { is_defined } from './lib/utils/is_defined.js';
+import { marker_chart } from './lib/data/dc_markerchart.js';
+import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
+
 var range = require('lodash.range');
 
-import { initialize_ui } from './pattrn_ui.js';
+import { initialize_ui } from './lib/pattrn_ui.js';
 import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables } from "./lib/pattrn_data";
+
+/**
+ * Pattrn data mapping
+ * Basically all the code that renders data rows on the map: initially point
+ * data, later shapes, arcs, etc.
+ */
+import { point_data } from './lib/data/point_data.js';
 
 /**
  * Pattrn chart types
  * These are based on chart modules, abstracted from the duplicated code (5x) in Pattrn v1
  */
-var pattrn_line_chart = require('./lib/charts/line_chart.js');
+import { pattrn_line_chart } from './lib/charts/line_chart.js';
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 

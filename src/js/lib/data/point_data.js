@@ -29,19 +29,19 @@ import {
   is_defined
 } from '../utils/is_defined.js';
 
-export function point_data(pattrn_data_sets, markerChart, d, i) {
+export function point_data(pattrn_data_sets, markerChart, item, index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-  var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ?
-    pattrn_data_sets[d.pattrn_data_set] :
+  var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
+    pattrn_data_sets[item.pattrn_data_set] :
     instance_settings.map.markers.color;
 
-  d.i = i;
+  item.i = index;
 
   var dayMonthFormat = d3.time.format("%d/%m/%y");
   var fullDateFormat = d3.time.format("%A, %d %B %Y");
 
   // Marker settings
-  d.marker = new L.circleMarker(new L.LatLng(d.latitude, d.longitude), {
+  item.marker = new L.circleMarker(new L.LatLng(item.latitude, item.longitude), {
     title: "",
     radius: 7,
     color: marker_color,
@@ -50,21 +50,21 @@ export function point_data(pattrn_data_sets, markerChart, d, i) {
     clickable: true,
   });
 
-  d.marker.data = d;
+  item.marker.data = item;
 
   // Tooltip content
   var content = {};
 
   content.event_details = "<div class='col-sm-12' style='padding-top:15px' id='background'>";
-  if (is_defined(d.event_ID)) content.event_details += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + d.event_ID + "</p>";
-  if (is_defined(d.dd)) content.event_details += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(d.dd) + "</p>";
-  if (is_defined(d.location_name)) content.event_details += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + d.location_name + "</p><br/>";
+  if (is_defined(item.event_ID)) content.event_details += "<p class='caption-grey'>EVENT ID:</p> <p class='noMargin'>" + item.event_ID + "</p>";
+  if (is_defined(item.dd)) content.event_details += "<p class='caption-grey'>DATE:</p> <p class='noMargin'> " + fullDateFormat(item.dd) + "</p>";
+  if (is_defined(item.location_name)) content.event_details += "<p class='caption-grey'>LOCATION: </p> <p class='noMargin'> " + item.location_name + "</p><br/>";
   content.event_details += "</div>";
 
   // Summary content
   content.eventSummary = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
-  if (is_defined(d.event_summary)) content.event_summary += "<p class='summary'>" + d.event_summary + "</p>";
-  if (is_defined(d.source_name)) content.event_summary += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + d.source_name + "</p><br/>";
+  if (is_defined(item.event_summary)) content.event_summary += "<p class='summary'>" + item.event_summary + "</p>";
+  if (is_defined(item.source_name)) content.event_summary += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + item.source_name + "</p><br/>";
   content.event_summary += (
     "<div class='summaryTable'></div><br/>" +
     "</div>"
@@ -72,8 +72,8 @@ export function point_data(pattrn_data_sets, markerChart, d, i) {
 
   // set empty popup to leverage leaflet functions
   var hoverContent = "";
-  var popup = d.marker.popup = new L.popup()
-    .setLatLng(d.marker.getLatLng())
+  var popup = item.marker.popup = new L.popup()
+    .setLatLng(item.marker.getLatLng())
     .setContent(hoverContent);
 
   var elements = {
@@ -82,7 +82,7 @@ export function point_data(pattrn_data_sets, markerChart, d, i) {
     media: document.getElementById('media')
   }
 
-  d.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, d));
+  item.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, item));
 }
 
 function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e) {

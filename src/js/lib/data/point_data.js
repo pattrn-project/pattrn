@@ -27,33 +27,6 @@ var $ = require('jquery');
 
 import { is_defined } from '../utils/is_defined.js';
 
-// Table content - generic functions
-function appendIntegerValueToTable(d, field_name) {
-  if (!is_defined(d[field_name])) return;
-  $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-    "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
-    "</p> </th> </tr>"
-  );
-}
-
-function appendTagValueToTable(d, field_name) {
-  if (!is_defined(d[field_name])) return;
-  $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
-    "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
-    "</p> </th> </tr>"
-  );
-}
-
-function appendGeoJSONPropertyToTable(key, value) {
-  $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
-    "</p></th><th class='col-sm-6' ><p class='white'> " + value +
-    "</p> </th> </tr>"
-  );
-}
-
 export function point_data(pattrn_data_sets, markerChart, d, i) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ?
@@ -251,4 +224,31 @@ function point_data_click(elements, content, pattrn_data_sets, markerChart, d, e
     var urls = document.getElementById("urls").innerHTML = '';
     $('.edit_dropdown').remove();
   });
+}
+
+// Table content - generic functions
+function appendIntegerValueToTable(d, field_name) {
+  if (!is_defined(d[field_name])) return;
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
+    "</p> </th> </tr>"
+  );
+}
+
+function appendTagValueToTable(d, field_name) {
+  if (!is_defined(d[field_name])) return;
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
+    "</p> </th> </tr>"
+  );
+}
+
+function appendGeoJSONPropertyToTable(key, value) {
+  $('#summaryTable').append(
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
+    "</p></th><th class='col-sm-6' ><p class='white'> " + value +
+    "</p> </th> </tr>"
+  );
 }

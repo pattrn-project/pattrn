@@ -29,9 +29,12 @@ import { is_defined } from '../utils/is_defined.js';
 
 export function point_data(pattrn_data_sets, d, i) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-  var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ? pattrn_data_sets[d.pattrn_data_set] : instance_settings.map.markers.color;
+  var marker_color = is_defined(d.pattrn_data_set) && is_defined(pattrn_data_sets[d.pattrn_data_set]) ?
+    pattrn_data_sets[d.pattrn_data_set] :
+    instance_settings.map.markers.color;
 
   d.i = i;
+
   var dayMonthFormat = d3.time.format("%d/%m/%y");
   var fullDateFormat = d3.time.format("%A, %d %B %Y");
 

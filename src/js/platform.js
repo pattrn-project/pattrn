@@ -690,7 +690,7 @@ export function pattrn() {
         };
 
         // For each data row, draw and manage event data
-        dataset.forEach(point_data.bind(undefined, pattrn_data_sets));
+        dataset.forEach(point_data.bind(undefined, config, pattrn_data_sets, markerChart));
 
         // Define dimension of marker
         var markerDimension = xf.dimension(function(d) {

@@ -29,7 +29,7 @@ import {
   is_defined
 } from '../utils/is_defined.js';
 
-export function point_data(pattrn_data_sets, markerChart, item, index) {
+export function point_data(config, pattrn_data_sets, markerChart, item, index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
     pattrn_data_sets[item.pattrn_data_set] :
@@ -82,10 +82,10 @@ export function point_data(pattrn_data_sets, markerChart, item, index) {
     media: document.getElementById('media')
   }
 
-  item.marker.on("click", data_point_click.bind(undefined, elements, content, pattrn_data_sets, markerChart, item, index));
+  item.marker.on("click", point_data_click.bind(undefined, config, elements, content, pattrn_data_sets, markerChart, item, index));
 }
 
-function point_data_click(elements, content, pattrn_data_sets, markerChart, item, index, e) {
+function point_data_click(config, elements, content, pattrn_data_sets, markerChart, item, index, e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';

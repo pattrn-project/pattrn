@@ -175,7 +175,7 @@ function point_data_click(config, instance_settings, _map, data_source_type, non
     // @x-technical-debt: ok to check if var is defined, but it should be
     // actually *always* defined here - if it is undefined, something has
     // failed upstream
-    if(is_defined(markerChart)) {
+    if (is_defined(markerChart)) {
       e.target.popup.openOn(markerChart.getMap());
     }
 

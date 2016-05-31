@@ -1,6 +1,6 @@
 var $ = require('jquery'),
     d3 = require('d3'),
-    q = require('d3-queue').queue(),
+    q = require('d3-queue'),
     dc = require('dc'),
     crossfilter = require('crossfilter'),
     tabletop = require('tabletop'),
@@ -93,13 +93,37 @@ export function pattrn() {
        */
       function load_data(data_sources) {
         if(data_sources.geojson_data && data_sources.geojson_data.data_url && data_sources.geojson_data.data_url.length) {
-          q.defer(d3.json, data_sources.geojson_data.data_url)
+          q.queue().defer(d3.json, data_sources.geojson_data.data_url)
             .defer(d3.json, data_sources.geojson_data.metadata_url)
             .defer(d3.json, data_sources.geojson_data.settings_url)
             .await(function(error, dataset, variables, settings) {
               if (error) throw error;
+              var data_trees = [];
               var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
-              consume_table(dataset_in_legacy_format, variables, settings, 'geojson_file');
+
+              /**
+               * Load data trees. We only support these for geojson data sources, although
+               * there is no reason not to extend this to any other relevant sources, as
+               * handling of data trees is orthogonal to handling of the main tabular
+               * dataset(s). As long as a dataset has a column listing relevant tree
+               * nodes for each row, things will just work (once the tree chart
+               * code is ready).
+               * @x-technical-debt: support an arbitrary number of trees (currently we
+               * only load the first one, if more than one are defined)
+               * @x-technical-debt: clean up the async queue so that we don't
+               * duplicate the site of invocation of consume_table
+               */
+              if(is_defined(data_sources.geojson_data.data_trees) && data_sources.geojson_data.data_trees.length > 0) {
+                q.queue().defer(d3.json, data_sources.geojson_data.data_trees[0])
+                  .await(function(error, data_tree) {
+                    if (error) throw error;
+                    data_trees.push(data_tree);
+
+                    consume_table('geojson_file', settings, dataset_in_legacy_format, variables, data_trees);
+                  });
+              } else {
+                consume_table('geojson_file', settings, dataset_in_legacy_format, variables, data_trees);
+              }
             });
         } else if(data_sources.json_file && data_sources.json_file.length) {
           d3.json(data_sources.json_file[0], function(error, data) {
@@ -157,7 +181,7 @@ export function pattrn() {
        *  a legacy (v1) one from Google Sheets, a plain JSON file or the
        *  new Pattrn API.
        */
-      function consume_table(dataset, variables, settings, data_source_type) {
+      function consume_table(data_source_type, settings, dataset, variables, data_trees) {
         var highlightColour,
             pattrn_data_sets = {},
             instance_settings = {};

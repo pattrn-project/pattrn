@@ -28,6 +28,7 @@ import { point_data } from './lib/data/point_data.js';
 import { pattrn_line_chart } from './lib/charts/line_chart.js';
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
+import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
 
 export function pattrn() {
   var platform_settings = {
@@ -419,6 +420,41 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           field_name: non_empty_boolean_variables[index],
           field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ? variable_list.find(item => item.id === non_empty_boolean_variables[index]).name : non_empty_boolean_variables[index]
         },
+        scatterWidth: scatterWidth
+      },
+      dataset,
+      dc,
+      xf);
+  });
+
+  /**
+   * Tree charts
+   * @x-technical-debt: this is currently just calling a stub function, which
+   * needs to be written.
+   * These charts currently work 'outside-in', as opposed to the other charts
+   * above, which are generated starting from dataset variables; tree charts
+   * are initially generated starting from the actual tree structures, which
+   * are then matched to the related dataset variables. This is mainly because
+   * all this chart code is mostly stub. Once fully implemented, these charts
+   * need to be working exactly like the others.
+   */
+  data_trees.forEach(function(item, index) {
+    // @x-technical-debt: get rid of this way of labelling elements by
+    // appending a left-0-padding to the index of each chart
+    var index_padded = '0' + (index + 1);
+
+    pattrn_tree_chart(index + 1, {
+        elements: {
+          title: `tree_chart_${index_padded}_title`,
+          chart_title: `tree_chart_${index_padded}_chartTitle`,
+          d3_bar_chart: `#d3_tree_chart_${index_padded}`,
+          aggregate_count_title: `agreggateCountTitle_${index_padded}`
+        },
+        /*
+        fields: {
+          field_name: non_empty_boolean_variables[index],
+          field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ? variable_list.find(item => item.id === non_empty_boolean_variables[index]).name : non_empty_boolean_variables[index]
+        },*/
         scatterWidth: scatterWidth
       },
       dataset,

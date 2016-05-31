@@ -104,7 +104,14 @@ export function pattrn_tag_bar_chart(index, chart_settings, dataset, dc, xf) {
   bar_chart_0X_group.all = function() {
     var newObject = [];
     for (var key in this) {
-      if (this.hasOwnProperty(key) && key != "all") {
+      /**
+       * Do not count items marked as 'Unknown'.
+       * @x-technical-debt: This needs to properly handle unknowns marked as
+       * such in the source data, by differentiating unknowns introduced whilst
+       * loading the pattrn data to avoid NaNs in crossfilter dimensions (see
+       * #14).
+       */
+      if (this.hasOwnProperty(key) && key != "all" && key !== 'Unknown') {
         newObject.push({
           key: key,
           value: this[key]
@@ -131,6 +138,8 @@ export function pattrn_tag_bar_chart(index, chart_settings, dataset, dc, xf) {
       left: 50
     })
     .renderHorizontalGridLines(true)
+    // for a rough sqrt scale:
+    // .y(d3.scale.sqrt().clamp(true).domain([0,dataset.length]))
     .yAxisLabel("no. of events")
     .elasticY(true)
     .on(`renderlet.${chart_settings.elements.title}`, function(chart) {

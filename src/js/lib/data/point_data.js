@@ -62,9 +62,13 @@ export function point_data(config, instance_settings, _map, data_source_type, pa
   content.event_details += "</div>";
 
   // Summary content
-  content.eventSummary = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
-  if (is_defined(item.event_summary)) content.event_summary += "<p class='summary'>" + item.event_summary + "</p>";
-  if (is_defined(item.source_name)) content.event_summary += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + item.source_name + "</p><br/>";
+  content.event_summary = "<div class='col-sm-12' style='padding-top:15px' id='infowindow'>";
+  if (is_defined(item.event_summary)) {
+    content.event_summary += "<p class='summary'>" + item.event_summary + "</p>";
+  }
+  if (is_defined(item.source_name)) {
+    content.event_summary += "<p class='caption-grey'>SOURCE:</p> <p class='summary'>" + item.source_name + "</p><br/>";
+  }
   content.event_summary += (
     "<div class='summaryTable'></div><br/>" +
     "</div>"

@@ -29,6 +29,14 @@ import {
   is_defined
 } from '../utils/is_defined.js';
 
+/**
+ * Handle data and setup of events for each data point
+ *
+ * @x-technical-debt: this function was taken out of the legacy code's single
+ * scope while refactoring, but as we need several (7+, depending on how we
+ * count) variables from the parent scope, we should really pass these in
+ * as an object.
+ */
 export function point_data(config, instance_settings, _map, data_source_type, pattrn_data_sets, non_empty_variables, markerChart, item, index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?

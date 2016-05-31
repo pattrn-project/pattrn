@@ -689,9 +689,6 @@ export function pattrn() {
           dc.renderAll();
         };
 
-        // For each data row, draw and manage event data
-        dataset.forEach(point_data.bind(undefined, config, pattrn_data_sets, markerChart));
-
         // Define dimension of marker
         var markerDimension = xf.dimension(function(d) {
           return d.eventID;
@@ -738,6 +735,22 @@ export function pattrn() {
           maxZoom: 14,
           minZoom: 2
         });
+
+        // For each data row, draw and manage event data
+        dataset.forEach(point_data.bind(undefined,
+          config,
+          instance_settings,
+          _map,
+          data_source_type,
+          pattrn_data_sets,
+          {
+            non_empty_number_variables: non_empty_number_variables,
+            non_empty_tag_variables: non_empty_tag_variables,
+            non_empty_boolean_variables: non_empty_boolean_variables
+          },
+          markerChart
+        ));
+
       /**
        * Make dc.markerChart function, passing in L, dc and settings/configs
        *

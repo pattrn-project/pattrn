@@ -29,7 +29,7 @@ import {
   is_defined
 } from '../utils/is_defined.js';
 
-export function point_data(config, pattrn_data_sets, markerChart, item, index) {
+export function point_data(config, instance_settings, _map, data_source_type, pattrn_data_sets, non_empty_variables, markerChart, item, index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
     pattrn_data_sets[item.pattrn_data_set] :
@@ -80,16 +80,19 @@ export function point_data(config, pattrn_data_sets, markerChart, item, index) {
     details: document.getElementById('dateTime'),
     summary: document.getElementById('summary'),
     media: document.getElementById('media')
-  }
+  };
 
-  item.marker.on("click", point_data_click.bind(undefined, config, elements, content, pattrn_data_sets, markerChart, item, index));
+  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, _map, data_source_type, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
 }
 
-function point_data_click(config, elements, content, pattrn_data_sets, markerChart, item, index, e) {
+function point_data_click(config, instance_settings, _map, data_source_type, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';
   var urls = document.getElementById("urls").innerHTML = '';
+
+  var highlightColour = instance_settings.colour;
+
   $('.edit_dropdown').remove();
 
   if (is_defined(markerChart) && markerChart.filter() == e.target.data.i) {
@@ -200,22 +203,24 @@ function point_data_click(config, elements, content, pattrn_data_sets, markerCha
         });
     }
 
-    non_empty_number_variables.forEach(function(item, index) {
-      appendIntegerValueToTable(d, item);
+    non_empty_variables.non_empty_number_variables.forEach(function(item, index) {
+      appendIntegerValueToTable(e, item);
     });
 
-    non_empty_tag_variables.forEach(function(item, index) {
-      appendTagValueToTable(d, item);
+    non_empty_variables.non_empty_tag_variables.forEach(function(item, index) {
+      appendTagValueToTable(e, item);
     });
 
-    non_empty_boolean_variables.forEach(function(item, index) {
-      appendTagValueToTable(d, item);
+    non_empty_variables.non_empty_boolean_variables.forEach(function(item, index) {
+      appendTagValueToTable(e, item);
     });
   }
 
-  _map.on("popupclose", function(e) {
+  _map.on("popupclose", function(item) {
     // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-    var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ? pattrn_data_sets[item.pattrn_data_set] : instance_settings.map.markers.color;
+    var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
+      pattrn_data_sets[item.pattrn_data_set] :
+      instance_settings.map.markers.color;
 
     item.marker.setRadius(7);
     item.marker.setStyle({
@@ -224,7 +229,7 @@ function point_data_click(config, elements, content, pattrn_data_sets, markerCha
       fillOpacity: instance_settings.map.markers.opacity
     });
     content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
-    Summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
+    summary.innerHTML = "<p>This panel will update when a marker is clicked</p>";
     var summary_table = document.getElementById("summaryTable").innerHTML = '';
     var image_html = document.getElementById("image_gallery").innerHTML = '';
     var video_html = document.getElementById("video_gallery").innerHTML = '';

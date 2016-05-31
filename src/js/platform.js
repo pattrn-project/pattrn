@@ -106,7 +106,7 @@ export function pattrn() {
  * @x-technical-debt: as we refactored, we ended up passing in way too many
  * arguments - further refactor them into an Object, and review the call chain
  * (getting way too deep, as we have preserved so far the legacy messy call
- * hierarchy)
+ * hierarchy that relied on a single scope)
  */
 function consume_table(data_source_type, config, platform_settings, settings, dataset, variables, data_trees) {
   var highlightColour,

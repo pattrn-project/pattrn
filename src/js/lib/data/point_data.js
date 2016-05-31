@@ -165,7 +165,12 @@ function point_data_click(config, elements, content, pattrn_data_sets, markerCha
     }
 
     // Open popup
-    e.target.popup.openOn(markerChart.getMap());
+    // @x-technical-debt: ok to check if var is defined, but it should be
+    // actually *always* defined here - if it is undefined, something has
+    // failed upstream
+    if(is_defined(markerChart)) {
+      e.target.popup.openOn(markerChart.getMap());
+    }
 
     // Change style of popup
     $('.leaflet-popup-content-wrapper').addClass('transparent');

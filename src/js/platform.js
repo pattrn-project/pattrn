@@ -447,7 +447,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         elements: {
           title: `tree_chart_${index_padded}_title`,
           chart_title: `tree_chart_${index_padded}_chartTitle`,
-          d3_bar_chart: `#d3_tree_chart_${index_padded}`,
+          d3_chart: `#d3_tree_chart_${index_padded}`,
           aggregate_count_title: `agreggateCountTitle_${index_padded}`
         },
         /*

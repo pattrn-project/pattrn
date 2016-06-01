@@ -988,3 +988,30 @@ body {
   font-size: 0.90em;
   font-style: italic;
 }
+
+/**
+ * Tree charts
+ * @x-technical-debt: move to own stylesheet
+ */
+.node{
+    cursor: pointer;
+}
+
+.node circle{
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.link{
+    fill: none;
+    stroke: lightgray;
+    stroke-width: 1.5px;
+}
+
+.pattrn_tree_chart text {
+  fill: white;
+}
+
+.pattrn_tree_chart text.inactive {
+  fill: #999;
+}

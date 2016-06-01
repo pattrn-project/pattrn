@@ -35,7 +35,7 @@ import dc from 'dc';
 /**
  * handle tree charts. currently just a stub.
  */
-export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf) {
+export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, data_tree) {
   /**
    * Parameters passed in and defaults
    */

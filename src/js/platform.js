@@ -459,7 +459,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       },
       dataset,
       dc,
-      xf);
+      xf,
+      item);
   });
 
   // timeline by EVENTS

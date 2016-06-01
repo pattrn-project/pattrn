@@ -796,10 +796,10 @@ function load_data(config, platform_settings) {
       var dataset = data.Data.elements,
           settings = data.Settings.elements;
 
-      consume_table('json_file', settings, dataset, null, null);
+      consume_table('json_file', config, platform_settings, settings, dataset, null, null);
     });
   } else if(data_sources.google_docs && data_sources.google_docs.length) {
-      init_table(data_sources.google_docs[0]);
+      init_table(config, platform_settings, data_sources.google_docs[0]);
   }
 }
 
@@ -837,10 +837,10 @@ function load_geojson_data(config, platform_settings, error, dataset, variables,
 /**
  * TableTop table initialization
  */
-function init_table(src) {
+function init_table(config, platform_settings, src) {
     Tabletop.init({
         key: src,
-        callback: consume_table_google_docs,
+        callback: consume_table_google_docs.bind(undefined, config, platform_settings),
         simpleSheet: false
     });
 }
@@ -850,9 +850,9 @@ function init_table(src) {
  * Wrap actual function, should be done with .bind()
  * @tags TECHNICAL_DEBT
  */
-function consume_table_google_docs(data) {
+function consume_table_google_docs(config, platform_settings, data) {
     var dataset = data.Data.elements,
         settings = data.Settings.elements[0];  // settings are in the first data row - just get this
 
-    consume_table('google_docs', settings, dataset, null, null);
+    consume_table('google_docs', config, platform_settings, settings, dataset, null, null);
 }

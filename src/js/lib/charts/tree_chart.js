@@ -40,7 +40,7 @@ export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, data_t
    * Parameters passed in and defaults
    */
   // default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
-  var chart_width = chart_settings.width || 300;
+  var chart_width = chart_settings.width || chart_settings.scatterWidth || 300;
   // default from legacy code, defined as chartHeight within the main consume_table() function
   var chart_height = chart_settings.height || 350;
   var chart_transition_duration = chart_settings.transition_duration || 750;

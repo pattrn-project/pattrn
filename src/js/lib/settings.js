@@ -40,6 +40,9 @@ export function process_settings(platform_settings, settings_from_config) {
 
   /**
    * Merge settings from configuration file into instance settings
+   * @x-technical-debt: this should be done through plain object merging, after
+   * validating settings_from_config against our settings schema (which needs
+   * to be defined)
    */
   if(is_defined(settings_from_config.title)) {
     instance_settings.title = settings_from_config.title;

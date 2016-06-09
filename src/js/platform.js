@@ -44,7 +44,12 @@ export function pattrn() {
           "color": "black",
           "fillColor": "black",
           "opacity": "0.8"
-        }
+        },
+        "zoom": {
+          "max": 14,
+          "min": 2
+        },
+        "disableClusteringAtZoom": 12
       }
     }
   };

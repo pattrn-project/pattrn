@@ -67,7 +67,7 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
 
         // Create markercluster
         markercluster = new L.MarkerClusterGroup({
-            disableClusteringAtZoom: 12,
+            disableClusteringAtZoom: instance_settings.map.disableClusteringAtZoom,
             showCoverageOnHover: false,
             chunkedLoading: true,
             spiderfyDistanceMultiplier:2,

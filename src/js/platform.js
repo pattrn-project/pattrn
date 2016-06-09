@@ -741,8 +741,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   _map = L.map(instance_settings.map.root_selector, {
     touchZoom: false,
     scrollWheelZoom: false,
-    maxZoom: 14,
-    minZoom: 2
+    maxZoom: instance_settings.map.zoom.max,
+    minZoom: instance_settings.map.zoom.min
   });
 
   // For each data row, draw and manage event data

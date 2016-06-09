@@ -39,6 +39,8 @@ export function geojson_to_pattrn_legacy_data_structure(data, variables, config,
      * Extract key variables from source GeoJSON data,
      * mapping them to a flat structure as per Pattrn v1
      * source data structure.
+     * @x-technical-debt: validate first; reject items without valid lat/lon,
+     * date_time, and make sure we never try to access undefined values
      */
     .map(function(value, index, array) {
       var data = {

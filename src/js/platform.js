@@ -189,7 +189,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Similarly to variables of type integer above, handle variables of
    * type boolean.
    */
-  var non_empty_boolean_variables = tag_field_names.filter(is_column_not_empty.bind(undefined, dataset));
+  var non_empty_boolean_variables = boolean_field_names.filter(is_column_not_empty.bind(undefined, dataset));
 
   /**
    * ...and then replace blanks and undefined values with zeros. This
@@ -409,11 +409,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    pattrn_tag_bar_chart(index + 1, {
+    pattrn_boolean_bar_chart(index + 1, {
         elements: {
-          title: `bar_chart_${index_padded}_title`,
-          chart_title: `bar_chart_${index_padded}_chartTitle`,
-          d3_bar_chart: `#d3_bar_chart_${index_padded}`,
+          title: `boolean_chart_${index_padded}_title`,
+          chart_title: `boolean_chart_${index_padded}_chartTitle`,
+          d3_bar_chart: `#d3_boolean_chart_${index_padded}`,
           aggregate_count_title: `agreggateCountTitle_${index_padded}`
         },
         fields: {

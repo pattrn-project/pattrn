@@ -115,6 +115,19 @@ export function geojson_to_pattrn_legacy_data_structure(data, variables, config,
       }
 
       /**
+       * TECHNICAL_DEBT: limit this to 4 (5 minus the previous one) until
+       * we break from the v1 data layout legacy.
+       * Add other tag variables, if defined
+       */
+      if(is_defined(variables.boolean)) {
+        variables.boolean.forEach(function(v, i, a) {
+          if(is_defined(v.id)) {
+            data[v.id] = value.properties[v.id];
+          }
+        });
+      }
+
+      /**
        * and finally pad until we have 28 variables as in a complete
        * Pattrn v1 dataset
        */

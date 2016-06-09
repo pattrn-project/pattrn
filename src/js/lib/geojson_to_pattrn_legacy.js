@@ -45,7 +45,7 @@ export function geojson_to_pattrn_legacy_data_structure(data, variables, config,
     .map(function(value, index, array) {
       var data = {
         event_ID: index,
-        location_name: null,
+        location_name: is_defined(value.properties.pattrn_location_name) ? value.properties.pattrn_location_name : null,
         latitude: value.geometry.coordinates[1],
         longitude: value.geometry.coordinates[0],
         geo_accuracy: null,

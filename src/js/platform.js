@@ -12,7 +12,13 @@ import { marker_chart } from './lib/data/dc_markerchart.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
 import { initialize_ui } from './lib/pattrn_ui.js';
-import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables, random_binary_tree_node_position, array_equals } from "./lib/pattrn_data";
+import {
+  is_column_not_empty,
+  replace_undefined_values,
+  list_all_pattrn_variables,
+  pattrn_mock_data_plugins,
+  random_node_in_tree,
+  array_equals } from "./lib/pattrn_data";
 
 /**
  * Pattrn data mapping
@@ -123,7 +129,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     pattrn_data_sets = {},
     instance_settings = {},
     _map = {},
-    markerChart = null;
+    markerChart = null,
+    variables_from_mock_data;
 
   /**
    * Merge settings from config file with default settings
@@ -163,12 +170,26 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   initialize_ui(instance_settings);
 
+  /**
+   * from the list of variables defined in the instance's metadata, extract
+   * those configured to have their data populated programmatically
+   */
+  variables_from_mock_data = [].concat.apply([], Object.keys(variables).map((group) => {
+    return variables[group].filter((variable) => {
+      return variable.data_from_plugin;
+    })
+  }));
+
   dataset = dataset.map(function(item, index) {
     // @x-legacy-comment Make new column with eventID for the charts / markers
     item['eventID'] = index;
 
-    // @x-hack add random position in binary tree
-    item['pattrn_r_weapon'] = random_binary_tree_node_position(6);
+    // actually populate variables configured to have their data populated
+    // programmatically
+    variables_from_mock_data.forEach((variable) => {
+      var plugin = pattrn_mock_data_plugins()[variable.data_from_plugin.plugin];
+      if(plugin) item[variable.id] = plugin(variable.data_from_plugin.args)
+    });
 
     return item;
   });

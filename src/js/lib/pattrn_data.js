@@ -48,15 +48,21 @@ export function list_all_pattrn_variables(variables) {
 /**
  * Used for tests only: return an array of `maxdepth` elements
  * mapping to a random position on a binary tree of `maxdepth` depth.
- * @param integer maxdept The depth of the tree
+ * @param Array args
+ *  - Integer maxdepth The maximum depth of nodes to return
+ *  - Integer mindepth The minimum depth of nodes to return
  */
-export function random_binary_tree_node_position(maxdepth, mindepth) {
+export function random_node_in_tree(args) {
   // if mindepth is defined, pick a random actual depth between mindepth and
   // maxdepth
   var actualDepth;
   var random_integers;
 
-  mindepth = is_defined(mindepth) ? mindepth : 1;
+  var mindepth = is_defined(args.mindepth) ? args.mindepth : 1;
+  var maxdepth = args.maxdepth;
+
+  // a maxdepth is needed: if not given, just return
+  if(!is_defined(maxdepth)) return;
 
   actualDepth = Math.floor(Math.random() * (maxdepth - mindepth + 1)) + mindepth;
   random_integers = new Uint8Array(actualDepth);
@@ -105,4 +111,17 @@ export function array_equals() {
 
   // Hide method from for-in loops
   Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+}
+
+/**
+ * declare available plugins
+ * @x-technical-debt: this should be part of a proper plugin system, but in
+ * the meanwhile we just hardcode this while leaving the whole structure
+ * somewhat modular (defined in a separate module, abstracting the plugin
+ * list via a data structure, etc.).
+ */
+export function pattrn_mock_data_plugins() {
+  return {
+    "random_node_in_tree": random_node_in_tree
+  };
 }

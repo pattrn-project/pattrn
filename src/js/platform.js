@@ -113,7 +113,7 @@ export function pattrn() {
  * (getting way too deep, as we have preserved so far the legacy messy call
  * hierarchy that relied on a single scope)
  */
-function consume_table(data_source_type, config, platform_settings, settings, dataset, variables, data_trees) {
+function consume_table(data_source_type, config, platform_settings, settings, dataset, variables) {
   var highlightColour,
     pattrn_data_sets = {},
     instance_settings = {},
@@ -177,6 +177,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   // Extract columns for booleans (hardcoded to mirror spreadsheet)
   var boolean_field_names = [headers[18], headers[19], headers[20], headers[21], headers[22]];
 
+  // List columns of type tree from metadata
+  var tree_field_names = (is_defined(variables) && is_defined(variables.tree)) ? variables.tree.map((item) => { return item.id; }) : [];
+
   /**
    * Handle variables of type integer: first check whether they
    * contain any data (or at least this is what the legacy code seems to
@@ -195,6 +198,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * type boolean.
    */
   var non_empty_boolean_variables = boolean_field_names.filter(is_column_not_empty.bind(undefined, dataset));
+
+  /**
+   * Variables of type tree.
+   */
+  var non_empty_tree_variables = tree_field_names.filter(is_column_not_empty.bind(undefined, dataset));
 
   /**
    * ...and then replace blanks and undefined values with zeros. This
@@ -222,6 +230,12 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       empty_value: 'Unknown'
     }));
     non_empty_boolean_variables.forEach(replace_undefined_values.bind(undefined, {
+      dataset: dataset,
+      row: row,
+      index: index,
+      empty_value: 'Unknown'
+    }));
+    non_empty_tree_variables.forEach(replace_undefined_values.bind(undefined, {
       dataset: dataset,
       row: row,
       index: index,
@@ -443,29 +457,42 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * all this chart code is mostly stub. Once fully implemented, these charts
    * need to be working exactly like the others.
    */
-  data_trees.forEach(function(item, index) {
+  non_empty_tree_variables.forEach(function(item, index) {
     // @x-technical-debt: get rid of this way of labelling elements by
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    pattrn_tree_chart(index + 1, {
-        elements: {
-          title: `tree_chart_${index_padded}_title`,
-          chart_title: `tree_chart_${index_padded}_chartTitle`,
-          d3_chart: `#d3_tree_chart_${index_padded}`,
-          aggregate_count_title: `agreggateCountTitle_${index_padded}`
-        },
-        /*
-        fields: {
-          field_name: non_empty_boolean_variables[index],
-          field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ? variable_list.find(item => item.id === non_empty_boolean_variables[index]).name : non_empty_boolean_variables[index]
-        },*/
-        scatterWidth: scatterWidth
-      },
-      dataset,
-      dc,
-      xf,
-      item);
+    // @x-technical-debt: need to check that item.tree_data is actually defined
+    q.queue()
+      .defer(d3.json, variables.tree[index].tree_data)
+      .await(function(error, data) {
+        let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
+        dataset = dataset.map((item) => {
+          // @x-hack add random position in binary tree
+          item[non_empty_tree_variables[index]]  = tree_mids[Math.floor(Math.random() * tree_mids.length)];
+          return item;
+        });
+
+        pattrn_tree_chart(index + 1, {
+            elements: {
+              title: `tree_chart_${index_padded}_title`,
+              chart_title: `tree_chart_${index_padded}_chartTitle`,
+              d3_chart: `#d3_tree_chart_${index_padded}`,
+              aggregate_count_title: `agreggateCountTitle_${index_padded}`
+            },
+            fields: {
+              field_name: non_empty_tree_variables[index],
+              field_title: is_defined(variable_list.find(item => item.id === non_empty_tree_variables[index])) ? variable_list.find(item => item.id === non_empty_tree_variables[index]).name : non_empty_tree_variables[index]
+            },
+            scatterWidth: scatterWidth,
+            height: 600
+          },
+          dataset,
+          dc,
+          xf,
+          data,
+          variables['tree'][index]); // @x-technical-debt: trees should be defined as tree + variable, rather than splitting definition in two distinct metadata files
+      });
   });
 
   // timeline by EVENTS
@@ -801,7 +828,7 @@ function load_data(config, platform_settings) {
       var dataset = data.Data.elements,
           settings = data.Settings.elements;
 
-      consume_table('json_file', config, platform_settings, settings, dataset, null, null);
+      consume_table('json_file', config, platform_settings, settings, dataset, null);
     });
   } else if(data_sources.google_docs && data_sources.google_docs.length) {
       init_table(config, platform_settings, data_sources.google_docs[0]);
@@ -814,29 +841,7 @@ function load_geojson_data(config, platform_settings, error, dataset, variables,
   var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
   var data_sources = config.data_sources;
 
-  /**
-   * Load data trees. We only support these for geojson data sources, although
-   * there is no reason not to extend this to any other relevant sources, as
-   * handling of data trees is orthogonal to handling of the main tabular
-   * dataset(s). As long as a dataset has a column listing relevant tree
-   * nodes for each row, things will just work (once the tree chart
-   * code is ready).
-   * @x-technical-debt: support an arbitrary number of trees (currently we
-   * only load the first one, if more than one are defined)
-   * @x-technical-debt: clean up the async queue so that we don't
-   * duplicate the site of invocation of consume_table
-   */
-  if(is_defined(data_sources.geojson_data) && is_defined(data_sources.geojson_data.data_trees) && data_sources.geojson_data.data_trees.length > 0) {
-    q.queue().defer(d3.json, data_sources.geojson_data.data_trees[0])
-      .await(function(error, data_tree) {
-        if (error) throw error;
-        data_trees.push(data_tree);
-
-        consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables, data_trees);
-      });
-  } else {
-    consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables, data_trees);
-  }
+  consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables);
 }
 
 /**
@@ -859,5 +864,5 @@ function consume_table_google_docs(config, platform_settings, data) {
     var dataset = data.Data.elements,
         settings = data.Settings.elements[0];  // settings are in the first data row - just get this
 
-    consume_table('google_docs', config, platform_settings, settings, dataset, null, null);
+    consume_table('google_docs', config, platform_settings, settings, dataset, null);
 }

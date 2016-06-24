@@ -44,3 +44,65 @@ export function list_all_pattrn_variables(variables) {
 
   return variable_list;
 }
+
+/**
+ * Used for tests only: return an array of `maxdepth` elements
+ * mapping to a random position on a binary tree of `maxdepth` depth.
+ * @param integer maxdept The depth of the tree
+ */
+export function random_binary_tree_node_position(maxdepth, mindepth) {
+  // if mindepth is defined, pick a random actual depth between mindepth and
+  // maxdepth
+  var actualDepth;
+  var random_integers;
+
+  mindepth = is_defined(mindepth) ? mindepth : 1;
+
+  actualDepth = Math.floor(Math.random() * (maxdepth - mindepth + 1)) + mindepth;
+  random_integers = new Uint8Array(actualDepth);
+
+  window.crypto.getRandomValues(random_integers);
+
+  random_integers = Array.from(random_integers.map((number) => {
+    return number % 2 == 0;
+  }));
+  random_integers.unshift(0);
+
+  return random_integers;
+}
+
+/**
+ * Compare arrays
+ * Credits: http://stackoverflow.com/a/14853974/550077
+ */
+export function array_equals() {
+  // Warn if overriding existing method
+  if (Array.prototype.equals)
+    console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+  // attach the .equals method to Array's prototype to call it on any array
+  Array.prototype.equals = function(array) {
+    // if the other array is a falsy value, return
+    if (!array)
+      return false;
+
+    // compare lengths - can save a lot of time
+    if (this.length != array.length)
+      return false;
+
+    for (var i = 0, l = this.length; i < l; i++) {
+      // Check if we have nested arrays
+      if (this[i] instanceof Array && array[i] instanceof Array) {
+        // recurse into the nested arrays
+        if (!this[i].equals(array[i]))
+          return false;
+      } else if (this[i] != array[i]) {
+        // Warning - two different object instances will never be equal: {x:20} != {x:20}
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Hide method from for-in loops
+  Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+}

@@ -12,7 +12,7 @@ import { marker_chart } from './lib/data/dc_markerchart.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
 import { initialize_ui } from './lib/pattrn_ui.js';
-import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables } from "./lib/pattrn_data";
+import { is_column_not_empty, replace_undefined_values, list_all_pattrn_variables, random_binary_tree_node_position, array_equals } from "./lib/pattrn_data";
 
 /**
  * Pattrn data mapping
@@ -29,6 +29,11 @@ import { pattrn_line_chart } from './lib/charts/line_chart.js';
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
+
+/**
+ * @x-technical-debt: this should be handled properly through the ES6 import
+ */
+array_equals();
 
 export function pattrn() {
   var platform_settings = {
@@ -158,9 +163,13 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   initialize_ui(instance_settings);
 
-  // Make new column with eventID for the charts / markers
   dataset = dataset.map(function(item, index) {
+    // @x-legacy-comment Make new column with eventID for the charts / markers
     item['eventID'] = index;
+
+    // @x-hack add random position in binary tree
+    item['pattrn_r_weapon'] = random_binary_tree_node_position(6);
+
     return item;
   });
 

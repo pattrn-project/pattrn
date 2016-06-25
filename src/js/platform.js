@@ -839,7 +839,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * current scope
    */
   dc.markerChart = function(parent, chartGroup) {
-    return marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config);
+    return marker_chart(parent, chartGroup, instance_settings, config, { map: _map, L: L, dispatch: dispatch});
   };
 
   // Execute markerChart function - assign marker dimension and group to the chart

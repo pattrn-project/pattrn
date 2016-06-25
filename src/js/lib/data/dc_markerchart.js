@@ -23,10 +23,12 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var dc = require('dc');
+
 // Many thanks to Boyan Yurukov for his emails and help,
 // check out his project - dc-leaflet: https://github.com/yurukov/dc.leaflet.js
 
-export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings, config) {
+export function marker_chart(parent, chartGroup, instance_settings, config, pattrn_objects) {
 
     // Create an empty chart
     var _chart = dc.baseChart({});
@@ -52,21 +54,21 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
 
 
         // Baselayers
-        var base_layer_01 = L.tileLayer(config.base_layers[0].url, {
+        var base_layer_01 = pattrn_objects.L.tileLayer(config.base_layers[0].url, {
                 // attribution: ''
-        }).addTo(_map);
+        }).addTo(pattrn_objects.map);
 
         var basemaps = {};
         for (var i=0; i<config.base_layers.length; i++){
-            basemaps[config.base_layers[i].name] = L.tileLayer(config.base_layers[i].url);
+            basemaps[config.base_layers[i].name] = pattrn_objects.L.tileLayer(config.base_layers[i].url);
         }
 
         var overlaymaps = {};
 
-        L.control.layers(basemaps, overlaymaps, {position: 'topleft'}).addTo(_map);
+        pattrn_objects.L.control.layers(basemaps, overlaymaps, {position: 'topleft'}).addTo(pattrn_objects.map);
 
         // Create markercluster
-        markercluster = new L.MarkerClusterGroup({
+        markercluster = new pattrn_objects.L.MarkerClusterGroup({
             disableClusteringAtZoom: instance_settings.map.disableClusteringAtZoom,
             showCoverageOnHover: false,
             chunkedLoading: true,
@@ -75,7 +77,7 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
         });
 
         // Add markercluster to the map
-        _map.addLayer(markercluster);
+        pattrn_objects.map.addLayer(markercluster);
 
         // Remove layers from marker cluster
         markercluster.clearLayers();
@@ -86,7 +88,7 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
 
         markercluster.addLayers(markerList);
 
-        _map.fitBounds(markercluster.getBounds());
+        pattrn_objects.map.fitBounds(markercluster.getBounds());
 
         _chart._postRender();
 
@@ -122,7 +124,7 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
     };
 
     _chart.getMap = function() {
-        return _map;
+        return pattrn_objects.map;
     };
 
     // UPDATE MARKERS
@@ -130,11 +132,11 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
 
         if (filterByBounds)
             _chart.filterHandler(doFilterByBounds);
-            _map.on('zoomend moveend', zoomFilter, this );
+            pattrn_objects.map.on('zoomend moveend', zoomFilter, this );
 
         if (!filterByBounds)
-            _map.on('click', zoomFilter, this );
-            _map.on('zoomstart', zoomStart, this);
+            pattrn_objects.map.on('click', zoomFilter, this );
+            pattrn_objects.map.on('zoomstart', zoomStart, this);
 
     };
 
@@ -150,10 +152,10 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
         if (filterByBounds) {
             var filter;
             // reset filter based on pan and zoom
-            if (_map.getCenter().equals([31.4, 34.3]) && _map.getZoom()==11)
+            if (pattrn_objects.map.getCenter().equals([31.4, 34.3]) && pattrn_objects.map.getZoom()==11)
                 filter = null;
                 else
-                    filter = _map.getBounds();
+                    filter = pattrn_objects.map.getBounds();
                     dc.events.trigger(function () {
                         _chart.filter(null);
                         if (filter) {
@@ -167,7 +169,7 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
 
         else if (_chart.filter() && (e.type=="click" ||
             (_chart.filter() in markerList &&
-            !_map.getBounds().contains(markerList[_chart.filter()].getLatLng())))) {
+            !pattrn_objects.map.getBounds().contains(markerList[_chart.filter()].getLatLng())))) {
                 dc.events.trigger(function () {
                     _chart.filter(null);
                     dc.redrawAll(_chart.chartGroup());
@@ -185,8 +187,8 @@ export function marker_chart(parent, chartGroup, _map, L, dc, instance_settings,
                     var location0 = markerList[d].getLatLng();
                     return location0 && filters[0].contains(location0);
                 });
-                if (!innerFilter && _map.getBounds().toString!=filters[0].toString())
-                    _map.fitBounds(filters[0]);
+                if (!innerFilter && pattrn_objects.map.getBounds().toString!=filters[0].toString())
+                    pattrn_objects.map.fitBounds(filters[0]);
                 }
             };
 

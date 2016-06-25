@@ -115,7 +115,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       .attr("transform", function(d) {
         return "translate(" + source.y0 + "," + source.x0 + ")";
       })
-      .on("click", click);
+      .on("click", toggle_visibility);
 
     nodeEnter.append("circle")
       .attr("r", 0)
@@ -163,7 +163,8 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
         }
       })
       .style("fill-opacity", 0)
-      .on("click", function(d) {
+      .on("dblclick", function(d) {
+        toggle_data(d);
         d.active = !d.active;
         console.log(d);
       });
@@ -248,7 +249,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     else return radius;
   }
 
-  function click(d) {
+  function toggle_visibility(d) {
     if (d.children) {
       d._children = d.children;
       d.children = null;
@@ -259,6 +260,24 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     update(d);
   }
 
+  function toggle_data(d) {
+    var self_and_children_mids = flatten(
+      rec_reduce((item) => {
+        return is_defined(item) ? item.mid : null;
+      }, d, [ '_children', 'children' ])
+    ).concat(d.mid);
+    var active_mids = window.tree_group
+      .all()
+      .map(item => item.key)
+      .filter(item => {
+        return self_and_children_mids.indexOf(item) === -1;
+      });
+    window.tree_dimension.filter((data_row) => {
+      var filtered = active_mids.indexOf(data_row) >= 0;
+
+      return filtered;
+    });
+  }
 }
 
 /**

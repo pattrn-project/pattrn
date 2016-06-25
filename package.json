@@ -35,6 +35,7 @@
     "bootstrap": "^3.3.6",
     "crossfilter2": "1.4.0-alpha.06",
     "d3": "^3.5.14",
+    "d3-dispatch": "^1.0.0",
     "d3-queue": "^2.0.3",
     "dc": "2.1.0-dev",
     "jquery": "^2.2.0",

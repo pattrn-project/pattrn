@@ -1,0 +1,400 @@
+doctype html
+html
+  head
+    title PATTRN
+    meta(name='description', content='')
+    meta(http-equiv='content-type', content='text/html;charset=UTF-8')
+    // Fonts
+    link(href='//fonts.googleapis.com/css?family=Roboto:400,100,500', rel='stylesheet', type='text/css')
+    // Dependencies
+    script(type='text/javascript', src='/js/main.js')
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='//cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-alpha.2/dc.css')
+    link(type='text/css', href='//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css', rel='stylesheet')
+    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.1.5/css/lightGallery.css')
+    // Pattrn code
+    link(href='css/styles.css', rel='stylesheet')
+  body
+    // Navbar
+    nav.navbar.navbar-fixed.navbar-inverse(role='navigation')
+      .container-fluid-navbar
+        #highlight.col-sm-2.col-lg-2.highlight
+          h1#platformTitle.nav(style='text-align:center')
+        .col-sm-6.col-lg-6
+          h1#platformSubtitle.display(style='padding-right: 50px; margin-bottom: 0px')
+      ul.nav.navbar-nav.navbar-right
+        li.dropdown(style='')
+          a.dropdown-toggle(href='#about_project', data-toggle='modal', role='button', aria-expanded='false', style='margin-top:5px; padding-bottom: 10px; padding-right:15px') ABOUT
+        li.dropdown(style='margin-right:5px')
+          a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false', style='margin-top:5px; padding-bottom: 10px;') SHARE
+          ul#chart_dropdown.dropdown-menu(role='menu')
+            li
+              .addthis_sharing_toolbox
+        li.footerSmall(style='color:#a4afbb; margin-bottom:0px; font-size: 11px')
+          a(style='padding-bottom: 0px;padding-top:18px; margin-right: 20px;', target='_blank', href='http://pattrn.co')
+            | Made with
+            img(src='images/pattrn-logo-white.png', style='max-height:30px')
+      #about_project.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .col-md-8.col-md-offset-2
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                  span(aria-hidden='true') ×
+                h4#myModalLabel.modal-title About this platform
+              #aboutModalContent.modal-body
+              .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+    .container-fluid
+      // Map & Charts
+      #charts.col-sm-8.col-lg-8(style='padding: 0px')
+        #chart-map
+        #offGrayBar.col-sm-7.col-lg-7(style='padding: 0px; margin: 0px;')
+          // DROPDOWN MENU
+          #button.col-sm-5.col-lg-5
+            ul#myTab.nav.nav-pills.nav-justified
+              li.dropdown.dropup.customfontsize
+                a.dropdown-toggle.charts(data-toggle='dropdown', href='#')
+                  h1.gray
+                    | Charts & Filters
+                    span.caret
+                ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
+                  // LINE CHARTS
+                  li.dropdown-submenu.pull-left
+                    a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Over Time
+                    ul.dropdown-menu
+                      li
+                        a#eventTimeLine(role='menuitem', tabindex='-1', href='#event_chart_01', data-toggle='tab') Number of Events over Time
+                      li
+                        a#line_chart_01_title(role='menuitem', tabindex='-1', href='#line_chart_01', data-toggle='tab')
+                      li
+                        a#line_chart_02_title(role='menuitem', tabindex='-1', href='#line_chart_02', data-toggle='tab')
+                      li
+                        a#line_chart_03_title(role='menuitem', tabindex='-1', href='#line_chart_03', data-toggle='tab')
+                      li
+                        a#line_chart_04_title(role='menuitem', tabindex='-1', href='#line_chart_04', data-toggle='tab')
+                      li
+                        a#line_chart_05_title(role='menuitem', tabindex='-1', href='#line_chart_05', data-toggle='tab')
+                  // BAR CHARTS
+                  li.dropdown-submenu.pull-left
+                    a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') By Tags
+                    ul.dropdown-menu
+                      li
+                        a#bar_chart_01_title(role='menuitem', tabindex='-1', href='#bar_chart_01', data-toggle='tab')
+                      li
+                        a#bar_chart_02_title(role='menuitem', tabindex='-1', href='#bar_chart_02', data-toggle='tab')
+                      li
+                        a#bar_chart_03_title(role='menuitem', tabindex='-1', href='#bar_chart_03', data-toggle='tab')
+                      li
+                        a#bar_chart_04_title(role='menuitem', tabindex='-1', href='#bar_chart_04', data-toggle='tab')
+                      li
+                        a#bar_chart_05_title(role='menuitem', tabindex='-1', href='#bar_chart_05', data-toggle='tab')
+                  // BOOLEAN CHARTS
+                  li.dropdown-submenu.pull-left
+                    a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Yes / No
+                    ul.dropdown-menu
+                      li
+                        a#boolean_chart_01_title(role='menuitem', tabindex='-1', href='#boolean_chart_01', data-toggle='tab')
+                      li
+                        a#boolean_chart_02_title(role='menuitem', tabindex='-1', href='#boolean_chart_02', data-toggle='tab')
+                      li
+                        a#boolean_chart_03_title(role='menuitem', tabindex='-1', href='#boolean_chart_03', data-toggle='tab')
+                      li
+                        a#boolean_chart_04_title(role='menuitem', tabindex='-1', href='#boolean_chart_04', data-toggle='tab')
+                      li
+                        a#boolean_chart_05_title(role='menuitem', tabindex='-1', href='#boolean_chart_05', data-toggle='tab')
+                  // TREE CHARTS
+                  li.dropdown-submenu.pull-left
+                    a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Hierarchical tags
+                    ul.dropdown-menu
+                      li
+                        a#tree_chart_01_title(role='menuitem', tabindex='-1', href='#tree_chart_01', data-toggle='tab')
+                      li
+                        a#tree_chart_02_title(role='menuitem', tabindex='-1', href='#tree_chart_02', data-toggle='tab')
+                      li
+                        a#tree_chart_03_title(role='menuitem', tabindex='-1', href='#tree_chart_03', data-toggle='tab')
+                      li
+                        a#tree_chart_04_title(role='menuitem', tabindex='-1', href='#tree_chart_04', data-toggle='tab')
+                      li
+                        a#tree_chart_05_title(role='menuitem', tabindex='-1', href='#tree_chart_05', data-toggle='tab')
+                  // AGGREGATE COUNTS
+                  li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#aggregate_counts', data-toggle='tab') Counts over area
+                  // SOURCE CHARTS
+                  li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#d3_source_chart', data-toggle='tab') Events By Source
+                  // MEDIA CHARTS
+                  li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#d3_media_chart', data-toggle='tab', style='padding-right:0px') Events By Media Available
+          // TOTAL EVENTS
+          .col-sm-7.col-lg-7
+            #number_total_events
+              h2.inline
+                span.filter-count
+              span EVENTS
+              |  of
+              h2.inline
+                span.total-count
+        // SEARCH BOX
+        #button.col-sm-3.col-lg-3
+          .dc-data-count
+          .form-group.has-feedback(style='padding: 0px; margin: 0px; color:#cfd8dc;')
+            i.glyphicon.glyphicon-search.form-control-feedback
+            input#tableSearch.form-control(type='text', placeholder='SEARCH')
+        // FILTER BUTTON
+        #button.col-sm-1.col-lg-1
+          .btn-group(style='border:none; margin-left:0px', role='group', aria-label='...')
+            a.btn.btn-default(type='button', style='border:none')
+              p#filterList.glyphicon.glyphicon-filter(aria-hidden='true', title='Click to reset charts')
+        // REFRESH BUTTON
+        #button.col-sm-1.col-lg-1
+          .btn-group(style='border:none; margin-left:0px', role='group', aria-label='...')
+            a.btn.btn-default(type='button', style='border:none', onclick='bounds()', href='javascript:location.reload();')
+              p.glyphicon.glyphicon-refresh(aria-hidden='true', title='Click to reset charts', id='')
+        // CHARTS
+        .tab-content
+          #event_chart_01.tab-pane.fade.in.active
+            #d3_event_chart_01.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#event_chart_01_chartTitle.chartTitle
+          #line_chart_01.tab-pane.fade.in
+            #d3_line_chart_01.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#line_chart_01_chartTitle.chartTitle
+          #line_chart_02.tab-pane.fade.in
+            #d3_line_chart_02.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#line_chart_02_chartTitle.chartTitle
+          #line_chart_03.tab-pane.fade.in
+            #d3_line_chart_03.col-sm-12.col-lg-12
+              p#line_chart_03_chartTitle.chartTitle
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#line_chart_03_chartTitle.chartTitle
+          #line_chart_04.tab-pane.fade.in
+            #d3_line_chart_04.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#line_chart_04_chartTitle.chartTitle
+          #line_chart_05.tab-pane.fade.in
+            #d3_line_chart_05.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#line_chart_05_chartTitle.chartTitle
+          #bar_chart_01.tab-pane.fade.in
+            #d3_bar_chart_01.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#bar_chart_01_chartTitle.chartTitle
+          #bar_chart_02.tab-pane.fade.in
+            #d3_bar_chart_02.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#bar_chart_02_chartTitle.chartTitle
+          #bar_chart_03.tab-pane.fade.in
+            #d3_bar_chart_03.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#bar_chart_03_chartTitle.chartTitle
+          #bar_chart_04.tab-pane.fade.in
+            #d3_bar_chart_04.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#bar_chart_04_chartTitle.chartTitle
+          #bar_chart_05.tab-pane.fade.in
+            #d3_bar_chart_05.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#bar_chart_05_chartTitle.chartTitle
+          // BOOLEAN
+          #boolean_chart_01.tab-pane.fade.in
+            #d3_boolean_chart_01.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#boolean_chart_01_chartTitle.chartTitle
+          #boolean_chart_02.tab-pane.fade.in
+            #d3_boolean_chart_02.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#boolean_chart_02_chartTitle.chartTitle
+          #boolean_chart_03.tab-pane.fade.in
+            #d3_boolean_chart_03.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#boolean_chart_03_chartTitle.chartTitle
+          #boolean_chart_04.tab-pane.fade.in
+            #d3_boolean_chart_04.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#boolean_chart_04_chartTitle.chartTitle
+          #boolean_chart_05.tab-pane.fade.in
+            #d3_boolean_chart_05.col-sm-12.col-lg-12
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#boolean_chart_05_chartTitle.chartTitle
+          #tree_chart_01.tab-pane.fade.in
+            #d3_tree_chart_01.col-sm-12.col-lg-12.pattrn_tree_chart
+              .col-sm-6.col-lg-6
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter No active filter, click/drag on charts to filter data
+              .col-sm-6.col-lg-6
+                p#tree_chart_01_chartTitle.chartTitle
+          #aggregate_counts.tab-pane.fade.in
+            .row
+              .col-sm-12.col-lg-12
+                #agreggate.col-sm-2.col-lg-2.col-lg-offset-1
+                  #d3_aggregate_count_01.border(style='margin-left:10px')
+                    h2.agreggateText
+                      span.number-display
+                      p#agreggateCountTitle_01 No Data
+                  #SliderChart_01(style='padding-top:10px')
+                #agreggate.col-sm-2.col-lg-2
+                  #d3_aggregate_count_02.border(style='margin-left:10px')
+                    h2.agreggateText
+                      span.number-display
+                      p#agreggateCountTitle_02 No Data
+                  #SliderChart_02(style='padding-top:10px')
+                #agreggate.col-sm-2.col-lg-2
+                  #d3_aggregate_count_03.border(style='margin-left:10px')
+                    h2.agreggateText
+                      span.number-display
+                      p#agreggateCountTitle_03 No Data
+                  #SliderChart_03(style='padding-top:10px')
+                #agreggate.col-sm-2.col-lg-2
+                  #d3_aggregate_count_04.border(style='margin-left:10px')
+                    h2.agreggateText
+                      span.number-display
+                      p#agreggateCountTitle_04 No Data
+                  #SliderChart_04(style='padding-top:10px')
+                #agreggate.col-sm-2.col-lg-2
+                  #d3_aggregate_count_05.border(style='margin-left:10px')
+                    h2.agreggateText
+                      span.number-display
+                      p#agreggateCountTitle_05 No Data
+                  #SliderChart_05(style='padding-top:10px')
+            .row
+              .col-sm-12.col-lg-12
+                p
+                  | Click and drag in the measuring bars to filter data by number of [selected variable] per individual event
+          // Source chart
+          #d3_source_chart.tab-pane.fade.in
+            .col-sm-12.col-lg-12
+              #d3_source_chart
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter
+          // Media chart
+          #d3_media_chart.tab-pane.fade.in
+            .col-sm-12.col-lg-12
+              #d3_media_chart
+                p.filterText
+                  | Current filter:
+                  span#highlightText.filter
+        // /.tab-content
+      // /. Map & Charts
+      // Sidebar - infowindow
+      #info.col-sm-4.col-lg-4(style='padding: 10px; overflow: auto;')
+        // Info section
+        #contentTab
+          #midGrayBar.col-sm-12.col-lg-12
+            .col-sm-4.col-lg-4
+              h1.gray Event Details
+            #edit_event.col-xs-4.col-xs-offset-4
+              li.dropdown(style='margin-right:0px')
+                a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false', style='') Edit / Add Event
+                ul#edit_dropdown.dropdown-menu(role='menu')
+          #dateTime.col-sm-12.col-lg-12(style='min-height:100px')
+            h4
+        // Tab panel
+        div(role='tabpanel')
+          #darkGrayBar
+            ul.nav.nav-tabs(role='tablist')
+              li.active(role='presentation', style='padding-left:15px')
+                a.tab(href='#summaryTab', title='SUMMARY', role='tab', data-toggle='tab')
+                  span.glyphicon.glyphicon-align-left(aria-hidden='true')
+              li(role='presentation')
+                a.tab(href='#mediaTab', title='PHOTOS', role='tab', data-toggle='tab')
+                  span.glyphicon.glyphicon-picture(aria-hidden='true')
+              li(role='presentation')
+                a.tab(href='#videoTab', title='VIDEO', role='tab', data-toggle='tab')
+                  span.glyphicon.glyphicon-film(aria-hidden='true')
+              //
+                <li role="presentation">
+                <a href="#fileTab" title="FILES" role="tab" data-toggle="tab" class = "tab">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                </a>
+                </li>
+              li(role='presentation')
+                a.tab(href='#URLsTab', title='URLs', role='tab', data-toggle='tab')
+                  span.glyphicon.glyphicon-link(aria-hidden='true')
+        // Tab panes
+        .tab-content
+          #summaryTab.tab-pane.active(role='tabpanel')
+            .infowindow
+              #summary.col-sm-12
+                p.summary This panel will update when a marker is clicked.
+              #summaryTable.col-sm-12
+          #mediaTab.tab-pane(role='tabpanel')
+            #image_div.col-sm-12.infowindow.gallery(style='padding-top:15px')
+              p.summary
+              ul#image_gallery
+          #videoTab.tab-pane(role='tabpanel')
+            #video_gallery.col-sm-12.infowindow(style='padding-top:15px')
+              p.summary
+          #URLsTab.tab-pane(role='tabpanel')
+            #urls.col-sm-12.infowindow(style='padding-top:15px')
+              p.summary
+    // Optional - Addthis code to be added here (it will populate the 'Share' button)
+    script(type='text/javascript', src='', async='async')

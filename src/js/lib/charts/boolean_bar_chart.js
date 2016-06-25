@@ -106,4 +106,6 @@ export function pattrn_boolean_bar_chart(index, chart_settings, dataset, dc, xf)
     .outerPadding(0.05);
 
   boolean_chart_0X.yAxis().ticks(3);
+
+  return boolean_chart_0X;
 }

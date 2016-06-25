@@ -192,4 +192,6 @@ export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
 
     SliderChart_0X.xAxis().ticks(3);
   }
+
+  return line_chart_0X;
 }

@@ -169,4 +169,6 @@ export function pattrn_tag_bar_chart(index, chart_settings, dataset, dc, xf) {
     .outerPadding(0.05);
 
   bar_chart_0X.yAxis().ticks(3);
+
+  return bar_chart_0X;
 }

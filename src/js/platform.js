@@ -273,6 +273,17 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     }));
   });
 
+  /**
+   * container for all DC charts created later
+   * @x-technical-debt: this should be generated programmatically from the available
+   * variable metadata above
+   */
+  var dc_charts = {
+    number: [],
+    boolean: [],
+    tag: []
+  };
+
   // Extract columns for source
   var source_field_name = headers[7];
 
@@ -386,7 +397,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    pattrn_line_chart(index + 1, {
+    dc_charts['number'].push(pattrn_line_chart(index + 1, {
         elements: {
           title: `line_chart_${index_padded}_title`,
           chart_title: `line_chart_${index_padded}_chartTitle`,
@@ -403,7 +414,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       },
       dataset,
       dc,
-      xf);
+      xf));
   });
 
   /**
@@ -423,7 +434,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    pattrn_tag_bar_chart(index + 1, {
+    dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1, {
         elements: {
           title: `bar_chart_${index_padded}_title`,
           chart_title: `bar_chart_${index_padded}_chartTitle`,
@@ -438,7 +449,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       },
       dataset,
       dc,
-      xf);
+      xf));
   });
 
   /**
@@ -458,7 +469,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    pattrn_boolean_bar_chart(index + 1, {
+    dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1, {
         elements: {
           title: `boolean_chart_${index_padded}_title`,
           chart_title: `boolean_chart_${index_padded}_chartTitle`,
@@ -473,7 +484,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       },
       dataset,
       dc,
-      xf);
+      xf));
   });
 
   /**
@@ -731,27 +742,14 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   // Resize charts
   window.onresize = function(event) {
     var newscatterWidth = document.getElementById('charts').offsetWidth;
+
+    Object.keys(dc_charts).forEach((chart_group) => {
+      dc_charts[chart_group].forEach((chart) => {
+        // chart.width(newscatterWidth);
+      });
+    });
+
     event_chart_01.width(newscatterWidth);
-    line_chart_01.width(newscatterWidth);
-    line_chart_02.width(newscatterWidth);
-    line_chart_03.width(newscatterWidth);
-    line_chart_04.width(newscatterWidth);
-    line_chart_05.width(newscatterWidth);
-    line_chart_01.width(newscatterWidth);
-    line_chart_02.width(newscatterWidth);
-    line_chart_03.width(newscatterWidth);
-    line_chart_04.width(newscatterWidth);
-    line_chart_05.width(newscatterWidth);
-    bar_chart_01.width(newscatterWidth);
-    bar_chart_02.width(newscatterWidth);
-    bar_chart_03.width(newscatterWidth);
-    bar_chart_04.width(newscatterWidth);
-    bar_chart_05.width(newscatterWidth);
-    boolean_chart_01.width(newscatterWidth);
-    boolean_chart_02.width(newscatterWidth);
-    boolean_chart_03.width(newscatterWidth);
-    boolean_chart_04.width(newscatterWidth);
-    boolean_chart_05.width(newscatterWidth);
     dc.renderAll();
   };
 

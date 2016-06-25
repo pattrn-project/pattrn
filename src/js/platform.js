@@ -766,6 +766,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
     Object.keys(dc_charts).forEach((chart_group) => {
       dc_charts[chart_group].forEach((chart) => {
+        // @x-technical-debt: check performance issues and re-enable updating
+        // of chart width on viewport resize 
         // chart.width(newscatterWidth);
       });
     });

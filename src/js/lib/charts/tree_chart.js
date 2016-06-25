@@ -85,6 +85,12 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
 
   update(root);
 
+  /**
+   * update chart when crossfilter is updated
+   * @x-technical-debt: refactor to use D3v4
+   */
+  pattrn_objects.dispatch.on('filter', () => { update(root); });
+
   function update(source) {
     // Compute the new tree layout.
     var nodes = tree.nodes(root).reverse();

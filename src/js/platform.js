@@ -313,6 +313,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   var chartHeight = 200;
   var tagChartHeight = 350;
 
+  // sync tree charts and dc.js charts via d3 dispatch
+  var dispatch = d3.dispatch('filter');
+
   // Crossfilter
   var xf = crossfilter(dataset);
 
@@ -816,6 +819,16 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     scrollWheelZoom: false,
     maxZoom: instance_settings.map.zoom.max,
     minZoom: instance_settings.map.zoom.min
+  });
+
+  // Dispatch to trees' filter callback when map is updated/moved/filtered
+  // @x-technical-debt: switch to D3 4 & its API (dispatch.call('filter'))
+  _map.on('zoomend', function() {
+    dispatch.filter();
+  });
+
+  _map.on('moveend', function() {
+    dispatch.filter();
   });
 
   // For each data row, draw and manage event data

@@ -176,6 +176,8 @@ export function marker_chart(parent, chartGroup, instance_settings, config, patt
                 });
             }
 
+        // @x-technical-debt: refactor to use D3v4
+        pattrn_objects.dispatch.filter();
     };
 
     var doFilterByBounds = function(dimension, filters) {

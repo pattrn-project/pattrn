@@ -100,6 +100,8 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
     .yAxisLabel("no. of events")
     .elasticY(true)
     .on("filtered", function(d) {
+      // @x-technical-debt: switch to D3 v4 API
+      pattrn_objects.dispatch.filter();
       return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
     })
     .barPadding(0.1)

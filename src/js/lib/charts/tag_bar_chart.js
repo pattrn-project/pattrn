@@ -164,6 +164,8 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
       return filters;
     })
     .on("filtered", function(d) {
+      // @x-technical-debt: switch to D3 v4 API
+      pattrn_objects.dispatch.filter();
       return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
     })
     .barPadding(0.1)

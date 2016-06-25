@@ -185,6 +185,8 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
       })
       .on("filtered", function(d) {
         // @x-technical-debt: do not hardcode the element id
+        // @x-technical-debt: switch to D3 v4 API
+        pattrn_objects.dispatch.filter();
         return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
       })
       .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));

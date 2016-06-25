@@ -546,11 +546,13 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       .defer(d3.json, variables.tree[index].tree_data)
       .await(function(error, data) {
         let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
-        dataset = dataset.map((item) => {
-          // @x-hack add random position in binary tree
-          item[non_empty_tree_variables[index]]  = tree_mids[Math.floor(Math.random() * tree_mids.length)];
-          return item;
-        });
+        if(variables.tree.find(item => item.id === non_empty_tree_variables[index])['data_from_tree']) {
+          dataset = dataset.map((item) => {
+            // @x-hack add random position in binary tree
+            item[non_empty_tree_variables[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
+            return item;
+          });
+        }
 
         pattrn_tree_chart(index + 1,
           dataset,

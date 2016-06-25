@@ -531,8 +531,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           dataset,
           dc,
           xf,
-          data,
-          variables['tree'][index]); // @x-technical-debt: trees should be defined as tree + variable, rather than splitting definition in two distinct metadata files
+          {
+            tree_data: data,
+            field_name: variables['tree'][index]
+          });
       });
   });
 

@@ -31,7 +31,7 @@ var d3 = require('d3');
 /**
  * handle tree charts. currently just a stub.
  */
-export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, data_tree, variable) {
+export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, tree_data) {
   /**
    * Parameters passed in and defaults
    */
@@ -59,7 +59,7 @@ export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, data_t
   var root;
 
   // crossfilter dimension and group
-  window.tree_dimension = xf.dimension((d) => { return is_defined(d[variable.id]) ? d[variable.id] : 0; });
+  window.tree_dimension = xf.dimension((d) => { return is_defined(d[tree_data.field_name.id]) ? d[tree_data.field_name.id] : 0; });
   // @x-technical-debt: allow for scenarios where a count is defined (rather than just returning 1 for counts as in this first iteration)
   window.tree_group = tree_dimension.group().reduceSum((d) => { return 1; });
 
@@ -77,7 +77,7 @@ export function pattrn_tree_chart(index, chart_settings, dataset, dc, xf, data_t
     .append("g")
     .attr("transform", "translate(" + maxLabel + ",0)");
 
-  root = data_tree;
+  root = tree_data.tree_data;
   root.x0 = height / 2;
   root.y0 = 0;
 

@@ -29,9 +29,12 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
+
 var config = {
   app_main: 'src/js/app.js',
-  bundle: 'js/main.js'
+  bundle: 'js/main.js',
+  src: 'src',
+  dest: 'dist'
 };
 
 gulp.task('bundle', function () {
@@ -39,7 +42,7 @@ gulp.task('bundle', function () {
         .transform(babelify, {presets: ["es2015"]})
         .bundle()
         .pipe(source(config.bundle))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(config.dest));
 });
 
 gulp.task('watch', ['bundle'], function () {
@@ -54,7 +57,15 @@ gulp.task('jsonlint', function(){
         .pipe(jsonlint.report('verbose'));
 });
 
-gulp.task('build', ['jsonlint', 'bundle'], function() {
+gulp.task('views', [], () => {
+  gulp.src([`${config.src}/**/*.jade`])
+    .pipe(jade({
+      pretty: true
+    }))
+    .pipe(gulp.dest(config.dest))
+});
+
+gulp.task('build', ['jsonlint', 'bundle', 'views'], function() {
   gulp.src(['src/**/*'])
     .pipe(gulp.dest('dist'));
 });

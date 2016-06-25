@@ -55,6 +55,7 @@
     "docco": "^0.7.0",
     "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
+    "gulp-jade": "^1.1.0",
     "gulp-json-lint": "^0.1.0",
     "gulp-webserver": "^0.9.1",
     "http-server": "^0.8.5",

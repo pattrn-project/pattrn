@@ -418,7 +418,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         scatterWidth: scatterWidth
       },
       {
-        dc: dc,
         xf: xf,
         dispatch: dispatch
       }));
@@ -457,7 +456,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         scatterWidth: scatterWidth
       },
       {
-        dc: dc,
         xf: xf,
         dispatch: dispatch
       }));
@@ -496,7 +494,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         scatterWidth: scatterWidth
       },
       {
-        dc: dc,
         xf: xf,
         dispatch: dispatch
       }));
@@ -546,7 +543,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             height: 600
           },
           {
-            dc: dc,
             xf: xf,
             dispatch: dispatch
           },

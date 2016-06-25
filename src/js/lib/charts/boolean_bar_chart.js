@@ -23,8 +23,8 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import d3 from 'd3';
-import dc from 'dc';
+var d3 = require('d3');
+var dc = require('dc');
 
 /**
  * bar chart for boolean variables
@@ -54,7 +54,7 @@ import dc from 'dc';
  * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
  * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
  */
-export function pattrn_boolean_bar_chart(index, chart_settings, dataset, dc, xf) {
+export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
    * Parameters passed in and defaults
    */
@@ -76,7 +76,7 @@ export function pattrn_boolean_bar_chart(index, chart_settings, dataset, dc, xf)
   var boolean_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
 
   var boolean_chart_0X = dc.barChart(chart_settings.elements.d3_bar_chart);
-  var boolean_chart_0X_dimension = xf.dimension(function(d) {
+  var boolean_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
     return d[boolean_field_name_X];
   });
   var boolean_chart_0X_group = boolean_chart_0X_dimension.group().reduceCount();

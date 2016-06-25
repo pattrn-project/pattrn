@@ -24,6 +24,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var d3 = require('d3');
+var dc = require('dc');
 
 /**
  * line chart
@@ -53,7 +54,7 @@ var d3 = require('d3');
  * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
  * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
  */
-export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
+export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
    * Parameters passed in and defaults
    */
@@ -81,7 +82,7 @@ export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
     var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
 
     var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
-    var line_chart_0X_dimension = xf.dimension(function(d) {
+    var line_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
       return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
     });
     var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
@@ -126,7 +127,7 @@ export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
     var agreggateCountTitle_0X = document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML = "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
 
     var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
-    var aggregate_count_0X_dimension = xf.dimension(function(d) {
+    var aggregate_count_0X_dimension = pattrn_objects.xf.dimension(function(d) {
       return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
     });
     var aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
@@ -158,7 +159,7 @@ export function pattrn_line_chart(index, chart_settings, dataset, dc, xf) {
       .group(aggregate_count_0X_group);
 
     var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
-    var SliderChart_0X_Dim = xf.dimension(function(d) {
+    var SliderChart_0X_Dim = pattrn_objects.xf.dimension(function(d) {
       return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
     });
     var SliderChart_0X_Group = SliderChart_0X_Dim.group();

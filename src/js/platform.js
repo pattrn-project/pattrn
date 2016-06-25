@@ -397,7 +397,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    dc_charts['number'].push(pattrn_line_chart(index + 1, {
+    dc_charts['number'].push(pattrn_line_chart(index + 1,
+      dataset,
+      {
         elements: {
           title: `line_chart_${index_padded}_title`,
           chart_title: `line_chart_${index_padded}_chartTitle`,
@@ -412,9 +414,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         },
         scatterWidth: scatterWidth
       },
-      dataset,
-      dc,
-      xf));
+      {
+        dc: dc,
+        xf: xf,
+        dispatch: dispatch
+      }));
   });
 
   /**
@@ -434,7 +438,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1, {
+    dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
+      dataset,
+      {
         elements: {
           title: `bar_chart_${index_padded}_title`,
           chart_title: `bar_chart_${index_padded}_chartTitle`,
@@ -447,9 +453,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         },
         scatterWidth: scatterWidth
       },
-      dataset,
-      dc,
-      xf));
+      {
+        dc: dc,
+        xf: xf,
+        dispatch: dispatch
+      }));
   });
 
   /**
@@ -469,7 +477,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // appending a left-0-padding to the index of each chart
     var index_padded = '0' + (index + 1);
 
-    dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1, {
+    dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
+      dataset,
+      {
         elements: {
           title: `boolean_chart_${index_padded}_title`,
           chart_title: `boolean_chart_${index_padded}_chartTitle`,
@@ -482,9 +492,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         },
         scatterWidth: scatterWidth
       },
-      dataset,
-      dc,
-      xf));
+      {
+        dc: dc,
+        xf: xf,
+        dispatch: dispatch
+      }));
   });
 
   /**
@@ -514,7 +526,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           return item;
         });
 
-        pattrn_tree_chart(index + 1, {
+        pattrn_tree_chart(index + 1,
+          dataset,
+          {
             elements: {
               title: `tree_chart_${index_padded}_title`,
               chart_title: `tree_chart_${index_padded}_chartTitle`,
@@ -528,9 +542,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             scatterWidth: scatterWidth,
             height: 600
           },
-          dataset,
-          dc,
-          xf,
+          {
+            dc: dc,
+            xf: xf,
+            dispatch: dispatch
+          },
           {
             tree_data: data,
             field_name: variables['tree'][index]

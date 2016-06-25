@@ -1,4 +1,30 @@
-var $ = require('jquery'),
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+Copyright (C) 2015 Forensic Architecture
+
+This file is part of Pattrn - http://pattrn.co/.
+
+It includes very minor leftover portions of code originally developed as part of
+version 1.0 of Pattrn and distributed under the PATTRN-V1-LICENSE. Almost all
+the version 1.0 code has been substantively refactored during the Pattrn v2.0
+development cycle, and moved into self-contained AGPL-3.0 modules within this
+source tree.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+let $ = require('jquery'),
     d3 = require('d3'),
     q = require('d3-queue'),
     dc = require('dc'),
@@ -763,7 +789,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     Object.keys(dc_charts).forEach((chart_group) => {
       dc_charts[chart_group].forEach((chart) => {
         // @x-technical-debt: check performance issues and re-enable updating
-        // of chart width on viewport resize 
+        // of chart width on viewport resize
         // chart.width(newscatterWidth);
       });
     });

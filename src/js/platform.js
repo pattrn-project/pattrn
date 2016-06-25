@@ -846,7 +846,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   ));
 
   /**
-   * Make dc.markerChart function, passing in L, dc and settings/configs
+   * Make dc.markerChart function, passing in Pattrn objects needed from legacy
+   * omnibus scope and settings/configs
    *
    * @x-technical-debt Clean up closure and passing of variables from
    * current scope

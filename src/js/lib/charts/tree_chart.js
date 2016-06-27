@@ -250,6 +250,22 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       })
       .remove();
 
+    // apply filter to dimension: only cases whose mid is amongst those
+    // currently selected
+    var selected_nodes_mids = flatten(
+      rec_reduce(
+        (item) => {
+          return item.selected ? item.mid : null;
+        },
+        root,
+        [ '_children', 'children' ])
+      );
+
+    window.tree_dimension.filter((data_row) => {
+      var filtered = selected_nodes_mids.indexOf(data_row) >= 0;
+      return filtered;
+    });
+
     // Stash the old positions for transition.
     nodes.forEach(function(d) {
       d.x0 = d.x;

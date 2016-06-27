@@ -81,6 +81,12 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   root.x0 = height / 2;
   root.y0 = 0;
 
+  // initialize tree by setting each node's selected attribute to true
+  root = walk_tree((node) => {
+    node.selected = true;
+    return node;
+   }, root, ['children']);
+
   root.children.forEach(collapse);
 
   update(root);
@@ -95,6 +101,29 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     // Compute the new tree layout.
     var nodes = tree.nodes(root).reverse();
     var links = tree.links(nodes);
+
+    // calculate size of nodes
+    root = walk_tree(
+      (node) => {
+        // @x-technical-debt: check first that xf item exists, before trying to read its value field
+        var node_size = window.tree_group.all().find((item) => {
+          return item.key === node.mid;
+        }).value;
+        var children = node.children || node._children;
+
+        var children_size = 0;
+
+        if(Array.isArray(children)) {
+          children_size = children.reduce((p,c) => { return c.selected ? p + c.size : p; }, 0);
+        }
+
+        node.size = node.selected ? node_size + children_size : children_size;
+
+        return node;
+      },
+      root,
+      [ 'children', '_children' ]
+    );
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) {
@@ -115,7 +144,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       .attr("transform", function(d) {
         return "translate(" + source.y0 + "," + source.x0 + ")";
       })
-      .on("click", toggle_visibility);
+      .on("click", click);
 
     nodeEnter.append("circle")
       .attr("r", 0)
@@ -132,42 +161,13 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       .attr("text-anchor", function(d) {
         return d.children || d._children ? "end" : "start";
       })
-      .attr("class", function(d) {
-        var active = d.active;
-        return d.active ? "active" : "inactive";
-      })
       .text(function(d) {
-        var id, xf_node, count, size, descendant_mids;
-
-        if(is_defined(d.mid)) {
-          // get id of node
-          // id = d.node_id.join(':');
-          // count of items in this node
-          xf_node = window.tree_group.all().find(function(item) { return item.key === d.mid; });
-
-          descendant_mids = flatten(rec_reduce(function(item) { return is_defined(item) ? item.mid : null; }, d, [ '_children', 'children' ]));
-
-          size = descendant_mids.map((mid) => {
-            var xf_node = window.tree_group.all().find((item) => {
-              return item.key === mid;
-            });
-            return is_defined(xf_node) ? xf_node.value : 0;
-          }).reduce((a, b) => a + b, 0);
-
-          // if a crossfilter group for this node is available, show its associated count
-          count = (is_defined(xf_node) ? xf_node.value : 0) + size;
-
-          return count ? `${d.name} (${count})` : `${d.name}`;
+          return d.size && d.selected ? `${d.name} (${d.size})` : `${d.name}`;
         } else {
           return d.name;
         }
       })
-      .style("fill-opacity", 0)
-      .on("dblclick", function(d) {
-        toggle_data(d);
-        d.active = !d.active;
-        console.log(d);
-      });
+      .style("fill-opacity", 0);
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
@@ -249,6 +249,19 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     else return radius;
   }
 
+  /**
+   * Dispatch click events: if ctrl key is pressed, user wants to toggle
+   * data; if ctrl key is not pressed, user wants to toggle visibility
+   * of subtree
+   */
+  function click(d) {
+    if(event.ctrlKey) {
+      toggle_data(d);
+    } else {
+      toggle_visibility(d);
+    }
+  }
+
   function toggle_visibility(d) {
     if (d.children) {
       d._children = d.children;
@@ -261,22 +274,16 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   }
 
   function toggle_data(d) {
-    var self_and_children_mids = flatten(
-      rec_reduce((item) => {
-        return is_defined(item) ? item.mid : null;
-      }, d, [ '_children', 'children' ])
-    ).concat(d.mid);
-    var active_mids = window.tree_group
-      .all()
-      .map(item => item.key)
-      .filter(item => {
-        return self_and_children_mids.indexOf(item) === -1;
-      });
-    window.tree_dimension.filter((data_row) => {
-      var filtered = active_mids.indexOf(data_row) >= 0;
+    d = walk_tree(
+      (node) => {
+        node.selected = ! node.selected;
+        return node;
+      },
+      d,
+      ['children', '_children']
+    );
 
-      return filtered;
-    });
+    update(d);
   }
 }
 
@@ -327,6 +334,23 @@ function rec_reduce(fn, base, children_members) {
     return fn(base);
   } else {
     return base[children_member[0]].map((item) => { return rec_reduce(fn, item, children_members); });
+  }
+}
+
+/**
+ * recursive tree walker
+ */
+function walk_tree(fn, base, children_members) {
+  var children;
+  var children_member = children_members.filter((member) => {
+    return is_defined(base[member]) && base[member].length;
+  });
+
+  if(children_member.length === 0) {
+    return fn(base);
+  } else {
+    base[children_member[0]] = base[children_member[0]].map((item) => { return walk_tree(fn, item, children_members); });
+    return fn(base);
   }
 }
 

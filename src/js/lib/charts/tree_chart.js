@@ -24,7 +24,10 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 import {
   is_defined
 } from '../utils/is_defined.js';
-import { add_node_id_to_tree_nodes, list_tree_variable } from '../pattrn_data.js';
+import {
+  add_node_id_to_tree_nodes,
+  list_tree_variable
+} from '../pattrn_data.js';
 
 var d3 = require('d3');
 
@@ -59,9 +62,13 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   var root;
 
   // crossfilter dimension and group
-  window.tree_dimension = pattrn_objects.xf.dimension((d) => { return is_defined(d[tree_data.field_name.id]) ? d[tree_data.field_name.id] : 0; });
+  window.tree_dimension = pattrn_objects.xf.dimension((d) => {
+    return is_defined(d[tree_data.field_name.id]) ? d[tree_data.field_name.id] : 0;
+  });
   // @x-technical-debt: allow for scenarios where a count is defined (rather than just returning 1 for counts as in this first iteration)
-  window.tree_group = tree_dimension.group().reduceSum((d) => { return 1; });
+  window.tree_group = tree_dimension.group().reduceSum((d) => {
+    return 1;
+  });
 
   var tree = d3.layout.tree()
     .size([height, width]);
@@ -85,7 +92,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   root = walk_tree((node) => {
     node.selected = true;
     return node;
-   }, root, ['children']);
+  }, root, ['children']);
 
   root.children.forEach(collapse);
 
@@ -95,7 +102,9 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    * update chart when crossfilter is updated
    * @x-technical-debt: refactor to use D3v4
    */
-  pattrn_objects.dispatch.on('filter', () => { update(root); });
+  pattrn_objects.dispatch.on('filter', () => {
+    update(root);
+  });
 
   function update(source) {
     // calculate size of nodes
@@ -109,16 +118,17 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
 
         var children_size = 0;
 
-        if(Array.isArray(children)) {
-          children_size = children.reduce((p,c) => { return c.selected ? p + c.size : p; }, 0);
+        if (Array.isArray(children)) {
+          children_size = children.reduce((p, c) => {
+            return c.selected ? p + c.size : p;
+          }, 0);
         }
 
         node.size = node.selected ? node_size + children_size : children_size;
 
         return node;
       },
-      root,
-      [ 'children', '_children' ]
+      root, ['children', '_children']
     );
 
     // Compute the new tree layout.
@@ -258,7 +268,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    * of subtree
    */
   function click(d) {
-    if(event.ctrlKey) {
+    if (event.ctrlKey) {
       toggle_data(d);
     } else {
       toggle_visibility(d);
@@ -279,11 +289,10 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   function toggle_data(d) {
     d = walk_tree(
       (node) => {
-        node.selected = ! node.selected;
+        node.selected = !node.selected;
         return node;
       },
-      d,
-      ['children', '_children']
+      d, ['children', '_children']
     );
 
     update(d);
@@ -333,10 +342,12 @@ function rec_reduce(fn, base, children_members) {
     return is_defined(base[member]) && base[member].length;
   });
 
-  if(children_member.length === 0) {
+  if (children_member.length === 0) {
     return fn(base);
   } else {
-    return base[children_member[0]].map((item) => { return rec_reduce(fn, item, children_members); });
+    return base[children_member[0]].map((item) => {
+      return rec_reduce(fn, item, children_members);
+    });
   }
 }
 
@@ -349,31 +360,35 @@ function walk_tree(fn, base, children_members) {
     return is_defined(base[member]) && base[member].length;
   });
 
-  if(children_member.length === 0) {
+  if (children_member.length === 0) {
     return fn(base);
   } else {
-    base[children_member[0]] = base[children_member[0]].map((item) => { return walk_tree(fn, item, children_members); });
+    base[children_member[0]] = base[children_member[0]].map((item) => {
+      return walk_tree(fn, item, children_members);
+    });
     return fn(base);
   }
 }
 
 function get_node_size(node) {
-  var xf_node = window.tree_group.all().find(function(item) {return item.key === node.mid ;});
+  var xf_node = window.tree_group.all().find(function(item) {
+    return item.key === node.mid;
+  });
   return is_defined(xf_node) ? xf_node.value : null;
 }
 
 function flatten(ary) {
-    var ret = [];
+  var ret = [];
 
-    // Avoid treating strings as arrays - if this not an array, just return an empty array
-    if(!Array.isArray(ary)) return ret;
+  // Avoid treating strings as arrays - if this not an array, just return an empty array
+  if (!Array.isArray(ary)) return ret;
 
-    for(var i = 0; i < ary.length; i++) {
-        if(Array.isArray(ary[i])) {
-            ret = ret.concat(flatten(ary[i]));
-        } else {
-            ret.push(ary[i]);
-        }
+  for (var i = 0; i < ary.length; i++) {
+    if (Array.isArray(ary[i])) {
+      ret = ret.concat(flatten(ary[i]));
+    } else {
+      ret.push(ary[i]);
     }
-    return ret;
+  }
+  return ret;
 }

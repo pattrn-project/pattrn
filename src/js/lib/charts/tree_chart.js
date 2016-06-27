@@ -98,10 +98,6 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   pattrn_objects.dispatch.on('filter', () => { update(root); });
 
   function update(source) {
-    // Compute the new tree layout.
-    var nodes = tree.nodes(root).reverse();
-    var links = tree.links(nodes);
-
     // calculate size of nodes
     root = walk_tree(
       (node) => {
@@ -124,6 +120,10 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       root,
       [ 'children', '_children' ]
     );
+
+    // Compute the new tree layout.
+    var nodes = tree.nodes(root).reverse();
+    var links = tree.links(nodes);
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) {

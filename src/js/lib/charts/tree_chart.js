@@ -148,8 +148,11 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
 
     nodeEnter.append("circle")
       .attr("r", 0)
-      .style("fill", function(d) {
-        return d._children ? "lightsteelblue" : "white";
+      .style("fill", (d) => {
+        return d._children ? "lightsteelblue" : "lightgrey";
+      })
+      .style("stroke", (d) => {
+        return d.selected ? "#ffcc00" : "lightgrey";
       });
 
     nodeEnter.append("text")
@@ -178,7 +181,10 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
         return radius;
       })
       .style("fill", function(d) {
-        return d._children ? "steelblue" : "#fff";
+        return d._children ? "steelblue" : "lightgrey";
+      })
+      .style("stroke", (d) => {
+        return d.selected ? "#ffcc00" : "lightgrey";
       });
 
     nodeUpdate.select("text").style("fill-opacity", 1);

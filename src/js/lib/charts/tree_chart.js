@@ -162,10 +162,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
         return d.children || d._children ? "end" : "start";
       })
       .text(function(d) {
-          return d.size && d.selected ? `${d.name} (${d.size})` : `${d.name}`;
-        } else {
-          return d.name;
-        }
+        return d.size && d.selected ? `${d.name} (${d.size})` : `${d.name}`;
       })
       .style("fill-opacity", 0);
 

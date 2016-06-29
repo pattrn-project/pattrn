@@ -284,7 +284,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    * of subtree
    */
   function click(d) {
-    if (event.ctrlKey) {
+    if (event.ctrlKey || event.getModifierState('Meta')) {
       toggle_data(d);
     } else {
       toggle_visibility(d);

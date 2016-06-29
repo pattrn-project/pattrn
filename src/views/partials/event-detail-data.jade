@@ -1,0 +1,17 @@
+// Tab panes
+.tab-content
+  #summaryTab.tab-pane.active(role='tabpanel')
+    .infowindow
+      #summary.col-sm-12
+        p.summary This panel will update when a marker is clicked.
+      #summaryTable.col-sm-12
+  #mediaTab.tab-pane(role='tabpanel')
+    #image_div.col-sm-12.infowindow.gallery(style='padding-top:15px')
+      p.summary
+      ul#image_gallery
+  #videoTab.tab-pane(role='tabpanel')
+    #video_gallery.col-sm-12.infowindow(style='padding-top:15px')
+      p.summary
+  #URLsTab.tab-pane(role='tabpanel')
+    #urls.col-sm-12.infowindow(style='padding-top:15px')
+      p.summary

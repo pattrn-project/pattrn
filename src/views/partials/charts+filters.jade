@@ -1,0 +1,76 @@
+// DROPDOWN MENU
+#button.col-sm-3.col-lg-3
+  ul#myTab.nav.nav-pills.nav-justified
+    li.dropdown.dropup.customfontsize
+      a.dropdown-toggle.charts(data-toggle='dropdown', href='#')
+        h1.gray
+          | Charts & Filters
+          span.caret
+      ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
+        // LINE CHARTS
+        li.dropdown-submenu.pull-left
+          a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Over Time
+          ul.dropdown-menu
+            li
+              a#eventTimeLine(role='menuitem', tabindex='-1', href='#event_chart_01', data-toggle='tab') Number of Events over Time
+            li
+              a#line_chart_01_title(role='menuitem', tabindex='-1', href='#line_chart_01', data-toggle='tab')
+            li
+              a#line_chart_02_title(role='menuitem', tabindex='-1', href='#line_chart_02', data-toggle='tab')
+            li
+              a#line_chart_03_title(role='menuitem', tabindex='-1', href='#line_chart_03', data-toggle='tab')
+            li
+              a#line_chart_04_title(role='menuitem', tabindex='-1', href='#line_chart_04', data-toggle='tab')
+            li
+              a#line_chart_05_title(role='menuitem', tabindex='-1', href='#line_chart_05', data-toggle='tab')
+        // BAR CHARTS
+        li.dropdown-submenu.pull-left
+          a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') By Tags
+          ul.dropdown-menu
+            li
+              a#bar_chart_01_title(role='menuitem', tabindex='-1', href='#bar_chart_01', data-toggle='tab')
+            li
+              a#bar_chart_02_title(role='menuitem', tabindex='-1', href='#bar_chart_02', data-toggle='tab')
+            li
+              a#bar_chart_03_title(role='menuitem', tabindex='-1', href='#bar_chart_03', data-toggle='tab')
+            li
+              a#bar_chart_04_title(role='menuitem', tabindex='-1', href='#bar_chart_04', data-toggle='tab')
+            li
+              a#bar_chart_05_title(role='menuitem', tabindex='-1', href='#bar_chart_05', data-toggle='tab')
+        // BOOLEAN CHARTS
+        li.dropdown-submenu.pull-left
+          a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Yes / No
+          ul.dropdown-menu
+            li
+              a#boolean_chart_01_title(role='menuitem', tabindex='-1', href='#boolean_chart_01', data-toggle='tab')
+            li
+              a#boolean_chart_02_title(role='menuitem', tabindex='-1', href='#boolean_chart_02', data-toggle='tab')
+            li
+              a#boolean_chart_03_title(role='menuitem', tabindex='-1', href='#boolean_chart_03', data-toggle='tab')
+            li
+              a#boolean_chart_04_title(role='menuitem', tabindex='-1', href='#boolean_chart_04', data-toggle='tab')
+            li
+              a#boolean_chart_05_title(role='menuitem', tabindex='-1', href='#boolean_chart_05', data-toggle='tab')
+        // TREE CHARTS
+        li.dropdown-submenu.pull-left
+          a(role='menuitem', tabindex='-1', href='#', data-toggle='tab') Hierarchical tags
+          ul.dropdown-menu
+            li
+              a#tree_chart_01_title(role='menuitem', tabindex='-1', href='#tree_chart_01', data-toggle='tab')
+            li
+              a#tree_chart_02_title(role='menuitem', tabindex='-1', href='#tree_chart_02', data-toggle='tab')
+            li
+              a#tree_chart_03_title(role='menuitem', tabindex='-1', href='#tree_chart_03', data-toggle='tab')
+            li
+              a#tree_chart_04_title(role='menuitem', tabindex='-1', href='#tree_chart_04', data-toggle='tab')
+            li
+              a#tree_chart_05_title(role='menuitem', tabindex='-1', href='#tree_chart_05', data-toggle='tab')
+        // AGGREGATE COUNTS
+        li.pull-left
+          a(role='menuitem', tabindex='-1', href='#aggregate_counts', data-toggle='tab') Counts over area
+        // SOURCE CHARTS
+        li.pull-left
+          a(role='menuitem', tabindex='-1', href='#d3_source_chart', data-toggle='tab') Events By Source
+        // MEDIA CHARTS
+        li.pull-left
+          a(role='menuitem', tabindex='-1', href='#d3_media_chart', data-toggle='tab', style='padding-right:0px') Events By Media Available

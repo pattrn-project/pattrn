@@ -1,0 +1,21 @@
+div(role='tabpanel')
+  #darkGrayBar
+    ul.nav.nav-tabs(role='tablist')
+      li.active(role='presentation', style='padding-left:15px')
+        a.tab(href='#summaryTab', title='SUMMARY', role='tab', data-toggle='tab')
+          span.glyphicon.glyphicon-align-left(aria-hidden='true')
+      li(role='presentation')
+        a.tab(href='#mediaTab', title='PHOTOS', role='tab', data-toggle='tab')
+          span.glyphicon.glyphicon-picture(aria-hidden='true')
+      li(role='presentation')
+        a.tab(href='#videoTab', title='VIDEO', role='tab', data-toggle='tab')
+          span.glyphicon.glyphicon-film(aria-hidden='true')
+      //
+        <li role="presentation">
+        <a href="#fileTab" title="FILES" role="tab" data-toggle="tab" class = "tab">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+        </a>
+        </li>
+      li(role='presentation')
+        a.tab(href='#URLsTab', title='URLs', role='tab', data-toggle='tab')
+          span.glyphicon.glyphicon-link(aria-hidden='true')

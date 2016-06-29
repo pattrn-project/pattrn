@@ -1,0 +1,18 @@
+mixin widget-content(widget_id)
+  .border(
+    id = 'd3_aggregate_count_' + widget_id
+    style = 'margin-left:10px'
+  )
+    h2.agreggateText
+      span.number-display
+      p(id = 'agreggateCountTitle_' + widget_id) No Data
+  div(
+    id = 'SliderChart_' + widget_id
+    style='padding-top:10px'
+  )
+if index == 0
+  #agreggate.col-sm-2.col-lg-2.col-lg-offset-1
+    + widget-content(widget_id)
+else
+  #agreggate.col-sm-2.col-lg-2
+    + widget-content(widget_id)

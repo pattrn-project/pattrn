@@ -29,7 +29,6 @@ let $ = require('jquery'),
     q = require('d3-queue'),
     dc = require('dc'),
     crossfilter = require('crossfilter'),
-    tabletop = require('tabletop'),
     range = require('lodash.range');
 
 import { process_settings } from './lib/settings.js';
@@ -44,7 +43,11 @@ import {
   list_all_pattrn_variables,
   pattrn_mock_data_plugins,
   random_node_in_tree,
-  array_equals } from "./lib/pattrn_data";
+  array_equals,
+  rename_pattrn_core_variables
+ } from "./lib/pattrn_data";
+
+import { load_google_sheets_data, consume_table_google_docs }  from "./lib/load_data.js";
 
 /**
  * Pattrn data mapping
@@ -917,7 +920,12 @@ function load_data(config, platform_settings) {
       consume_table('json_file', config, platform_settings, settings, dataset, null);
     });
   } else if(data_sources.google_docs && data_sources.google_docs.length) {
-      init_table(config, platform_settings, data_sources.google_docs[0]);
+    if(is_defined(data_sources.google_docs[0].metadata_url)) {
+      q.queue().defer(d3.json, data_sources.google_docs[0].metadata_url)
+        .await(load_google_sheets_data.bind(undefined, consume_table_google_docs, consume_table, config, platform_settings, data_sources.google_docs[0]));
+    } else {
+      load_google_sheets_data(consume_table_google_docs, consume_table, config, platform_settings, data_sources.google_docs[0], {});
+    }
   }
 }
 
@@ -928,27 +936,4 @@ function load_geojson_data(config, platform_settings, error, dataset, variables,
   var data_sources = config.data_sources;
 
   consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables);
-}
-
-/**
- * TableTop table initialization
- */
-function init_table(config, platform_settings, src) {
-    tabletop.init({
-        key: src.public_spreadsheet,
-        callback: consume_table_google_docs.bind(undefined, config, platform_settings),
-        simpleSheet: false
-    });
-}
-
-/**
- *
- * Wrap actual function, should be done with .bind()
- * @tags TECHNICAL_DEBT
- */
-function consume_table_google_docs(config, platform_settings, data) {
-    var dataset = data.Data.elements,
-        settings = data.Settings.elements[0];  // settings are in the first data row - just get this
-
-    consume_table('google_docs', config, platform_settings, settings, dataset, null);
 }

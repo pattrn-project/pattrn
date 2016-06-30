@@ -934,8 +934,8 @@ function load_geojson_data(config, platform_settings, error, dataset, variables,
  * TableTop table initialization
  */
 function init_table(config, platform_settings, src) {
-    Tabletop.init({
-        key: src,
+    tabletop.init({
+        key: src.public_spreadsheet,
         callback: consume_table_google_docs.bind(undefined, config, platform_settings),
         simpleSheet: false
     });

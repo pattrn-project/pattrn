@@ -125,3 +125,24 @@ export function pattrn_mock_data_plugins() {
     "random_node_in_tree": random_node_in_tree
   };
 }
+
+/**
+ * Process metadata for core Pattrn variables, performing any variable
+ * name translation as configured in metadata (e.g. renaming dataset-specific
+ * variable names to the ones required by Pattrn core)
+ */
+export function rename_pattrn_core_variables(dataset_metadata, item) {
+  if(is_defined(dataset_metadata)
+    && is_defined(dataset_metadata.variables)
+    && is_defined(dataset_metadata.variables.pattrn_core)
+  ) {
+    dataset_metadata.variables.pattrn_core.forEach((variable) => {
+      if(is_defined(variable.pattrn_id) && is_defined(variable.id)) {
+        item[variable.pattrn_id] = item[variable.id];
+        delete item[variable.id];
+      }
+    });
+  }
+
+  return item;
+}

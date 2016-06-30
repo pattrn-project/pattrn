@@ -153,13 +153,24 @@ export function pattrn() {
  * (getting way too deep, as we have preserved so far the legacy messy call
  * hierarchy that relied on a single scope)
  */
-function consume_table(data_source_type, config, platform_settings, settings, dataset, variables) {
+function consume_table(data_source_type, config, platform_settings, settings, dataset, dataset_metadata) {
   var highlightColour,
     pattrn_data_sets = {},
     instance_settings = {},
     _map = {},
     markerChart = null,
+    variables = {},
     variables_from_mock_data;
+
+  /**
+   * Set default for variables if not defined
+   * @x-technical-debt: may be worth setting this to the Pattrn v1 defaults for
+   * google_docs data source type; this should allow to manage legacy hardcoded
+   * variables in the same way current code manages GeoJSON sources
+   */
+  if(is_defined(dataset_metadata) && is_defined(dataset_metadata.variables)) {
+    variables = dataset_metadata.variables;
+  }
 
   /**
    * Merge settings from config file with default settings
@@ -204,10 +215,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * those configured to have their data populated programmatically
    */
   variables_from_mock_data = [].concat.apply([], Object.keys(variables).map((group) => {
-    return variables[group].filter((variable) => {
-      return variable.data_from_plugin;
-    })
-  }));
+      return variables[group].filter((variable) => {
+        return variable.data_from_plugin;
+      })
+    }));
 
   dataset = dataset.map(function(item, index) {
     // @x-legacy-comment Make new column with eventID for the charts / markers
@@ -221,7 +232,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     });
 
     return item;
-  });
+  }).map(rename_pattrn_core_variables.bind(undefined, dataset_metadata));
 
   // Get the headers in an array of strings
   var headers = Object.keys(dataset[0]);

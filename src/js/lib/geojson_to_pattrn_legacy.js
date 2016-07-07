@@ -50,7 +50,7 @@ export function geojson_to_pattrn_legacy_data_structure(data, dataset_metadata, 
         latitude: value.geometry.coordinates[1],
         longitude: value.geometry.coordinates[0],
         geo_accuracy: null,
-        date_time: is_defined(value.properties.pattrn_time_date) ? value.properties.pattrn_time_date : null,
+        date_time: is_defined(value.properties.pattrn_date_time) ? value.properties.pattrn_date_time : null,
         event_summary: is_defined(value.properties.pattrn_event_summary) ? value.properties.pattrn_event_summary : null,
         source_name: null
       };

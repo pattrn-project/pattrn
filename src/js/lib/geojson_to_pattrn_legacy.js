@@ -139,6 +139,19 @@ export function geojson_to_pattrn_legacy_data_structure(data, dataset_metadata, 
         data['dummy_extra_' + i] = '';
       }
 
+      /**
+       * Now add any tree variables - no need to fit them into legacy dataset
+       * structure as variables of this type are not supported by legacy Pattrn
+       * in any case.
+       */
+      if(is_defined(variables.tree)) {
+        variables.tree.forEach(function(v, i, a) {
+          if(is_defined(v.id)) {
+            data[v.id] = value.properties[v.id];
+          }
+        });
+      }
+
       data['pattrn_data_set'] = value.properties.pattrn_data_set;
       data['source_variables'] = value.properties;
 

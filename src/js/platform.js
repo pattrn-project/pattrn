@@ -934,9 +934,9 @@ function load_data(config, platform_settings) {
     if(is_defined(data_sources.google_docs[0].metadata_url)) {
       q.queue().defer(d3.json, data_sources.google_docs[0].metadata_url)
         .await(load_google_sheets_data.bind(undefined, consume_table_google_docs, consume_table, config, platform_settings, data_sources.google_docs[0]));
-    } else {
+    } else
+
       load_google_sheets_data(consume_table_google_docs, consume_table, config, platform_settings, data_sources.google_docs[0], {});
-    }
   }
 }
 

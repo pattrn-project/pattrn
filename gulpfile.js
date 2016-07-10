@@ -23,6 +23,8 @@ var gulp = require('gulp');
 var clean = require('gulp-clean');
 var jade = require('gulp-jade');
 var jsonlint = require('gulp-json-lint');
+var sass = require('gulp-sass');
+var util = require('gulp-util');
 var webserver = require('gulp-webserver');
 
 var browserify = require('browserify');
@@ -34,8 +36,35 @@ var config = {
   app_main: 'src/js/app.js',
   bundle: 'js/main.js',
   src: 'src',
-  dest: 'dist'
+  dest: 'dist',
+  vendor_stylesheets: [
+    {
+      stylesheets: 'node_modules/bootstrap/dist/css/bootstrap.css',
+      assets: 'node_modules/bootstrap/dist/fonts/**/*'
+    },
+    {
+      stylesheets: 'node_modules/dc/dc.css'
+    },
+    {
+      stylesheets: 'node_modules/leaflet/dist/leaflet.css'
+    },
+    {
+      stylesheets: 'node_modules/lightgallery/dist/css/lightgallery.css',
+      assets: 'node_modules/lightgallery/dist/fonts/**/*'
+    }
+  ]
 };
+
+/**
+ * Copy over assets referenced from vendor stylesheets
+ * This is currently configured manually through the assets member of the
+ * config.vendor_stylesheets objects, from inspection of the vendor stylesheet
+ * files for src references
+ */
+gulp.task('vendor-stylesheet-assets', function() {
+  gulp.src(config.vendor_stylesheets.map(item => item.assets).filter(item => { return item && item.length > 0; }))
+    .pipe(gulp.dest(config.dest + '/fonts'));
+});
 
 gulp.task('bundle', function () {
     return browserify({entries: config.app_main, debug: true})
@@ -65,7 +94,13 @@ gulp.task('views', [], () => {
     .pipe(gulp.dest(config.dest))
 });
 
-gulp.task('build', ['jsonlint', 'bundle', 'views'], function() {
+gulp.task('sass', function () {
+  return gulp.src(config.vendor_stylesheets.map(item => item.stylesheets).concat(config.src + '/css/**/*.css'))
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest(config.dest + '/css'));
+});
+
+gulp.task('build', ['jsonlint', 'bundle', 'views', 'sass'], function() {
   gulp.src(['src/**/*'])
     .pipe(gulp.dest('dist'));
 });

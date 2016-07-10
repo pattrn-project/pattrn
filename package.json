@@ -57,6 +57,8 @@
     "gulp": "^3.9.1",
     "gulp-jade": "^1.1.0",
     "gulp-json-lint": "^0.1.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-util": "^3.0.7",
     "gulp-webserver": "^0.9.1",
     "http-server": "^0.8.5",
     "vinyl-source-stream": "^1.1.0"

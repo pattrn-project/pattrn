@@ -110,10 +110,10 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     // calculate size of nodes
     root = walk_tree(
       (node) => {
-        // @x-technical-debt: check first that xf item exists, before trying to read its value field
-        var node_size = window.tree_group.all().find((item) => {
+        var node_item = window.tree_group.all().find((item) => {
           return item.key === node.mid;
-        }).value;
+        });
+        var node_size = is_defined(node_item) ? node_item.value : null;
         var children = node.children || node._children;
 
         var children_size = 0;

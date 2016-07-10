@@ -283,8 +283,8 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    * data; if ctrl key is not pressed, user wants to toggle visibility
    * of subtree
    */
-  function click(d) {
-    if (event.ctrlKey || event.getModifierState('Meta')) {
+  function click(d, i) {
+    if (d3.event.ctrlKey || d3.event.getModifierState('Meta')) {
       toggle_data(d);
     } else {
       toggle_visibility(d);

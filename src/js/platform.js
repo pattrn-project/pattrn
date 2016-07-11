@@ -180,7 +180,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   /**
    * Disable 'edit/add event' link for read-only data source types
    */
-  if ('geojson_file' === data_source_type) {
+  if (data_source_type === 'geojson_file') {
     document.getElementById('edit_event').style.display = 'none';
   }
 
@@ -189,7 +189,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * associate colours to each source data set, to be used when displaying
    * markers.
    */
-  if ('geojson_file' === data_source_type) {
+  if (data_source_type === 'geojson_file') {
     var data_source_column = dataset.map(function(value) {
         return value.pattrn_data_set;
       })

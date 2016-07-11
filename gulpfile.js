@@ -60,6 +60,11 @@ var config = {
  * This is currently configured manually through the assets member of the
  * config.vendor_stylesheets objects, from inspection of the vendor stylesheet
  * files for src references
+ * @x-technical-debt: the destination is now hardcoded to /fonts within the
+ * destination folder; this works but does not address the general scenario
+ * where we may need to copy assets anywhere. we need to iterate over the
+ * config.vendor_stylesheets elements, read source *and* destination
+ * metadata for each, and pipe things accordingly to destinations.
  */
 gulp.task('vendor-stylesheet-assets', function() {
   gulp.src(config.vendor_stylesheets.map(item => item.assets).filter(item => { return item && item.length > 0; }))

@@ -40,7 +40,12 @@ var config = {
   vendor_stylesheets: [
     {
       stylesheets: 'node_modules/bootstrap/dist/css/bootstrap.css',
-      assets: 'node_modules/bootstrap/dist/fonts/**/*'
+      assets: [
+        {
+          src: 'node_modules/bootstrap/dist/fonts/**/*',
+          dest: '/fonts'
+        }
+      ]
     },
     {
       stylesheets: 'node_modules/dc/dc.css'
@@ -50,7 +55,12 @@ var config = {
     },
     {
       stylesheets: 'node_modules/lightgallery/dist/css/lightgallery.css',
-      assets: 'node_modules/lightgallery/dist/fonts/**/*'
+      assets: [
+        {
+          src: 'node_modules/lightgallery/dist/fonts/**/*',
+          dest: '/fonts'
+        }
+      ]
     }
   ]
 };
@@ -67,7 +77,12 @@ var config = {
  * metadata for each, and pipe things accordingly to destinations.
  */
 gulp.task('vendor-stylesheet-assets', function() {
-  gulp.src(config.vendor_stylesheets.map(item => item.assets).filter(item => { return item && item.length > 0; }))
+  gulp.src(
+    config.vendor_stylesheets
+      .filter(item => { return item.assets && item.assets.length > 0; })
+      .map(item => item.assets.map(group => group.src))
+      .reduce((p, c, i) => { return p.concat(c); }, [])
+    )
     .pipe(gulp.dest(config.dest + '/fonts'));
 });
 

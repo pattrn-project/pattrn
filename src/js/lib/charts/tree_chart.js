@@ -393,6 +393,9 @@ function get_node_size(node) {
   return is_defined(xf_node) ? xf_node.value : null;
 }
 
+/**
+ * @x-todo: recover (stack overflow) & add attribution (or rewrite)
+ */
 function flatten(ary) {
   var ret = [];
 

@@ -34,6 +34,7 @@ let $ = require('jquery'),
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
 import { marker_chart } from './lib/data/dc_markerchart.js';
+import { pattrn_layer_groups } from './lib/data/layers.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
 import { initialize_ui } from './lib/pattrn_ui.js';
@@ -160,7 +161,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     _map = {},
     markerChart = null,
     variables = {},
-    variables_from_mock_data;
+    variables_from_mock_data,
+    data_layers;
 
   /**
    * Set default for variables if not defined
@@ -359,6 +361,12 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   // Crossfilter
   var xf = crossfilter(dataset);
 
+
+  /**
+   * layer groups
+   */
+  var xfs = pattrn_layer_groups(dataset, dataset_metadata);
+  
   // Search
   // @x-technical-debt: test that the array concatenation added below
   // whilst refactoring makes sense and works as expected

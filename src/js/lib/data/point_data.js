@@ -215,7 +215,7 @@ function point_data_click(config, instance_settings, _map, data_source_type, non
         });
     }
 
-    non_empty_variables.non_empty_number_variables.forEach(function(item, index) {
+    non_empty_variables.non_empty_integer_variables.forEach(function(item, index) {
       appendIntegerValueToTable(e, item);
     });
 

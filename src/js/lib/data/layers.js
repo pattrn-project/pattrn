@@ -21,7 +21,7 @@ let crossfilter = require('crossfilter2');
 
 import { is_defined } from'../utils/is_defined.js';
 
-export function pattrn_layer_groups(dataset, metadata) {
+export function parse_pattrn_layer_groups(dataset, metadata) {
   /**
    * array of crossfilters
    * one for each layer group of type 'intersection' (all filters apply across

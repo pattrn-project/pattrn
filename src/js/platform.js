@@ -35,7 +35,7 @@ import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
 import { hello_devs_hello } from './lib/utils/hello_devs.js';
 import { marker_chart } from './lib/data/dc_markerchart.js';
-import { pattrn_layer_groups } from './lib/data/layers.js';
+import { parse_pattrn_layer_groups } from './lib/data/layers.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
 import { initialize_ui } from './lib/pattrn_ui.js';
@@ -164,8 +164,17 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     _map = {},
     markerChart = null,
     variables = {},
-    variables_from_mock_data,
-    layer_groups;
+    variables_from_mock_data;
+
+  /**
+   * @x-legacy-comment: Set up charts
+   * scatterWidth: refactor (v2): pass as configuration item to chart functions
+   * @x-technical-debt: store all this in default configuration, with option
+   * to override per-instance.
+   */
+  var scatterWidth = document.getElementById('charts').offsetWidth;
+  var chartHeight = 200;
+  var tagChartHeight = 350;
 
   /**
    * Set default for variables if not defined
@@ -210,6 +219,20 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     });
   }
 
+  // sync tree charts and dc.js charts via d3 dispatch
+  var dispatch = d3.dispatch('filter');
+
+  /**
+   * container for all DC charts created later
+   * @x-technical-debt: this should be generated programmatically from the available
+   * variable metadata above
+   */
+  var dc_charts = {
+    number: [],
+    boolean: [],
+    tag: []
+  };
+
   /**
    * Initialize UI elements (title, subtitle, title area colours, about text)
    */
@@ -239,6 +262,464 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     return item;
   }).map(rename_pattrn_core_variables.bind(undefined, dataset_metadata));
 
+  // Parse time
+  var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
+
+  // Remove rows with invalid dates
+  dataset = dataset.filter(function(d) {
+    try {
+      dateFormat.parse(d.date_time);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  });
+
+  // Add dd member to each case, holding a date object
+  dataset.forEach(function(d) {
+    d.dd = dateFormat.parse(d.date_time);
+  });
+
+
+  /**
+   * get flat list of Pattrn (b/i/t) variables
+   */
+  var variable_list = list_all_pattrn_variables(variables);
+
+  /**
+   * layer groups
+   */
+  var layer_groups = parse_pattrn_layer_groups(dataset, dataset_metadata);
+
+  console.log("Let's have a look at layer groups:");
+
+  console.log(layer_groups);
+
+  /**
+   * @since 2.0.0-alpha22
+   * What was once the Oomph Omnibus Master Loop in Pattrn v1, subsequently
+   * refactored to remove the most egregious bits of technical debt,
+   * shall from now on be wrapped in an map() in order to support layer groups.
+   */
+  var pattrn_layer_groups = layer_groups.map((layer_group, layer_group_index, layer_groups_array) => {
+    layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
+      let layer_data = {};
+      let layer_dataset = layer.data;
+      // @x-technical-debt: xf var used here to reuse the code we had before
+      // adding layers and layer groups - rename this consistently with the rest.
+      let xf = layer.crossfilter;
+
+      /**
+       * get list of variables from metadata
+       * @since: 2.0.0-alpha22
+       * Since 2.0.0-alpha22 we remove the insanity of inferring variable names
+       * from their position as keys of the object for the first item in the
+       * dataset, as was done in Pattrn v1. This actually seemed to work, mainly
+       * because JS engine developers don't seem to enforce the non-ordered
+       * nature of object keys as returned by Object.keys() (as of ES2015).
+       * This also means that in order for *any* kind of variables to be used
+       * in Pattrn, from now on they *need* to be defined in a metadata JSON
+       * file. This is therefore needed for the Google Sheets data source too,
+       * as none of the variables previously inferred from hardcoded positions
+       * (and with an hardcoded limit of up to five variables for each of the three
+       * legacy variable types: integer, tag, boolean) will be now inferred without
+       * the support of a metadata file.
+       * @x-technical-debt: use a map over variable types
+       */
+      layer_data['variable_names'] = {
+        integer: (is_defined(variables) && is_defined(variables.integer)) ? variables.integer.map((item) => { return item.id; }) : [],
+        tag: (is_defined(variables) && is_defined(variables.tag)) ? variables.tag.map((item) => { return item.id; }) : [],
+        boolean: (is_defined(variables) && is_defined(variables.boolean)) ? variables.boolean.map((item) => { return item.id; }) : [],
+        tree: (is_defined(variables) && is_defined(variables.tree)) ? variables.tree.map((item) => { return item.id; }) : []
+      };
+
+      /**
+       * Drop all variables defined in metadata files if the dataset does not
+       * actually contain any data for these.
+       * @x-technical-debt: use a map over variable types
+       */
+      layer_data['non_empty_variables'] = {
+        integer: layer_data.variable_names.integer.filter(is_column_not_empty.bind(undefined, layer_dataset)),
+        tag: layer_data.variable_names.tag.filter(is_column_not_empty.bind(undefined, layer_dataset)),
+        boolean: layer_data.variable_names.boolean.filter(is_column_not_empty.bind(undefined, layer_dataset)),
+        tree: layer_data.variable_names.tree.filter(is_column_not_empty.bind(undefined, layer_dataset))
+      }
+
+      /**
+       * Replace blanks and undefined values with zeros. This
+       * step helps to ensure that Crossfilter filter functions can work
+       * properly without NaNs breaking sorting.
+       *
+       * @x-legacy-comment: Fill nan - Replace null value with zeros
+       * @x-technical-debt: The legacy for + hardcoded series of ifs has been
+       * replaced with the two combined forEach below, but once the tag and
+       * bool variable handling has been refactored, we should probably
+       * use maps here. If this hack cannot be removed altogether (see issue
+       * #14 for different values of uncertainty of data).
+       */
+      layer_dataset.forEach(function(row, index) {
+        layer_data.non_empty_variables.integer.forEach(replace_undefined_values.bind(undefined, {
+          dataset: layer_dataset,
+          row: row,
+          index: index,
+          empty_value: 0
+        }));
+        layer_data.non_empty_variables.tag.forEach(replace_undefined_values.bind(undefined, {
+          dataset: layer_dataset,
+          row: row,
+          index: index,
+          empty_value: 'Unknown'
+        }));
+        layer_data.non_empty_variables.boolean.forEach(replace_undefined_values.bind(undefined, {
+          dataset: layer_dataset,
+          row: row,
+          index: index,
+          empty_value: 'Unknown'
+        }));
+        layer_data.non_empty_variables.tree.forEach(replace_undefined_values.bind(undefined, {
+          dataset: layer_dataset,
+          row: row,
+          index: index,
+          empty_value: 'Unknown'
+        }));
+      });
+
+
+
+      /**
+       * @x-technical-debt: the HTML elements now hardcoded in the index.html
+       * file need to be computationally generated to match the number of
+       * variables of integer type actually in use.
+       * @x-technical-debt: in legacy code, a variable for each chart was
+       * created in this scope, with its only effective use being in
+       * window.onresize() to trigger a repaint of each chart affected. This
+       * breaks with the refactored code and needs to be restored, while
+       * also investigating whether a different way to handle this could be
+       * more perfomant (e.g. do we need to repaint both visible and invisible
+       * charts?).
+       */
+      layer_data.non_empty_variables.integer.forEach(function(item, index) {
+        // @x-technical-debt: get rid of this way of labelling elements by
+        // appending a left-0-padding to the index of each chart
+        var index_padded = '0' + (index + 1);
+
+        dc_charts['number'].push(pattrn_line_chart(index + 1,
+          dataset,
+          {
+            elements: {
+              title: `line_chart_${index_padded}_title`,
+              chart_title: `line_chart_${index_padded}_chartTitle`,
+              d3_line_chart: `#d3_line_chart_${index_padded}`,
+              aggregate_count_title: `agreggateCountTitle_${index_padded}`,
+              d3_aggregate_count: `#d3_aggregate_count_${index_padded}`,
+              slider_chart: `#SliderChart_${index_padded}`
+            },
+            fields: {
+              field_name: layer_data.non_empty_variables.integer[index],
+              field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index])) ?
+                variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index]).name :
+                layer_data.non_empty_variables.integer[index]
+            },
+            scatterWidth: scatterWidth
+          },
+          {
+            xf: xf,
+            dispatch: dispatch
+          }));
+      });
+
+      /**
+       * @x-technical-debt: the HTML elements now hardcoded in the index.html
+       * file need to be computationally generated to match the number of
+       * variables of tag type actually in use.
+       * @x-technical-debt: in legacy code, a variable for each chart was
+       * created in this scope, with its only effective use being in
+       * window.onresize() to trigger a repaint of each chart affected. This
+       * breaks with the refactored code and needs to be restored, while
+       * also investigating whether a different way to handle this could be
+       * more perfomant (e.g. do we need to repaint both visible and invisible
+       * charts?).
+       */
+      layer_data.non_empty_variables.tag.forEach(function(item, index) {
+        // @x-technical-debt: get rid of this way of labelling elements by
+        // appending a left-0-padding to the index of each chart
+        var index_padded = '0' + (index + 1);
+
+        dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
+          dataset,
+          {
+            elements: {
+              title: `bar_chart_${index_padded}_title`,
+              chart_title: `bar_chart_${index_padded}_chartTitle`,
+              d3_bar_chart: `#d3_bar_chart_${index_padded}`,
+              aggregate_count_title: `agreggateCountTitle_${index_padded}`
+            },
+            fields: {
+              field_name: layer_data.non_empty_variables.tag[index],
+              field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index])) ?
+                variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index]).name :
+                layer_data.non_empty_variables.tag[index]
+            },
+            scatterWidth: scatterWidth
+          },
+          {
+            xf: xf,
+            dispatch: dispatch
+          }));
+      });
+
+      /**
+       * @x-technical-debt: the HTML elements now hardcoded in the index.html
+       * file need to be computationally generated to match the number of
+       * variables of boolean type actually in use.
+       * @x-technical-debt: in legacy code, a variable for each chart was
+       * created in this scope, with its only effective use being in
+       * window.onresize() to trigger a repaint of each chart affected. This
+       * breaks with the refactored code and needs to be restored, while
+       * also investigating whether a different way to handle this could be
+       * more perfomant (e.g. do we need to repaint both visible and invisible
+       * charts?).
+       */
+      layer_data.non_empty_variables.boolean.forEach(function(item, index) {
+        // @x-technical-debt: get rid of this way of labelling elements by
+        // appending a left-0-padding to the index of each chart
+        var index_padded = '0' + (index + 1);
+
+        dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
+          dataset,
+          {
+            elements: {
+              title: `boolean_chart_${index_padded}_title`,
+              chart_title: `boolean_chart_${index_padded}_chartTitle`,
+              d3_bar_chart: `#d3_boolean_chart_${index_padded}`,
+              aggregate_count_title: `agreggateCountTitle_${index_padded}`
+            },
+            fields: {
+              field_name: layer_data.non_empty_variables.boolean[index],
+              field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
+                variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
+                layer_data.non_empty_variables.boolean[index]
+            },
+            scatterWidth: scatterWidth
+          },
+          {
+            xf: xf,
+            dispatch: dispatch
+          }));
+      });
+
+      /**
+       * Tree charts
+       * @x-technical-debt: this is currently just calling a stub function, which
+       * needs to be written.
+       * These charts currently work 'outside-in', as opposed to the other charts
+       * above, which are generated starting from dataset variables; tree charts
+       * are initially generated starting from the actual tree structures, which
+       * are then matched to the related dataset variables. This is mainly because
+       * all this chart code is mostly stub. Once fully implemented, these charts
+       * need to be working exactly like the others.
+       */
+      layer_data.non_empty_variables.tree.forEach(function(item, index) {
+        // @x-technical-debt: get rid of this way of labelling elements by
+        // appending a left-0-padding to the index of each chart
+        var index_padded = '0' + (index + 1);
+
+        // @x-technical-debt: need to check that item.tree_data is actually defined
+        q.queue()
+          .defer(d3.json, variables.tree[index].tree_data)
+          .await(function(error, data) {
+            let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
+            if(variables.tree.find(item => item.id === layer_data.non_empty_variables.tree[index])['data_from_tree']) {
+              dataset = dataset.map((item) => {
+                // @x-hack add random position in binary tree
+                item[layer_data.non_empty_variables.tree[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
+                return item;
+              });
+            }
+
+            pattrn_tree_chart(index + 1,
+              dataset,
+              {
+                elements: {
+                  title: `tree_chart_${index_padded}_title`,
+                  chart_title: `tree_chart_${index_padded}_chartTitle`,
+                  d3_chart: `#d3_tree_chart_${index_padded}`,
+                  aggregate_count_title: `agreggateCountTitle_${index_padded}`
+                },
+                fields: {
+                  field_name: layer_data.non_empty_variables.tree[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index]).name :
+                    layer_data.non_empty_variables.tree[index]
+                },
+                scatterWidth: scatterWidth,
+                height: 600
+              },
+              {
+                xf: xf,
+                dispatch: dispatch
+              },
+              {
+                tree_data: data,
+                field_name: variables['tree'][index]
+              });
+          });
+      });
+
+      // timeline by EVENTS
+      var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";
+
+      var event_chart_01 = dc.lineChart("#d3_event_chart_01");
+      var event_chart_01_dimension = xf.dimension(function(d) {
+        return +d3.time.day(d.dd);
+      });
+      var event_chart_01_group = event_chart_01_dimension.group().reduceCount(function(d) {
+        return +d3.time.day(d.dd);
+      });
+
+      event_chart_01.width(scatterWidth)
+        .height(chartHeight)
+        .margins({
+          top: 0,
+          right: 50,
+          bottom: 50,
+          left: 50
+        })
+        .dimension(event_chart_01_dimension)
+        .group(event_chart_01_group)
+        .title(function(d) {
+          return ('Total number of events: ' + d.value);
+        })
+        .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+          return d.dd;
+        })))
+        .renderHorizontalGridLines(true)
+        .renderVerticalGridLines(true)
+        .yAxisLabel("no. of events")
+        .elasticY(true)
+        .on("filtered", function(d) {
+          return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
+        })
+        .brushOn(true)
+        .xAxis();
+
+      event_chart_01.yAxis().ticks(3);
+      event_chart_01.turnOnControls(true);
+      event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+
+      // TOTAL EVENTS
+      var number_of_events = dc.dataCount("#number_total_events").dimension(xf).group(xf.groupAll());
+
+      // Resize charts
+      window.onresize = function(event) {
+        var newscatterWidth = document.getElementById('charts').offsetWidth;
+
+        Object.keys(dc_charts).forEach((chart_group) => {
+          dc_charts[chart_group].forEach((chart) => {
+            // @x-technical-debt: check performance issues and re-enable updating
+            // of chart width on viewport resize
+            // chart.width(newscatterWidth);
+          });
+        });
+
+        event_chart_01.width(newscatterWidth);
+        dc.renderAll();
+      };
+
+      // Define dimension of marker
+      var markerDimension = xf.dimension(function(d) {
+        return d.eventID;
+      });
+
+      // map reduce
+      var markerGroup = markerDimension.group().reduce(
+
+        function(p, v) {
+          if (!p.indices[v.eventID] || p.indices[v.eventID] === 0) {
+            p.markers[p.markers.length] = dataset[v.eventID].marker;
+            p.indices[v.eventID] = 1;
+          } else
+            p.indices[v.eventID]++;
+          return p;
+        },
+
+        function(p, v) {
+          if (p.indices[v.eventID] && p.indices[v.eventID] > 0) {
+            p.indices[v.eventID]--;
+            if (p.indices[v.eventID] === 0) {
+              var i = p.markers.indexOf(dataset[v.eventID].marker);
+
+              if (i != -1)
+                p.markers.splice(i, 1);
+            }
+          }
+          return p;
+        },
+
+        function() {
+          return {
+            markers: [],
+            indices: []
+          };
+        }
+
+      );
+
+      // MAP SETTINGS
+      _map = L.map(instance_settings.map.root_selector, {
+        touchZoom: false,
+        scrollWheelZoom: false,
+        maxZoom: instance_settings.map.zoom.max,
+        minZoom: instance_settings.map.zoom.min
+      });
+
+      // Dispatch to trees' filter callback when map is updated/moved/filtered
+      // @x-technical-debt: switch to D3 4 & its API (dispatch.call('filter'))
+      _map.on('zoomend', function() {
+        dispatch.filter();
+      });
+
+      _map.on('moveend', function() {
+        dispatch.filter();
+      });
+
+      // For each data row, draw and manage event data
+      dataset.forEach(point_data.bind(undefined,
+        config,
+        instance_settings,
+        _map,
+        data_source_type,
+        pattrn_data_sets, {
+          non_empty_integer_variables: non_empty_integer_variables,
+          non_empty_tag_variables: non_empty_tag_variables,
+          non_empty_boolean_variables: non_empty_boolean_variables
+        },
+        markerChart
+      ));
+
+      /**
+       * Make dc.markerChart function, passing in Pattrn objects needed from legacy
+       * omnibus scope and settings/configs
+       *
+       * @x-technical-debt Clean up closure and passing of variables from
+       * current scope
+       */
+      dc.markerChart = function(parent, chartGroup) {
+        return marker_chart(parent, chartGroup, instance_settings, config, { map: _map, L: L, dispatch: dispatch});
+      };
+
+      // Execute markerChart function - assign marker dimension and group to the chart
+      markerChart = dc.markerChart(instance_settings.map.root_selector)
+        .dimension(markerDimension)
+        .group(markerGroup)
+        .filterByBounds(true);
+
+      dc.renderAll();
+
+
+    });
+  });
+
   /**
    * get list of variables from metadata
    * @since: 2.0.0-alpha22
@@ -266,7 +747,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * actually contain any data for these.
    * @x-technical-debt: use a map over variable types
    */
-  var non_empty_number_variables = integer_field_names.filter(is_column_not_empty.bind(undefined, dataset));
+  var non_empty_integer_variables = integer_field_names.filter(is_column_not_empty.bind(undefined, dataset));
   var non_empty_tag_variables = tag_field_names.filter(is_column_not_empty.bind(undefined, dataset));
   var non_empty_boolean_variables = boolean_field_names.filter(is_column_not_empty.bind(undefined, dataset));
   var non_empty_tree_variables = tree_field_names.filter(is_column_not_empty.bind(undefined, dataset));
@@ -284,7 +765,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * #14 for different values of uncertainty of data).
    */
   dataset.forEach(function(row, index) {
-    non_empty_number_variables.forEach(replace_undefined_values.bind(undefined, {
+    non_empty_integer_variables.forEach(replace_undefined_values.bind(undefined, {
       dataset: dataset,
       row: row,
       index: index,
@@ -310,20 +791,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     }));
   });
 
-  /**
-   * container for all DC charts created later
-   * @x-technical-debt: this should be generated programmatically from the available
-   * variable metadata above
-   */
-  var dc_charts = {
-    number: [],
-    boolean: [],
-    tag: []
-  };
-
   // Extract columns for source
   var source_field_name = (is_defined(variables) && is_defined(variables.pattrn_core)) ?
-    variables.pattrn_core.find((item) => { return item.id === 'pattrn_data_set')
+    variables.pattrn_core.find((item) => { return item.id === 'pattrn_data_set'; })
     : null;
 
   // Extract columns for media available
@@ -340,47 +810,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * with data on media related to each case.
    */
   var media_field_name = (is_defined(variables) && is_defined(variables.pattrn_core)) ?
-    variables.pattrn_core.find((item) => { return item.id === 'pattrn_media_available')
+    variables.pattrn_core.find((item) => { return item.id === 'pattrn_media_available'; })
     : null;
-
-  // Parse time
-  var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
-
-  // Remove rows with invalid dates
-  dataset = dataset.filter(function(d) {
-    try {
-      dateFormat.parse(d.date_time);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  });
-
-  dataset.forEach(function(d) {
-    d.dd = dateFormat.parse(d.date_time);
-  });
-
-  // Set up charts
-  // scatterWidth: refactor (v2): pass as configuration item to chart functions
-  var scatterWidth = document.getElementById('charts').offsetWidth;
-  var chartHeight = 200;
-  var tagChartHeight = 350;
-
-  // sync tree charts and dc.js charts via d3 dispatch
-  var dispatch = d3.dispatch('filter');
 
   // Crossfilter
   var xf = crossfilter(dataset);
-
-
-  /**
-   * layer groups
-   */
-  var xfs = pattrn_layer_groups(dataset, dataset_metadata);
-
-  console.log("Let's have a look at layer groups:");
-
-  console.log(xfs);
 
   // Search
   // @x-technical-debt: test that the array concatenation added below
@@ -395,54 +829,21 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
   $("#tableSearch").on('input', function() {
     text_filter(searchDimension, this.value);
-  });
-
-  function text_filter(dim, queriedText) {
-    var regex = new RegExp(queriedText, "i");
-
-    if (queriedText) {
-      // Filter when the query matches any sequence of chars in the data
-      dim.filter(function(d) {
-        return regex.test(d);
-      });
-    }
-
-    // Else clear the filters
-    else {
-      dim.filterAll();
-    }
-
     dc.redrawAll();
-  }
+  });
 
   var filterOn = document.getElementById("filterList");
   var tooltip = "Tooltip Text";
   $('.activeFilter').attr('title', tooltip);
-
-  function map(array, callback) {
-    var result = [];
-    var i;
-
-    for (i = 0; i < array.length; ++i) {
-      result.push(callback(array[i]));
-    }
-
-    return result;
-  }
-
-  /**
-   * get flat list of Pattrn (b/i/t) variables
-   */
-  var variable_list = list_all_pattrn_variables(variables);
 
   // Make array of string values of the whole columns for line charts
   // @x-wtf: what for?
   var line_charts_string_values = [];
   integer_field_names.forEach(function(item, index) {
     line_charts_string_values.push({
-      "string_values_chart": dataset.map((item) => {
+      string_values_chart: dataset.map((item) => {
         return item[integer_field_names[index]];
-      }).join("");
+      }).join("")
     });
   });
 
@@ -992,4 +1393,27 @@ function map(array, callback) {
   }
 
   return result;
+}
+
+/**
+ * Filter crossfilter data by text on specified dimension.
+ * @since 1.0.0
+ * moved outside of jumbo function in 2.0.0-alpha22
+ * @param Object dim The crossfilter dimension on which to filter
+ * @param String queriedText The filter text
+ */
+function text_filter(dim, queriedText) {
+  var regex = new RegExp(queriedText, "i");
+
+  if (queriedText) {
+    // Filter when the query matches any sequence of chars in the data
+    dim.filter(function(d) {
+      return regex.test(d);
+    });
+  }
+
+  // Else clear the filters
+  else {
+    dim.filterAll();
+  }
 }

@@ -440,9 +440,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   var line_charts_string_values = [];
   integer_field_names.forEach(function(item, index) {
     line_charts_string_values.push({
-      "string_values_chart": map(dataset, function(item) {
+      "string_values_chart": dataset.map((item) => {
         return item[integer_field_names[index]];
-      }).join("")
+      }).join("");
     });
   });
 

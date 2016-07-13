@@ -239,48 +239,40 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     return item;
   }).map(rename_pattrn_core_variables.bind(undefined, dataset_metadata));
 
-  // Get the headers in an array of strings
-  var headers = Object.keys(dataset[0]);
-
-  // Extract columns for integers (hardcoded to mirror spreadsheet)
-  // refactor: from number_field_name_X to number_field_names[X]
-  var number_field_names = [headers[8], headers[9], headers[10], headers[11], headers[12]];
-
-  // Extract columns for tags (hardcoded to mirror spreadsheet)
-  var tag_field_names = [headers[13], headers[14], headers[15], headers[16], headers[17]];
-
-  // Extract columns for booleans (hardcoded to mirror spreadsheet)
-  var boolean_field_names = [headers[18], headers[19], headers[20], headers[21], headers[22]];
-
-  // List columns of type tree from metadata
+  /**
+   * get list of variables from metadata
+   * @since: 2.0.0-alpha22
+   * Since 2.0.0-alpha22 we remove the insanity of inferring variable names
+   * from their position as keys of the object for the first item in the
+   * dataset, as was done in Pattrn v1. This actually seemed to work, mainly
+   * because JS engine developers don't seem to enforce the non-ordered
+   * nature of object keys as returned by Object.keys() (as of ES2015).
+   * This also means that in order for *any* kind of variables to be used
+   * in Pattrn, from now on they *need* to be defined in a metadata JSON
+   * file. This is therefore needed for the Google Sheets data source too,
+   * as none of the variables previously inferred from hardcoded positions
+   * (and with an hardcoded limit of up to five variables for each of the three
+   * legacy variable types: integer, tag, boolean) will be now inferred without
+   * the support of a metadata file.
+   * @x-technical-debt: use a map over variable types
+   */
+  var integer_field_names = (is_defined(variables) && is_defined(variables.integer)) ? variables.integer.map((item) => { return item.id; }) : [];
+  var tag_field_names = (is_defined(variables) && is_defined(variables.tag)) ? variables.tag.map((item) => { return item.id; }) : [];
+  var boolean_field_names = (is_defined(variables) && is_defined(variables.boolean)) ? variables.boolean.map((item) => { return item.id; }) : [];
   var tree_field_names = (is_defined(variables) && is_defined(variables.tree)) ? variables.tree.map((item) => { return item.id; }) : [];
 
   /**
-   * Handle variables of type integer: first check whether they
-   * contain any data (or at least this is what the legacy code seems to
-   * mean to be trying to do)...
+   * Drop all variables defined in metadata files if the dataset does not
+   * actually contain any data for these.
+   * @x-technical-debt: use a map over variable types
    */
-  var non_empty_number_variables = number_field_names.filter(is_column_not_empty.bind(undefined, dataset));
-
-  /**
-   * Similarly to variables of type integer above, handle variables of
-   * type tag.
-   */
+  var non_empty_number_variables = integer_field_names.filter(is_column_not_empty.bind(undefined, dataset));
   var non_empty_tag_variables = tag_field_names.filter(is_column_not_empty.bind(undefined, dataset));
-
-  /**
-   * Similarly to variables of type integer above, handle variables of
-   * type boolean.
-   */
   var non_empty_boolean_variables = boolean_field_names.filter(is_column_not_empty.bind(undefined, dataset));
-
-  /**
-   * Variables of type tree.
-   */
   var non_empty_tree_variables = tree_field_names.filter(is_column_not_empty.bind(undefined, dataset));
 
   /**
-   * ...and then replace blanks and undefined values with zeros. This
+   * Replace blanks and undefined values with zeros. This
    * step helps to ensure that Crossfilter filter functions can work
    * properly without NaNs breaking sorting.
    *
@@ -330,10 +322,26 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   };
 
   // Extract columns for source
-  var source_field_name = headers[7];
+  var source_field_name = (is_defined(variables) && is_defined(variables.pattrn_core)) ?
+    variables.pattrn_core.find((item) => { return item.id === 'pattrn_data_set')
+    : null;
 
   // Extract columns for media available
-  var media_field_name = headers[26];
+  /**
+   * Variable for what was hardcoded as 'media_available' variable in Pattrn v1
+   * This variable was meant to be "populated with a series of tags
+   * corresponding to the types of media that have been attached to each event."
+   * (from the Pattrn v1 documentation).
+   * This was originally defined as headers[26] - the 27th column of the
+   * hardcoded Google Sheet spreadsheet structure.
+   * This is actually redundant as we can infer this from the actual variables
+   * with data on media related to each case.
+   * @x-technical-debt: infer this from actual data available in variables
+   * with data on media related to each case.
+   */
+  var media_field_name = (is_defined(variables) && is_defined(variables.pattrn_core)) ?
+    variables.pattrn_core.find((item) => { return item.id === 'pattrn_media_available')
+    : null;
 
   // Parse time
   var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
@@ -430,10 +438,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   // Make array of string values of the whole columns for line charts
   // @x-wtf: what for?
   var line_charts_string_values = [];
-  number_field_names.forEach(function(item, index) {
+  integer_field_names.forEach(function(item, index) {
     line_charts_string_values.push({
       "string_values_chart": map(dataset, function(item) {
-        return item[number_field_names[index]];
+        return item[integer_field_names[index]];
       }).join("")
     });
   });
@@ -654,90 +662,96 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   // TOTAL EVENTS
   var number_of_events = dc.dataCount("#number_total_events").dimension(xf).group(xf.groupAll());
 
-
-  // SOURCE CHART - TAGS
-  // REDUCE FUNCTION
-  function reduceAddTarget_source(p, v) {
-    if (typeof v[source_field_name] !== 'string') return p;
-    v[source_field_name].split(',').forEach(function(val, idx) {
-      p[val] = (p[val] || 0) + 1; //increment counts
-    });
-    return p;
-  }
-
-  function reduceRemoveTarget_source(p, v) {
-    if (typeof v[source_field_name] !== 'string') return p;
-    v[source_field_name].split(',').forEach(function(val, idx) {
-      p[val] = (p[val] || 0) - 1; //decrement counts
-    });
-    return p;
-  }
-
-  function reduceInitialTarget_source() {
-    return {};
-  }
-
-
-  var source_chart = dc.barChart("#d3_source_chart");
-  var source_chart_dimension = xf.dimension(function(d) {
-    return d[source_field_name];
-  });
-  var source_chart_group = source_chart_dimension.groupAll().reduce(reduceAddTarget_source, reduceRemoveTarget_source, reduceInitialTarget_source).value();
-
-  source_chart_group.all = function() {
-    var newObject = [];
-    for (var key in this) {
-      if (this.hasOwnProperty(key) && key != "all") {
-        newObject.push({
-          key: key,
-          value: this[key]
-        });
-      }
+  /**
+   * @x-legacy-comment SOURCE CHART - TAGS
+   * @x-technical-debt: since 2.0.0-alphaN, N =~ 10ish, we proxy this through
+   * a normal 'tag' variable, although it may make sense to keep this separate
+   * at least for backwards-compatibility with Pattrn v1 datasets. To be
+   * revisited - in the meanwhile the whole block is only processed if a
+   * variable for data sources is defined, which equates to never :)
+   */
+   if(is_defined(source_field_name)) {
+    function reduceAddTarget_source(p, v) {
+      if (typeof v[source_field_name] !== 'string') return p;
+      v[source_field_name].split(',').forEach(function(val, idx) {
+        p[val] = (p[val] || 0) + 1; //increment counts
+      });
+      return p;
     }
-    return newObject;
-  };
 
-  source_chart
-    .width(scatterWidth)
-    .height(tagChartHeight)
-    .dimension(source_chart_dimension)
-    .group(source_chart_group)
-    .margins({
-      top: 0,
-      right: 50,
-      bottom: 200,
-      left: 50
-    })
-    .title(function(d) {
-      return ('Total number of events: ' + d.value);
-    })
-    .x(d3.scale.ordinal())
-    .xUnits(dc.units.ordinal)
-    // .xAxisPadding(500)
-    .renderHorizontalGridLines(true)
-    .yAxisLabel("no. of events")
-    .renderlet(function(chart) {
-      chart.selectAll("g.x text")
-        .style("text-anchor", "end")
-        .style("font-size", "10px")
-        .attr('dx', '0')
-        .attr('dy', '10')
-        .attr('transform', "rotate(-45)");
-      chart.selectAll('.x-axis-label')
-        .attr('transform', "translate(400, 250)");
-    })
-    .elasticY(true)
-    .on("filtered", function(d) {
-      return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-    })
-    .barPadding(0.1)
-    .outerPadding(0.05);
+    function reduceRemoveTarget_source(p, v) {
+      if (typeof v[source_field_name] !== 'string') return p;
+      v[source_field_name].split(',').forEach(function(val, idx) {
+        p[val] = (p[val] || 0) - 1; //decrement counts
+      });
+      return p;
+    }
 
-  source_chart.yAxis().ticks(3);
+    function reduceInitialTarget_source() {
+      return {};
+    }
+
+
+    var source_chart = dc.barChart("#d3_source_chart");
+    var source_chart_dimension = xf.dimension(function(d) {
+      return d[source_field_name];
+    });
+    var source_chart_group = source_chart_dimension.groupAll().reduce(reduceAddTarget_source, reduceRemoveTarget_source, reduceInitialTarget_source).value();
+
+    source_chart_group.all = function() {
+      var newObject = [];
+      for (var key in this) {
+        if (this.hasOwnProperty(key) && key != "all") {
+          newObject.push({
+            key: key,
+            value: this[key]
+          });
+        }
+      }
+      return newObject;
+    };
+
+    source_chart
+      .width(scatterWidth)
+      .height(tagChartHeight)
+      .dimension(source_chart_dimension)
+      .group(source_chart_group)
+      .margins({
+        top: 0,
+        right: 50,
+        bottom: 200,
+        left: 50
+      })
+      .title(function(d) {
+        return ('Total number of events: ' + d.value);
+      })
+      .x(d3.scale.ordinal())
+      .xUnits(dc.units.ordinal)
+      // .xAxisPadding(500)
+      .renderHorizontalGridLines(true)
+      .yAxisLabel("no. of events")
+      .renderlet(function(chart) {
+        chart.selectAll("g.x text")
+          .style("text-anchor", "end")
+          .style("font-size", "10px")
+          .attr('dx', '0')
+          .attr('dy', '10')
+          .attr('transform', "rotate(-45)");
+        chart.selectAll('.x-axis-label')
+          .attr('transform', "translate(400, 250)");
+      })
+      .elasticY(true)
+      .on("filtered", function(d) {
+        return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
+      })
+      .barPadding(0.1)
+      .outerPadding(0.05);
+
+    source_chart.yAxis().ticks(3);
+  } // end of source charts
 
   // MEDIA CHART - TAGS ('empty')
-  if (media_field_name.length > 0) {
-
+  if (is_defined(media_field_name) && media_field_name.length > 0) {
 
     // CUSTOM REDUCE FUNCTION
     function reduceAddTarget_media(p, v) {
@@ -759,7 +773,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     function reduceInitialTarget_media() {
       return {};
     }
-
 
     var media_chart = dc.barChart("#d3_media_chart");
     var media_chart_dimension = xf.dimension(function(d) {
@@ -811,7 +824,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       .outerPadding(0.05);
 
     media_chart.yAxis().ticks(3);
-  }
+  } // end of media charts
 
   // Resize charts
   window.onresize = function(event) {

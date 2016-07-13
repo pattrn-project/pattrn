@@ -165,7 +165,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     markerChart = null,
     variables = {},
     variables_from_mock_data,
-    data_layers;
+    layer_groups;
 
   /**
    * Set default for variables if not defined

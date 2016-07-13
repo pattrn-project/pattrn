@@ -33,6 +33,7 @@ let $ = require('jquery'),
 
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
+import { hello_devs_hello } from './lib/utils/hello_devs.js';
 import { marker_chart } from './lib/data/dc_markerchart.js';
 import { pattrn_layer_groups } from './lib/data/layers.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
@@ -109,16 +110,7 @@ export function pattrn() {
     });
   });
 
-  console.log(
-String.raw`
- _    _      _ _         _____
-| |  | |    | | |       |  __ \
-| |__| | ___| | | ___   | |  | | _____   _____
-|  __  |/ _ \ | |/ _ \  | |  | |/ _ \ \ / / __|
-| |  | |  __/ | | (_) | | |__| |  __/\ V /\__ \
-|_|  |_|\___|_|_|\___/  |_____/ \___| \_/ |___/
-
-`);
+  hello_devs_hello();
 
   // Load the json file with the local settings
   /* global d3 */

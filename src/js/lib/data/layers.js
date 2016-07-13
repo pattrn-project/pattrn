@@ -34,9 +34,19 @@ export function pattrn_layer_groups(dataset, metadata) {
     xfs = metadata.layer_groups.map((layer_group) => {
 
       if(layer_group.type === 'intersection') {
-        return intersection_layer_group(dataset, metadata, layer_group);
+        return {
+          layer_group_id: layer_group.id,
+          type: layer_group.type,
+          layers: layer_group.layers,
+          crossfilters: intersection_layer_group(dataset, metadata, layer_group)
+        };
       } else if(layer_group.type === 'union') {
-        return union_layer_group(dataset, metadata, layer_group);
+        return {
+          layer_group_id: layer_group.id,
+          type: layer_group.type,
+          layers: layer_group.layers,
+          crossfilters: union_layer_group(dataset, metadata, layer_group)
+        };
       }
     });
   }
@@ -48,7 +58,7 @@ function union_layer_group(dataset, metadata, layer_group) {
   let group_layers_data = layer_group.layers.map((layer, index) => {
     return layer_data(dataset, metadata, [ layer_group.layers[index] ], layer);
   });
-  
+
   return group_layers_data.map(item => {
     return {
       crossfilter: crossfilter(item),
@@ -64,10 +74,12 @@ function intersection_layer_group(dataset, metadata, layer_group) {
 
   let data_union = [].concat.apply([], group_layers_data);
 
-  return {
-    crossfilter: crossfilter(data_union),
-    data: data_union
-  };
+  return [
+    {
+      crossfilter: crossfilter(data_union),
+      data: data_union
+    }
+  ];
 }
 
 function layer_data(dataset, metadata, layers, layer) {

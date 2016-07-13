@@ -976,3 +976,20 @@ function load_geojson_data(config, platform_settings, error, dataset, variables,
 
   consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables);
 }
+
+/**
+ * @since: 1.0.0
+ * Legacy map function, used in v1 code; replaced with Array.prototype.map() in
+ * Pattrn v2, with transition completed in 2.0.0-alpha22.
+ * @x-technical-debt: review and remove this dead code
+ */
+function map(array, callback) {
+  var result = [];
+  var i;
+
+  for (i = 0; i < array.length; ++i) {
+    result.push(callback(array[i]));
+  }
+
+  return result;
+}

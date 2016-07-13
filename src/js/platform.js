@@ -109,6 +109,17 @@ export function pattrn() {
     });
   });
 
+  console.log(
+String.raw`
+ _    _      _ _         _____
+| |  | |    | | |       |  __ \
+| |__| | ___| | | ___   | |  | | _____   _____
+|  __  |/ _ \ | |/ _ \  | |  | |/ _ \ \ / / __|
+| |  | |  __/ | | (_) | | |__| |  __/\ V /\__ \
+|_|  |_|\___|_|_|\___/  |_____/ \___| \_/ |___/
+
+`);
+
   // Load the json file with the local settings
   /* global d3 */
   d3.json("config.json", function(config) {
@@ -366,7 +377,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * layer groups
    */
   var xfs = pattrn_layer_groups(dataset, dataset_metadata);
-  
+
+  console.log("Let's have a look at layer groups:");
+
+  console.log(xfs);
+
   // Search
   // @x-technical-debt: test that the array concatenation added below
   // whilst refactoring makes sense and works as expected

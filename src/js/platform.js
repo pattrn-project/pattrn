@@ -715,7 +715,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       dc.renderAll();
     });
   });
-
 }
 
 

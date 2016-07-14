@@ -238,6 +238,25 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   initialize_ui(instance_settings);
 
+
+  // Initialize map
+  _map = L.map(instance_settings.map.root_selector, {
+    touchZoom: false,
+    scrollWheelZoom: false,
+    maxZoom: instance_settings.map.zoom.max,
+    minZoom: instance_settings.map.zoom.min
+  });
+
+  // Dispatch to trees' filter callback when map is updated/moved/filtered
+  // @x-technical-debt: switch to D3 4 & its API (dispatch.call('filter'))
+  _map.on('zoomend', function() {
+    dispatch.filter();
+  });
+
+  _map.on('moveend', function() {
+    dispatch.filter();
+  });
+
   /**
    * from the list of variables defined in the instance's metadata, extract
    * those configured to have their data populated programmatically
@@ -664,24 +683,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         }
 
       );
-
-      // MAP SETTINGS
-      _map = L.map(instance_settings.map.root_selector, {
-        touchZoom: false,
-        scrollWheelZoom: false,
-        maxZoom: instance_settings.map.zoom.max,
-        minZoom: instance_settings.map.zoom.min
-      });
-
-      // Dispatch to trees' filter callback when map is updated/moved/filtered
-      // @x-technical-debt: switch to D3 4 & its API (dispatch.call('filter'))
-      _map.on('zoomend', function() {
-        dispatch.filter();
-      });
-
-      _map.on('moveend', function() {
-        dispatch.filter();
-      });
 
       // For each data row, draw and manage event data
       dataset.forEach(point_data.bind(undefined,

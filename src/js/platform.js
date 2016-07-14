@@ -320,7 +320,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * shall from now on be wrapped in an map() in order to support layer groups.
    */
   var pattrn_layer_groups = layer_groups.map((layer_group, layer_group_index, layer_groups_array) => {
-    layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
+    return layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
       let layer_data = {};
       layer_data['dataset'] = layer.data;
       layer_data['crossfilter'] = layer.crossfilter;
@@ -713,6 +713,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .filterByBounds(true);
 
       dc.renderAll();
+
+      return layer_data;
     });
   });
 }

@@ -322,10 +322,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   var pattrn_layer_groups = layer_groups.map((layer_group, layer_group_index, layer_groups_array) => {
     layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
       let layer_data = {};
-      let layer_dataset = layer.data;
-      // @x-technical-debt: xf var used here to reuse the code we had before
-      // adding layers and layer groups - rename this consistently with the rest.
-      let xf = layer.crossfilter;
+      layer_data['dataset'] = layer.data;
+      layer_data['crossfilter'] = layer.crossfilter;
 
       /**
        * get list of variables from metadata
@@ -357,10 +355,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * @x-technical-debt: use a map over variable types
        */
       layer_data['non_empty_variables'] = {
-        integer: layer_data.variable_names.integer.filter(is_column_not_empty.bind(undefined, layer_dataset)),
-        tag: layer_data.variable_names.tag.filter(is_column_not_empty.bind(undefined, layer_dataset)),
-        boolean: layer_data.variable_names.boolean.filter(is_column_not_empty.bind(undefined, layer_dataset)),
-        tree: layer_data.variable_names.tree.filter(is_column_not_empty.bind(undefined, layer_dataset))
+        integer: layer_data.variable_names.integer.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
+        tag: layer_data.variable_names.tag.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
+        boolean: layer_data.variable_names.boolean.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
+        tree: layer_data.variable_names.tree.filter(is_column_not_empty.bind(undefined, layer_data.dataset))
       }
 
       /**
@@ -375,27 +373,27 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * use maps here. If this hack cannot be removed altogether (see issue
        * #14 for different values of uncertainty of data).
        */
-      layer_dataset.forEach(function(row, index) {
+      layer_data.dataset.forEach(function(row, index) {
         layer_data.non_empty_variables.integer.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_dataset,
+          dataset: layer_data.dataset,
           row: row,
           index: index,
           empty_value: 0
         }));
         layer_data.non_empty_variables.tag.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_dataset,
+          dataset: layer_data.dataset,
           row: row,
           index: index,
           empty_value: 'Unknown'
         }));
         layer_data.non_empty_variables.boolean.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_dataset,
+          dataset: layer_data.dataset,
           row: row,
           index: index,
           empty_value: 'Unknown'
         }));
         layer_data.non_empty_variables.tree.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_dataset,
+          dataset: layer_data.dataset,
           row: row,
           index: index,
           empty_value: 'Unknown'
@@ -441,7 +439,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             scatterWidth: scatterWidth
           },
           {
-            xf: xf,
+            xf: layer_data.crossfilter,
             dispatch: dispatch
           }));
       });
@@ -481,7 +479,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             scatterWidth: scatterWidth
           },
           {
-            xf: xf,
+            xf: layer_data.crossfilter,
             dispatch: dispatch
           }));
       });
@@ -521,7 +519,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             scatterWidth: scatterWidth
           },
           {
-            xf: xf,
+            xf: layer_data.crossfilter,
             dispatch: dispatch
           }));
       });
@@ -574,7 +572,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 height: 600
               },
               {
-                xf: xf,
+                xf: layer_data.crossfilter,
                 dispatch: dispatch
               },
               {
@@ -588,7 +586,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";
 
       var event_chart_01 = dc.lineChart("#d3_event_chart_01");
-      var event_chart_01_dimension = xf.dimension(function(d) {
+      var event_chart_01_dimension = layer_data.crossfilter.dimension(function(d) {
         return +d3.time.day(d.dd);
       });
       var event_chart_01_group = event_chart_01_dimension.group().reduceCount(function(d) {
@@ -626,7 +624,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
       // TOTAL EVENTS
-      var number_of_events = dc.dataCount("#number_total_events").dimension(xf).group(xf.groupAll());
+      var number_of_events = dc.dataCount("#number_total_events").dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
 
       // Resize charts
       window.onresize = function(event) {
@@ -645,7 +643,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       };
 
       // Define dimension of marker
-      var markerDimension = xf.dimension(function(d) {
+      var markerDimension = layer_data.crossfilter.dimension(function(d) {
         return d.eventID;
       });
 

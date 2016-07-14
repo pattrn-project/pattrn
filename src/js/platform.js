@@ -420,7 +420,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         var index_padded = '0' + (index + 1);
 
         dc_charts['number'].push(pattrn_line_chart(index + 1,
-          dataset,
+          layer_data.dataset,
           {
             elements: {
               title: `line_chart_${index_padded}_title`,
@@ -462,7 +462,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         var index_padded = '0' + (index + 1);
 
         dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
-          dataset,
+          layer_data.dataset,
           {
             elements: {
               title: `bar_chart_${index_padded}_title`,
@@ -502,7 +502,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         var index_padded = '0' + (index + 1);
 
         dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
-          dataset,
+          layer_data.dataset,
           {
             elements: {
               title: `boolean_chart_${index_padded}_title`,
@@ -546,7 +546,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           .await(function(error, data) {
             let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
             if(variables.tree.find(item => item.id === layer_data.non_empty_variables.tree[index])['data_from_tree']) {
-              dataset = dataset.map((item) => {
+              layer_data.dataset = layer_data.dataset.map((item) => {
                 // @x-hack add random position in binary tree
                 item[layer_data.non_empty_variables.tree[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
                 return item;
@@ -554,7 +554,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             }
 
             pattrn_tree_chart(index + 1,
-              dataset,
+              layer_data.dataset,
               {
                 elements: {
                   title: `tree_chart_${index_padded}_title`,
@@ -606,7 +606,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .title(function(d) {
           return ('Total number of events: ' + d.value);
         })
-        .x(d3.time.scale().domain(d3.extent(dataset, function(d) {
+        .x(d3.time.scale().domain(d3.extent(layer_data.dataset, function(d) {
           return d.dd;
         })))
         .renderHorizontalGridLines(true)
@@ -652,7 +652,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
         function(p, v) {
           if (!p.indices[v.eventID] || p.indices[v.eventID] === 0) {
-            p.markers[p.markers.length] = dataset[v.eventID].marker;
+            p.markers[p.markers.length] = layer_data.dataset[v.eventID].marker;
             p.indices[v.eventID] = 1;
           } else
             p.indices[v.eventID]++;
@@ -663,7 +663,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           if (p.indices[v.eventID] && p.indices[v.eventID] > 0) {
             p.indices[v.eventID]--;
             if (p.indices[v.eventID] === 0) {
-              var i = p.markers.indexOf(dataset[v.eventID].marker);
+              var i = p.markers.indexOf(layer_data.dataset[v.eventID].marker);
 
               if (i != -1)
                 p.markers.splice(i, 1);
@@ -682,7 +682,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       );
 
       // For each data row, draw and manage event data
-      dataset.forEach(point_data.bind(undefined,
+      layer_data.dataset.forEach(point_data.bind(undefined,
         config,
         instance_settings,
         _map,

@@ -299,9 +299,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     d.dd = dateFormat.parse(d.date_time);
   });
 
-
   /**
-   * get flat list of Pattrn (b/i/t) variables
+   * get flat list of Pattrn (b/i/t/r) variables
    */
   var variable_list = list_all_pattrn_variables(variables);
 

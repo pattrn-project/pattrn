@@ -29,7 +29,8 @@ let $ = require('jquery'),
     q = require('d3-queue'),
     dc = require('dc'),
     crossfilter = require('crossfilter'),
-    range = require('lodash.range');
+    range = require('lodash.range'),
+    jade = require('pug');
 
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';

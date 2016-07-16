@@ -224,17 +224,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   var dispatch = d3.dispatch('filter');
 
   /**
-   * container for all DC charts created later
-   * @x-technical-debt: this should be generated programmatically from the available
-   * variable metadata above
-   */
-  var dc_charts = {
-    number: [],
-    boolean: [],
-    tag: []
-  };
-
-  /**
    * Initialize UI elements (title, subtitle, title area colours, about text)
    */
   initialize_ui(instance_settings);
@@ -322,7 +311,18 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   var pattrn_layer_groups = layer_groups.map((layer_group, layer_group_index, layer_groups_array) => {
     return layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
+      // Layer data structure
       let layer_data = {};
+
+      // DC charts for this layer
+      // @x-technical-debt: generate this programmatically from actual charts created
+      layer_data['dc_charts'] = {
+        integer: [],
+        tag: [],
+        boolean: [],
+        event: [],
+        media: []
+      };
       layer_data['dataset'] = layer.data;
       layer_data['crossfilter'] = layer.crossfilter;
 
@@ -401,8 +401,60 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         }));
       });
 
+      return layer_data;
+    });
+  });
 
+  /**
+   * Create menus
+   * @x-technical-debt: refactor out to separate function
+   */
+   pattrn_layer_groups.forEach((layer_group, index) => {
+     let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
+     let layer_group_menu_template =
+`li.dropdown-submenu.pull-left
+  = layer_group_name`;
+     let layer_menu_template =
+`a(role='menuitem', tabindex='-1', href='#', data-toggle='tab')
+   input(type = 'checkbox', checked = "true")
+   = layer_name`;
 
+     explore_menu_root
+       .append('li')
+       .classed('dropdown-submenu pull-left', true)
+       .text(layer_groups[index].layer_group_id);
+
+     layer_group.forEach((layer_data, layer_index) => {
+       let layer_menu_root = explore_menu_root
+         .append('li')
+         .classed('dropdown-submenu pull-left layer-menu-root', true)
+         .html((d,i) => {
+           return jade.compile(layer_menu_template)( { layer_name: layer_groups[index].layers[layer_index] });
+         });
+
+       layer_menu_root
+         .append('ul')
+         .classed('dropdown-menu');
+
+       Object.keys(layer_data.non_empty_variables).forEach(variable_group => {
+         let variable_group_menu_root = layer_menu_root
+           .select('ul')
+           .selectAll('li')
+           .data(layer_data.non_empty_variables[variable_group]);
+
+         variable_group_menu_root.enter().append('li').append('a').attr('role', 'menuitem').attr('data-toggle', 'tab').text((d,i) => {
+           return d;
+         });
+       });
+     });
+   });
+
+  /**
+   * Create charts and map layers/layer groups
+   * @x-technical-debt: refactor out to separate function
+   */
+  pattrn_layer_groups.forEach(layer_group => {
+    layer_group.forEach(layer_data => {
       /**
        * @x-technical-debt: the HTML elements now hardcoded in the index.html
        * file need to be computationally generated to match the number of
@@ -420,7 +472,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         // appending a left-0-padding to the index of each chart
         var index_padded = '0' + (index + 1);
 
-        dc_charts['number'].push(pattrn_line_chart(index + 1,
+        layer_data.dc_charts['integer'].push(pattrn_line_chart(index + 1,
           layer_data.dataset,
           {
             elements: {
@@ -462,7 +514,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         // appending a left-0-padding to the index of each chart
         var index_padded = '0' + (index + 1);
 
-        dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
+        layer_data.dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
           layer_data.dataset,
           {
             elements: {
@@ -502,7 +554,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         // appending a left-0-padding to the index of each chart
         var index_padded = '0' + (index + 1);
 
-        dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
+        layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
           layer_data.dataset,
           {
             elements: {
@@ -624,24 +676,12 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       event_chart_01.turnOnControls(true);
       event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
+      // @x-technical-debt: this retrofits the legacy event_chart_01 until
+      // it is properly moved into its own function
+      layer_data.dc_charts['event'].push(event_chart_01);
+
       // TOTAL EVENTS
       var number_of_events = dc.dataCount("#number_total_events").dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
-
-      // Resize charts
-      window.onresize = function(event) {
-        var newscatterWidth = document.getElementById('charts').offsetWidth;
-
-        Object.keys(dc_charts).forEach((chart_group) => {
-          dc_charts[chart_group].forEach((chart) => {
-            // @x-technical-debt: check performance issues and re-enable updating
-            // of chart width on viewport resize
-            // chart.width(newscatterWidth);
-          });
-        });
-
-        event_chart_01.width(newscatterWidth);
-        dc.renderAll();
-      };
 
       // Define dimension of marker
       var markerDimension = layer_data.crossfilter.dimension(function(d) {
@@ -718,6 +758,33 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       return layer_data;
     });
   });
+
+  // Resize charts
+  window.onresize = function(event) {
+    var newscatterWidth = document.getElementById('charts').offsetWidth;
+
+    pattrn_layer_groups.forEach(layer_group => {
+      layer_group.forEach(layer => {
+        Object.keys(layer.dc_charts).forEach((chart_group) => {
+          layer.dc_charts[chart_group].forEach((chart) => {
+            // @x-technical-debt: check performance issues and re-enable updating
+            // of chart width on viewport resize; for the moment we are only
+            // updating the width of event charts (subsuming the legacy code's)
+            // resizing of event_chart_01.
+            // Once performance is fixed, we can just remove the if around
+            // chart.width(newscatterWidth)
+
+            if(chart_group === 'event') {
+              chart.width(newscatterWidth);
+            }
+          });
+        });
+      })
+    })
+
+
+    dc.renderAll();
+  };
 }
 
 

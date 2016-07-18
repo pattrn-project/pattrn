@@ -38,7 +38,7 @@ export function parse_pattrn_layer_groups(dataset, metadata) {
           id: layer_group.id,
           name: layer_group.name,
           type: layer_group.type,
-          layers_names: layer_group.layers,
+          layer_names: layer_group.layers,
           variables: layer_group.variables,
           layers: intersection_layer_group(dataset, metadata, layer_group)
         };
@@ -47,7 +47,7 @@ export function parse_pattrn_layer_groups(dataset, metadata) {
           id: layer_group.id,
           name: layer_group.name,
           type: layer_group.type,
-          layers_namess: layer_group.layers,
+          layer_names: layer_group.layers,
           variables: layer_group.variables,
           layers: union_layer_group(dataset, metadata, layer_group)
         };

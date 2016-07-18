@@ -103,28 +103,3 @@ function get_group_layer_selects(metadata, layers) {
     return metadata.layers.find(metadata_layer => metadata_layer.id === layer).select;
   })
 }
-
-/*
-function intersection_layer_group(dataset, metadata, layer_group) {
-  let group_layer_selects = layer_group.layers.map(layer => {
-    return metadata.layers.find(metadata_layer => metadata_layer.id === layer).select;
-  });
-
-  let group_layers_data = dataset.filter(datum => {
-    let matching_selects = [];
-
-    matching_selects = group_layer_selects.filter(select => {
-      return is_defined(datum[select.where.column]) && select.where.in.indexOf(datum[select.where.column]) >= 0;
-    });
-
-    return matching_selects.length;
-  });
-
-  return [
-    {
-      xf: crossfilter(group_layers_data),
-      data: group_layers_data
-    }
-  ]
-}
-*/

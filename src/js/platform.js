@@ -807,11 +807,13 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .group(markerGroup)
         .filterByBounds(true);
 
-      dc.renderAll();
+      // dc.renderAll();
 
       return layer_data;
     });
   });
+
+  dc.renderAll();
 
   // Resize charts
   window.onresize = function(event) {

@@ -408,10 +408,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Create menus
    * @x-technical-debt: refactor out to separate function
    */
-   pattrn_layer_groups.forEach((layer_group, index) => {
+   pattrn_layer_groups.forEach((layer_group, group_index) => {
      let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
      let layer_group_menu_template =
-`li.dropdown-submenu.pull-left
+`li
   = layer_group_name`;
      let layer_menu_template =
 `a(role='menuitem', tabindex='-1', href='#', data-toggle='tab')
@@ -420,31 +420,40 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
      explore_menu_root
        .append('li')
-       .classed('dropdown-submenu pull-left', true)
-       .text(layer_groups[index].layer_group_id);
+       .classed('pull-left', true)
+       .text(layer_groups[group_index].layer_group_id);
 
      layer_group.forEach((layer_data, layer_index) => {
        let layer_menu_root = explore_menu_root
          .append('li')
-         .classed('dropdown-submenu pull-left layer-menu-root', true)
+         .classed('layer-menu-root', true)
          .html((d,i) => {
-           return jade.compile(layer_menu_template)( { layer_name: layer_groups[index].layers[layer_index] });
-         });
+           return jade.compile(layer_menu_template)(
+             {
+               layer_name: layer_groups[group_index].layers[layer_index]
+             }
+           );
+         })
+         .append('ul');
 
-       layer_menu_root
-         .append('ul')
-         .classed('dropdown-menu');
-
-       Object.keys(layer_data.non_empty_variables).forEach(variable_group => {
+       Object.keys(layer_data.non_empty_variables).forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root
-           .select('ul')
            .selectAll('li')
            .data(layer_data.non_empty_variables[variable_group]);
 
-         variable_group_menu_root.enter().append('li').append('a').attr('role', 'menuitem').attr('data-toggle', 'tab').text((d,i) => {
-           // @x-technical-debt: check that variable exists before trying to read its name
-           return variable_list.find(variable => variable.id === d).name;
-         });
+         variable_group_menu_root
+           .enter()
+           .append('li')
+           .append('a')
+           .attr('role', 'menuitem')
+           .attr('data-toggle', 'tab')
+           .attr('href', (d, i) => {
+             return `#chart_group${group_index}_layer${layer_index}_vg${variable_group_index}_var${i}`;
+           })
+           .text((d,i) => {
+             // @x-technical-debt: check that variable exists before trying to read its name
+             return variable_list.find(variable => variable.id === d).name;
+           });
        });
      });
    });
@@ -453,8 +462,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Create charts and map layers/layer groups
    * @x-technical-debt: refactor out to separate function
    */
-  pattrn_layer_groups.forEach(layer_group => {
-    layer_group.forEach(layer_data => {
+  pattrn_layer_groups.forEach((layer_group, group_index) => {
+    layer_group.forEach((layer_data, layer_index) => {
       /**
        * @x-technical-debt: the HTML elements now hardcoded in the index.html
        * file need to be computationally generated to match the number of

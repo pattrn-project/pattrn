@@ -307,10 +307,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   var layer_groups = parse_pattrn_layer_groups(dataset, dataset_metadata);
 
-  console.log("Let's have a look at layer groups:");
-
-  console.log(layer_groups);
-
   /**
    * @since 2.0.0-alpha22
    * What was once the Oomph Omnibus Master Loop in Pattrn v1, subsequently
@@ -419,6 +415,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
     return layer_group;
   });
+
+  console.log("Let's have a look at layer groups:");
+
+  console.log(pattrn_layer_groups);
 
   /**
    * Create menus

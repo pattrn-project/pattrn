@@ -228,7 +228,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   initialize_ui(instance_settings);
 
-
   // Initialize map
   _map = L.map(instance_settings.map.root_selector, {
     touchZoom: false,

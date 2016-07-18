@@ -306,9 +306,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * shall from now on be wrapped in an map() in order to support layer groups.
    */
   var pattrn_layer_groups = layer_groups.map((layer_group, layer_group_index, layer_groups_array) => {
-    return layer_group.crossfilters.map((layer, layer_index, layer_group_crossfilters_array) => {
-      // Layer data structure
-      let layer_data = {};
+    let group_layers = layer_group.layers.map((layer, layer_index, layer_group_layers_array) => {
+      // Layer data structure: initialize with layer metadata as parsed via parse_pattrn_layer_groups()
+      let layer_data = layer;
 
       // DC charts for this layer
       // @x-technical-debt: generate this programmatically from actual charts created
@@ -402,6 +402,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
       return layer_data;
     });
+
+    layer_group.layers = group_layers;
+
+    return layer_group;
   });
 
   /**
@@ -421,16 +425,16 @@ function consume_table(data_source_type, config, platform_settings, settings, da
      explore_menu_root
        .append('li')
        .classed('pull-left', true)
-       .text(layer_groups[group_index].layer_group_id);
+       .text(layer_group.name);
 
-     layer_group.forEach((layer_data, layer_index) => {
+     layer_group.layers.forEach((layer_data, layer_index) => {
        let layer_menu_root = explore_menu_root
          .append('li')
          .classed('layer-menu-root', true)
          .html((d,i) => {
            return jade.compile(layer_menu_template)(
              {
-               layer_name: layer_groups[group_index].layers[layer_index]
+               layer_name: layer_data.name
              }
            );
          })
@@ -463,7 +467,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * @x-technical-debt: refactor out to separate function
    */
   pattrn_layer_groups.forEach((layer_group, group_index) => {
-    layer_group.forEach((layer_data, layer_index) => {
+    layer_group.layers.forEach((layer_data, layer_index) => {
       /**
        * @x-technical-debt: the HTML elements now hardcoded in the index.html
        * file need to be computationally generated to match the number of

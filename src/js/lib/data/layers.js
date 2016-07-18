@@ -35,17 +35,21 @@ export function parse_pattrn_layer_groups(dataset, metadata) {
 
       if(layer_group.type === 'intersection') {
         return {
-          layer_group_id: layer_group.id,
+          id: layer_group.id,
+          name: layer_group.name,
           type: layer_group.type,
-          layers: layer_group.layers,
-          crossfilters: intersection_layer_group(dataset, metadata, layer_group)
+          layers_names: layer_group.layers,
+          variables: layer_group.variables,
+          layers: intersection_layer_group(dataset, metadata, layer_group)
         };
       } else if(layer_group.type === 'union') {
         return {
-          layer_group_id: layer_group.id,
+          id: layer_group.id,
+          name: layer_group.name,
           type: layer_group.type,
-          layers: layer_group.layers,
-          crossfilters: union_layer_group(dataset, metadata, layer_group)
+          layers_namess: layer_group.layers,
+          variables: layer_group.variables,
+          layers: union_layer_group(dataset, metadata, layer_group)
         };
       }
     });
@@ -56,15 +60,19 @@ export function parse_pattrn_layer_groups(dataset, metadata) {
 
 function union_layer_group(dataset, metadata, layer_group) {
   let group_layers_data = layer_group.layers.map((layer, index) => {
-    return layer_data(dataset, metadata, [ layer_group.layers[index] ], layer);
+    let data = layer_data(dataset, metadata, [ layer_group.layers[index] ], layer);
+    let layer_metadata = metadata.layers.find(layer => layer.id === layer_group.layers[index]);
+
+    return {
+      id: layer_metadata.id,
+      name: layer_metadata.name,
+      data: data,
+      crossfilter: crossfilter(data),
+      variables: layer_metadata.variables
+    };
   });
 
-  return group_layers_data.map(item => {
-    return {
-      crossfilter: crossfilter(item),
-      data: item
-    }
-  });
+  return group_layers_data;
 }
 
 function intersection_layer_group(dataset, metadata, layer_group) {
@@ -74,10 +82,18 @@ function intersection_layer_group(dataset, metadata, layer_group) {
 
   let data_union = [].concat.apply([], group_layers_data);
 
+  /**
+   * @x-technical-debt: best not to hardcode id and name here. we may need to
+   * make this configurable via metadata or instance defaults in a later
+   * iteration.
+   */
   return [
     {
+      id: 'all_data',
+      name: 'all data',
       crossfilter: crossfilter(data_union),
-      data: data_union
+      data: data_union,
+      variables: layer_group.variables
     }
   ];
 }

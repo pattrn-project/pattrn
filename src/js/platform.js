@@ -438,9 +438,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 `li
   = layer_group_name`;
      let layer_menu_template =
-`a(role='menuitem', tabindex='-1', href='#', data-toggle='tab')
-   input(type = 'checkbox', checked = "true")
-   = layer_name`;
+`input(type = 'checkbox', checked = "true")
+= layer_name`;
 
      explore_menu_root
        .append('li')
@@ -472,7 +471,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
            .attr('role', 'menuitem')
            .attr('data-toggle', 'tab')
            .attr('href', (d, i) => {
-             return `#chart_group${group_index}_layer${layer_index}_vg${variable_group_index}_var${i}`;
+             return `#lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${i}`;
            })
            .text((d,i) => {
              // @x-technical-debt: check that variable exists before trying to read its name

@@ -443,7 +443,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
      explore_menu_root
        .append('li')
-       .classed('pull-left', true)
        .text(layer_group.name);
 
      layer_group.layers.forEach((layer_data, layer_index) => {
@@ -451,16 +450,21 @@ function consume_table(data_source_type, config, platform_settings, settings, da
          .append('li')
          .classed('layer-menu-root', true)
          .html((d,i) => {
-           return jade.compile(layer_menu_template)(
-             {
-               layer_name: layer_data.name
-             }
-           );
+           if(layer_group.type === 'intersection') { return; }
+           else {
+             return jade.compile(layer_menu_template)(
+               {
+                 layer_name: layer_data.name
+               }
+             );
+           }
          })
          .append('ul');
 
        Object.keys(layer_data.non_empty_variables).forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root
+           .append('li')
+           .append('ul')
            .selectAll('li')
            .data(layer_data.non_empty_variables[variable_group]);
 

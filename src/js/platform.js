@@ -348,10 +348,18 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * @x-technical-debt: use a map over variable types
        */
       layer_data['variable_names'] = {
-        integer: (is_defined(variables) && is_defined(variables.integer)) ? variables.integer.map((item) => { return item.id; }) : [],
-        tag: (is_defined(variables) && is_defined(variables.tag)) ? variables.tag.map((item) => { return item.id; }) : [],
-        boolean: (is_defined(variables) && is_defined(variables.boolean)) ? variables.boolean.map((item) => { return item.id; }) : [],
-        tree: (is_defined(variables) && is_defined(variables.tree)) ? variables.tree.map((item) => { return item.id; }) : []
+        integer: (is_defined(layer_data.variables) && is_defined(layer_data.variables.integer)) ?
+          layer_data.variables.integer.map((item) => { return item.id; }) :
+          [],
+        tag: (is_defined(layer_data.variables) && is_defined(layer_data.variables.tag)) ?
+          layer_data.variables.tag.map((item) => { return item.id; }) :
+          [],
+        boolean: (is_defined(layer_data.variables) && is_defined(layer_data.variables.boolean)) ?
+          layer_data.variables.boolean.map((item) => { return item.id; }) :
+          [],
+        tree: (is_defined(layer_data.variables) && is_defined(layer_data.variables.tree)) ?
+          layer_data.variables.tree.map((item) => { return item.id; }) :
+          []
       };
 
       /**

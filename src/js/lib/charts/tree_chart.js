@@ -49,7 +49,8 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   // var tree_field_name_X = chart_settings.fields.field_name;
 
   var tree_chart_0X_title = document.getElementById(chart_settings.elements.title);
-  tree_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
+  // @x-technical-debt: create element and re-enable following line
+  // tree_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
   var tree_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
 
   var width = chart_width;

@@ -442,7 +442,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
            .data(layer_data.non_empty_variables[variable_group]);
 
          variable_group_menu_root.enter().append('li').append('a').attr('role', 'menuitem').attr('data-toggle', 'tab').text((d,i) => {
-           return d;
+           // @x-technical-debt: check that variable exists before trying to read its name
+           return variable_list.find(variable => variable.id === d).name;
          });
        });
      });

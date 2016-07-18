@@ -43,3 +43,14 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 .pattrn_tree_chart text.inactive {
   fill: #999;
 }
+
+/**
+ * @x-technical-debt: ad-hoc hack to fit larger popup menus in a desktop
+ * screen; this whole thing should be avoided by moving the menu to an
+ * off-canvas component
+ */
+.layer-groups-root {
+  min-width: 600px;
+  column-count: 3;
+  column-gap: 4rem;
+}

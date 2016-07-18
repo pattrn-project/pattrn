@@ -495,10 +495,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   pattrn_layer_groups.forEach((layer_group, group_index) => {
     layer_group.layers.forEach((layer_data, layer_index) => {
+
       /**
-       * @x-technical-debt: the HTML elements now hardcoded in the index.html
-       * file need to be computationally generated to match the number of
-       * variables of integer type actually in use.
        * @x-technical-debt: in legacy code, a variable for each chart was
        * created in this scope, with its only effective use being in
        * window.onresize() to trigger a repaint of each chart affected. This
@@ -507,172 +505,188 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * more perfomant (e.g. do we need to repaint both visible and invisible
        * charts?).
        */
-      layer_data.non_empty_variables.integer.forEach(function(item, index) {
-        // @x-technical-debt: get rid of this way of labelling elements by
-        // appending a left-0-padding to the index of each chart
-        var index_padded = '0' + (index + 1);
+      Object.keys(layer_data.non_empty_variables).forEach((variable_group, variable_group_index) => {
 
-        layer_data.dc_charts['integer'].push(pattrn_line_chart(index + 1,
-          layer_data.dataset,
-          {
-            elements: {
-              title: `line_chart_${index_padded}_title`,
-              chart_title: `line_chart_${index_padded}_chartTitle`,
-              d3_line_chart: `#d3_line_chart_${index_padded}`,
-              aggregate_count_title: `agreggateCountTitle_${index_padded}`,
-              d3_aggregate_count: `#d3_aggregate_count_${index_padded}`,
-              slider_chart: `#SliderChart_${index_padded}`
-            },
-            fields: {
-              field_name: layer_data.non_empty_variables.integer[index],
-              field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index])) ?
-                variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index]).name :
-                layer_data.non_empty_variables.integer[index]
-            },
-            scatterWidth: scatterWidth
-          },
-          {
-            xf: layer_data.crossfilter,
-            dispatch: dispatch
-          }));
-      });
+        /**
+         * @x-technical-debt: the HTML elements now hardcoded in the index.html
+         * file need to be computationally generated to match the number of
+         * variables of tag type actually in use.
+         * @x-technical-debt: in legacy code, a variable for each chart was
+         * created in this scope, with its only effective use being in
+         * window.onresize() to trigger a repaint of each chart affected. This
+         * breaks with the refactored code and needs to be restored, while
+         * also investigating whether a different way to handle this could be
+         * more perfomant (e.g. do we need to repaint both visible and invisible
+         * charts?).
+         */
 
-      /**
-       * @x-technical-debt: the HTML elements now hardcoded in the index.html
-       * file need to be computationally generated to match the number of
-       * variables of tag type actually in use.
-       * @x-technical-debt: in legacy code, a variable for each chart was
-       * created in this scope, with its only effective use being in
-       * window.onresize() to trigger a repaint of each chart affected. This
-       * breaks with the refactored code and needs to be restored, while
-       * also investigating whether a different way to handle this could be
-       * more perfomant (e.g. do we need to repaint both visible and invisible
-       * charts?).
-       */
-      layer_data.non_empty_variables.tag.forEach(function(item, index) {
-        // @x-technical-debt: get rid of this way of labelling elements by
-        // appending a left-0-padding to the index of each chart
-        var index_padded = '0' + (index + 1);
+        /**
+         * @x-technical-debt: switch from overlapping forEach + if to a proper
+         * forEach iterating over variable groups
+         */
 
-        layer_data.dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
-          layer_data.dataset,
-          {
-            elements: {
-              title: `bar_chart_${index_padded}_title`,
-              chart_title: `bar_chart_${index_padded}_chartTitle`,
-              d3_bar_chart: `#d3_bar_chart_${index_padded}`,
-              aggregate_count_title: `agreggateCountTitle_${index_padded}`
-            },
-            fields: {
-              field_name: layer_data.non_empty_variables.tag[index],
-              field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index])) ?
-                variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index]).name :
-                layer_data.non_empty_variables.tag[index]
-            },
-            scatterWidth: scatterWidth
-          },
-          {
-            xf: layer_data.crossfilter,
-            dispatch: dispatch
-          }));
-      });
+        if(variable_group === 'integer') {
+          layer_data.non_empty_variables.integer.forEach(function(item, index) {
+            // @x-technical-debt: remove intermediate index_padded var and just
+            // use index once done with refactoring to layer groups
+            let index_padded = index;
+            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
 
-      /**
-       * @x-technical-debt: the HTML elements now hardcoded in the index.html
-       * file need to be computationally generated to match the number of
-       * variables of boolean type actually in use.
-       * @x-technical-debt: in legacy code, a variable for each chart was
-       * created in this scope, with its only effective use being in
-       * window.onresize() to trigger a repaint of each chart affected. This
-       * breaks with the refactored code and needs to be restored, while
-       * also investigating whether a different way to handle this could be
-       * more perfomant (e.g. do we need to repaint both visible and invisible
-       * charts?).
-       */
-      layer_data.non_empty_variables.boolean.forEach(function(item, index) {
-        // @x-technical-debt: get rid of this way of labelling elements by
-        // appending a left-0-padding to the index of each chart
-        var index_padded = '0' + (index + 1);
+            /**
+             * Create HTML fragment for chart tab
+             * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
+             * @x-technical-debt do not hardcode root of chart tabs
+             */
+            $('#charts .tab-content').append(line_chart_template({ chart_id: chart_id }));
 
-        layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
-          layer_data.dataset,
-          {
-            elements: {
-              title: `boolean_chart_${index_padded}_title`,
-              chart_title: `boolean_chart_${index_padded}_chartTitle`,
-              d3_bar_chart: `#d3_boolean_chart_${index_padded}`,
-              aggregate_count_title: `agreggateCountTitle_${index_padded}`
-            },
-            fields: {
-              field_name: layer_data.non_empty_variables.boolean[index],
-              field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
-                variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
-                layer_data.non_empty_variables.boolean[index]
-            },
-            scatterWidth: scatterWidth
-          },
-          {
-            xf: layer_data.crossfilter,
-            dispatch: dispatch
-          }));
-      });
-
-      /**
-       * Tree charts
-       * @x-technical-debt: this is currently just calling a stub function, which
-       * needs to be written.
-       * These charts currently work 'outside-in', as opposed to the other charts
-       * above, which are generated starting from dataset variables; tree charts
-       * are initially generated starting from the actual tree structures, which
-       * are then matched to the related dataset variables. This is mainly because
-       * all this chart code is mostly stub. Once fully implemented, these charts
-       * need to be working exactly like the others.
-       */
-      layer_data.non_empty_variables.tree.forEach(function(item, index) {
-        // @x-technical-debt: get rid of this way of labelling elements by
-        // appending a left-0-padding to the index of each chart
-        var index_padded = '0' + (index + 1);
-
-        // @x-technical-debt: need to check that item.tree_data is actually defined
-        q.queue()
-          .defer(d3.json, variables.tree[index].tree_data)
-          .await(function(error, data) {
-            let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
-            if(variables.tree.find(item => item.id === layer_data.non_empty_variables.tree[index])['data_from_tree']) {
-              layer_data.dataset = layer_data.dataset.map((item) => {
-                // @x-hack add random position in binary tree
-                item[layer_data.non_empty_variables.tree[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
-                return item;
-              });
-            }
-
-            pattrn_tree_chart(index + 1,
+            layer_data.dc_charts['integer'].push(pattrn_line_chart(index + 1,
               layer_data.dataset,
               {
                 elements: {
-                  title: `tree_chart_${index_padded}_title`,
-                  chart_title: `tree_chart_${index_padded}_chartTitle`,
-                  d3_chart: `#d3_tree_chart_${index_padded}`,
-                  aggregate_count_title: `agreggateCountTitle_${index_padded}`
+                  title: `line_chart_${chart_id}_title`,
+                  chart_title: `line_chart_${chart_id}_chartTitle`,
+                  d3_line_chart: `#d3_line_chart_${chart_id}`,
+                  aggregate_count_title: `agreggateCountTitle_${chart_id}`,
+                  d3_aggregate_count: `#d3_aggregate_count_${chart_id}`,
+                  slider_chart: `#SliderChart_${chart_id}`
                 },
                 fields: {
-                  field_name: layer_data.non_empty_variables.tree[index],
-                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index])) ?
-                    variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index]).name :
-                    layer_data.non_empty_variables.tree[index]
+                  field_name: layer_data.non_empty_variables.integer[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index]).name :
+                    layer_data.non_empty_variables.integer[index]
                 },
-                scatterWidth: scatterWidth,
-                height: 600
+                scatterWidth: scatterWidth
               },
               {
                 xf: layer_data.crossfilter,
                 dispatch: dispatch
+              }));
+          });
+        }
+
+        if(variable_group === 'tag') {
+          layer_data.non_empty_variables.tag.forEach(function(item, index) {
+            // @x-technical-debt: remove intermediate index_padded var and just
+            // use index once done with refactoring to layer groups
+            let index_padded = index;
+            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
+
+            /**
+             * Create HTML fragment for chart tab
+             * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
+             * @x-technical-debt do not hardcode root of chart tabs
+             */
+            $('#charts .tab-content').append(tag_bar_chart_template({ chart_id: chart_id }));
+
+            layer_data.dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
+              layer_data.dataset,
+              {
+                elements: {
+                  title: `bar_chart_${chart_id}_title`,
+                  chart_title: `bar_chart_${chart_id}_chartTitle`,
+                  d3_bar_chart: `#d3_bar_chart_${chart_id}`,
+                  aggregate_count_title: `agreggateCountTitle_${chart_id}`
+                },
+                fields: {
+                  field_name: layer_data.non_empty_variables.tag[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index]).name :
+                    layer_data.non_empty_variables.tag[index]
+                },
+                scatterWidth: scatterWidth
               },
               {
-                tree_data: data,
-                field_name: variables['tree'][index]
+                xf: layer_data.crossfilter,
+                dispatch: dispatch
+              }));
+          });
+        }
+
+        layer_data.non_empty_variables.boolean.forEach(function(item, index) {
+          // @x-technical-debt: get rid of this way of labelling elements by
+          // appending a left-0-padding to the index of each chart
+          var index_padded = '0' + (index + 1);
+
+          layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
+            layer_data.dataset,
+            {
+              elements: {
+                title: `boolean_chart_${index_padded}_title`,
+                chart_title: `boolean_chart_${index_padded}_chartTitle`,
+                d3_bar_chart: `#d3_boolean_chart_${index_padded}`,
+                aggregate_count_title: `agreggateCountTitle_${index_padded}`
+              },
+              fields: {
+                field_name: layer_data.non_empty_variables.boolean[index],
+                field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
+                  variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
+                  layer_data.non_empty_variables.boolean[index]
+              },
+              scatterWidth: scatterWidth
+            },
+            {
+              xf: layer_data.crossfilter,
+              dispatch: dispatch
+            }));
+        });
+
+        if(variable_group === 'tree') {
+          layer_data.non_empty_variables.tree.forEach(function(item, index) {
+            // @x-technical-debt: remove intermediate index_padded var and just
+            // use index once done with refactoring to layer groups
+            let index_padded = index;
+            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
+
+            /**
+             * Create HTML fragment for chart tab
+             * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
+             * @x-technical-debt do not hardcode root of chart tabs
+             */
+            $('#charts .tab-content').append(tree_chart_template({ chart_id: chart_id }));
+
+            // @x-technical-debt: need to check that item.tree_data is actually defined
+            q.queue()
+              .defer(d3.json, variables.tree[index].tree_data)
+              .await(function(error, data) {
+                let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
+                if(variables.tree.find(item => item.id === layer_data.non_empty_variables.tree[index])['data_from_tree']) {
+                  layer_data.dataset = layer_data.dataset.map((item) => {
+                    // @x-hack add random position in binary tree
+                    item[layer_data.non_empty_variables.tree[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
+                    return item;
+                  });
+                }
+
+                pattrn_tree_chart(index + 1,
+                  layer_data.dataset,
+                  {
+                    elements: {
+                      title: `tree_chart_${chart_id}_title`,
+                      chart_title: `tree_chart_${chart_id}_chartTitle`,
+                      d3_chart: `#d3_tree_chart_${chart_id}`,
+                      aggregate_count_title: `agreggateCountTitle_${chart_id}`
+                    },
+                    fields: {
+                      field_name: layer_data.non_empty_variables.tree[index],
+                      field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index])) ?
+                        variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index]).name :
+                        layer_data.non_empty_variables.tree[index]
+                    },
+                    scatterWidth: scatterWidth,
+                    height: 600
+                  },
+                  {
+                    xf: layer_data.crossfilter,
+                    dispatch: dispatch
+                  },
+                  {
+                    tree_data: data,
+                    field_name: variables['tree'][index]
+                  });
               });
           });
+        }
       });
 
       // timeline by EVENTS

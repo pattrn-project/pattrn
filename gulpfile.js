@@ -115,7 +115,7 @@ gulp.task('views', [], () => {
 });
 
 gulp.task('sass', function () {
-  return gulp.src(config.vendor_stylesheets.map(item => item.stylesheets).concat(config.src + '/css/**/*.css'))
+  return gulp.src(config.vendor_stylesheets.map(item => item.stylesheets).concat([ config.src + '/css/**/*.css', config.src + '/css/**/*.scss']))
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(config.dest + '/css'));
 });

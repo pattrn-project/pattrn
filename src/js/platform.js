@@ -258,9 +258,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     }));
 
   dataset = dataset.map(function(item, index) {
-    // @x-legacy-comment Make new column with eventID for the charts / markers
-    item['eventID'] = index;
-
     // actually populate variables configured to have their data populated
     // programmatically
     variables_from_mock_data.forEach((variable) => {
@@ -375,6 +372,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * #14 for different values of uncertainty of data).
        */
       layer_data.dataset.forEach(function(row, index) {
+        // @x-legacy-comment Make new column with eventID for the charts / markers
+        layer_data.dataset[index]['eventID'] = index;
+
         layer_data.non_empty_variables.integer.forEach(replace_undefined_values.bind(undefined, {
           dataset: layer_data.dataset,
           row: row,

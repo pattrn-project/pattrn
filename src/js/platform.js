@@ -69,6 +69,18 @@ import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
 
 /**
+ * Pattrn theme views
+ * This will need to be refactored into a proper pluggable and configurable
+ * theme system, but the first iteration aims at feature parity with the
+ * legacy hardcoded HTML.
+ */
+import { template as line_chart_template } from './lib/themes/pattrn-begins/charts/line_chart.js';
+import { template as tag_bar_chart_template } from './lib/themes/pattrn-begins/charts/tag_bar_chart.js';
+import { template as boolean_chart_template } from './lib/themes/pattrn-begins/charts/boolean_chart.js';
+import { template as tree_chart_template } from './lib/themes/pattrn-begins/charts/tree_chart.js';
+import { template as aggregate_count_widget_template } from './lib/themes/pattrn-begins/widgets/aggregate_count.js';
+
+/**
  * @x-technical-debt: this should be handled properly through the ES6 import
  */
 array_equals();

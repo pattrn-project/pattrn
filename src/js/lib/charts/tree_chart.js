@@ -80,7 +80,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
       return [d.y, d.x];
     });
 
-  var svg = d3.select(chart_settings.elements.d3_chart).append("svg")
+  var svg = d3.select(chart_settings.elements.dc_chart).append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")

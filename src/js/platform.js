@@ -324,7 +324,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         integer: [],
         tag: [],
         boolean: [],
-        event: [],
+        tree: [],
+        event_count: [],
         media: []
       };
       layer_data['dataset'] = layer.data;
@@ -549,7 +550,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 elements: {
                   title: `line_chart_${chart_id}_title`,
                   chart_title: `line_chart_${chart_id}_chartTitle`,
-                  d3_line_chart: `#d3_line_chart_${chart_id}`,
+                  dc_chart: `#d3_line_chart_${chart_id}`,
                   aggregate_count_title: `agreggateCountTitle_${chart_id}`,
                   d3_aggregate_count: `#d3_aggregate_count_${chart_id}`,
                   slider_chart: `#SliderChart_${chart_id}`
@@ -587,7 +588,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 elements: {
                   title: `bar_chart_${chart_id}_title`,
                   chart_title: `bar_chart_${chart_id}_chartTitle`,
-                  d3_bar_chart: `#d3_bar_chart_${chart_id}`,
+                  dc_chart: `#d3_bar_chart_${chart_id}`,
                   aggregate_count_title: `agreggateCountTitle_${chart_id}`
                 },
                 fields: {
@@ -623,7 +624,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 elements: {
                   title: `boolean_chart_${chart_id}_title`,
                   chart_title: `boolean_chart_${chart_id}_chartTitle`,
-                  d3_bar_chart: `#d3_boolean_chart_${chart_id}`,
+                  dc_chart: `#d3_boolean_chart_${chart_id}`,
                   aggregate_count_title: `agreggateCountTitle_${chart_id}`
                 },
                 fields: {
@@ -672,7 +673,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                     elements: {
                       title: `tree_chart_${chart_id}_title`,
                       chart_title: `tree_chart_${chart_id}_chartTitle`,
-                      d3_chart: `#d3_tree_chart_${chart_id}`,
+                      dc_chart: `#d3_tree_chart_${chart_id}`,
                       aggregate_count_title: `agreggateCountTitle_${chart_id}`
                     },
                     fields: {

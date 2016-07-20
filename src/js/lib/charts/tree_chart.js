@@ -106,6 +106,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    */
   pattrn_objects.dispatch.on('filter', () => {
     update(root);
+    dc.redrawAll(chart_settings.dc_chart_group)
   });
 
   function update(source) {

@@ -85,18 +85,6 @@ html
           // TIMELINE
           each chart_id in [ '01' ]
             include ./views/partials/charts/chart-events.jade
-          // LINE CHARTS
-          each chart_id in [ '01', '02', '03', '04', '05' ]
-            include ./views/partials/charts/chart-linechart.jade
-          // TAG CHARTS
-          each chart_id in [ '01', '02', '03', '04', '05' ]
-            include ./views/partials/charts/chart-tagchart.jade
-          // BOOLEAN CHARTS
-          each chart_id in [ '01', '02', '03', '04', '05' ]
-            include ./views/partials/charts/chart-booleanchart.jade
-          // TREE CHARTS
-          each chart_id in [ '01', '02', '03', '04', '05' ]
-            include ./views/partials/charts/chart-treechart.jade
           #aggregate_counts.tab-pane.fade.in
             .row
               .col-sm-12.col-lg-12

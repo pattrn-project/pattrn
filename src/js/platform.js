@@ -63,6 +63,7 @@ import { point_data } from './lib/data/point_data.js';
  * Pattrn chart types
  * These are based on chart modules, abstracted from the duplicated code (5x) in Pattrn v1
  */
+import { pattrn_event_count_chart } from './lib/charts/event_count_chart.js';
 import { pattrn_line_chart } from './lib/charts/line_chart.js';
 import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
@@ -74,6 +75,7 @@ import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
  * theme system, but the first iteration aims at feature parity with the
  * legacy hardcoded HTML.
  */
+import { template as event_count_chart_template } from './lib/themes/pattrn-begins/charts/event_count_chart.js';
 import { template as line_chart_template } from './lib/themes/pattrn-begins/charts/line_chart.js';
 import { template as tag_bar_chart_template } from './lib/themes/pattrn-begins/charts/tag_bar_chart.js';
 import { template as boolean_chart_template } from './lib/themes/pattrn-begins/charts/boolean_chart.js';
@@ -697,52 +699,47 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               });
           });
         }
+
+        if(variable_group.type === 'event_count') {
+          layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names.forEach((item, index) => {
+            /**
+             * Event counts over time
+             * @x-technical-debt: to be refactored into its own module - or just
+             * adapted to use the generic line_chart code and templates
+             */
+            let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
+
+            /**
+             * Create HTML fragment for chart tab
+             * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
+             * @x-technical-debt do not hardcode root of chart tabs
+             */
+            $('#charts .tab-content').append(event_count_chart_template({ chart_id: chart_id }));
+
+            layer_data.dc_charts['event_count'].push(pattrn_event_count_chart(index + 1,
+              layer_data.dataset,
+              {
+                elements: {
+                  title: `event_count_chart_${chart_id}_title`,
+                  chart_title: `event_count_chart_${chart_id}_chartTitle`,
+                  dc_chart: `#d3_event_chart_${chart_id}`
+                },
+                fields: {
+                  field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :
+                    layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]
+                },
+                dc_chart_group: chart_group_id,
+                scatterWidth: scatterWidth
+              },
+              {
+                xf: layer_data.crossfilter,
+                dispatch: dispatch
+              }));
+            })
+        }
       });
-
-      // timeline by EVENTS
-      var event_chart_01_chartTitle = document.getElementById('event_chart_01_chartTitle').innerHTML = "Number of Events over Time";
-
-      var event_chart_01 = dc.lineChart("#d3_event_chart_01");
-      var event_chart_01_dimension = layer_data.crossfilter.dimension(function(d) {
-        return +d3.time.day(d.dd);
-      });
-      var event_chart_01_group = event_chart_01_dimension.group().reduceCount(function(d) {
-        return +d3.time.day(d.dd);
-      });
-
-      event_chart_01.width(scatterWidth)
-        .height(chartHeight)
-        .margins({
-          top: 0,
-          right: 50,
-          bottom: 50,
-          left: 50
-        })
-        .dimension(event_chart_01_dimension)
-        .group(event_chart_01_group)
-        .title(function(d) {
-          return ('Total number of events: ' + d.value);
-        })
-        .x(d3.time.scale().domain(d3.extent(layer_data.dataset, function(d) {
-          return d.dd;
-        })))
-        .renderHorizontalGridLines(true)
-        .renderVerticalGridLines(true)
-        .yAxisLabel("no. of events")
-        .elasticY(true)
-        .on("filtered", function(d) {
-          return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
-        })
-        .brushOn(true)
-        .xAxis();
-
-      event_chart_01.yAxis().ticks(3);
-      event_chart_01.turnOnControls(true);
-      event_chart_01.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
-
-      // @x-technical-debt: this retrofits the legacy event_chart_01 until
-      // it is properly moved into its own function
-      layer_data.dc_charts['event'].push(event_chart_01);
 
       // Define dimension of marker
       var markerDimension = layer_data.crossfilter.dimension(function(d) {

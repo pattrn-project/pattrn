@@ -434,30 +434,29 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
    pattrn_layer_groups.forEach((layer_group, group_index) => {
      let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
-     let layer_group_menu_template =
-`li
-  = layer_group_name`;
      let layer_menu_template =
-`input(type = 'checkbox', checked = "true")
-= layer_name`;
+`span.layer-root
+  input(type = 'checkbox', checked = "true")
+  = layer_name`;
 
      explore_menu_root
        .append('li')
-       .text(layer_group.name);
+       .text(() => {
+         if(layer_group.type === 'intersection') return;
+         else return layer_group.name;
+       });
 
      layer_group.layers.forEach((layer_data, layer_index) => {
        let layer_menu_root = explore_menu_root
          .append('li')
          .classed('layer-menu-root', true)
+         .classed(`layer-root-${layer_data.id}`, true)
          .html((d,i) => {
-           if(layer_group.type === 'intersection') { return; }
-           else {
-             return jade.compile(layer_menu_template)(
-               {
-                 layer_name: layer_data.name
-               }
-             );
-           }
+           return jade.compile(layer_menu_template)(
+             {
+               layer_name: layer_data.name
+             }
+           );
          })
          .append('ul');
 
@@ -501,6 +500,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     layer_group.layers.forEach((layer_data, layer_index) => {
       // group id used to group DC charts
       let chart_group_id = `lg${group_index}_ly${layer_index}`;
+      // selector for root of layer menu, used to append the DC data count widget
+      let layer_data_count_selector = `.layer-root-${layer_data.id}`;
 
       /**
        * @x-technical-debt: in legacy code, a variable for each chart was
@@ -754,9 +755,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       // it is properly moved into its own function
       layer_data.dc_charts['event'].push(event_chart_01);
 
-      // TOTAL EVENTS
-      var number_of_events = dc.dataCount("#number_total_events").dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
-
       // Define dimension of marker
       var markerDimension = layer_data.crossfilter.dimension(function(d) {
         return d.eventID;
@@ -828,6 +826,14 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .group(markerGroup)
         .filterByBounds(true);
 
+
+      // DC data counter for this layer
+      d3.select(`${layer_data_count_selector} .layer-root`)
+        .append('span')
+        .classed('data-counter', true);
+
+      dc.dataCount(`${layer_data_count_selector} .layer-root .data-counter`, chart_group_id).dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
+
       dc.renderAll(chart_group_id);
 
       return layer_data;
@@ -839,8 +845,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   window.onresize = function(event) {
     var newscatterWidth = document.getElementById('charts').offsetWidth;
 
-    pattrn_layer_groups.forEach(layer_group => {
-      layer_group.forEach(layer => {
+    pattrn_layer_groups.forEach((layer_group, group_index) => {
+      layer_group.forEach((layer, layer_index) => {
+        // group id used to group DC charts
+        let chart_group_id = `lg${group_index}_ly${layer_index}`;
+
         Object.keys(layer.dc_charts).forEach((chart_group) => {
           layer.dc_charts[chart_group].forEach((chart) => {
             // @x-technical-debt: check performance issues and re-enable updating
@@ -855,11 +864,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             }
           });
         });
+
+        dc.redrawAll(chart_group_id);
       })
     })
-
-
-    dc.renderAll();
   };
 }
 

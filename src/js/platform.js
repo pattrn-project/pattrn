@@ -28,7 +28,7 @@ let $ = require('jquery'),
     d3 = require('d3'),
     q = require('d3-queue'),
     dc = require('dc'),
-    crossfilter = require('crossfilter'),
+    crossfilter = require('crossfilter2'),
     range = require('lodash.range'),
     jade = require('pug');
 

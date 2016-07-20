@@ -72,7 +72,9 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
   // chart_settings.fields.field_name var when refactoring
   var boolean_field_name_X = chart_settings.fields.field_name;
 
-  var boolean_chart_0X_title = document.getElementById(chart_settings.elements.title).innerHTML = chart_settings.fields.field_title;
+  var boolean_chart_0X_title = document.getElementById(chart_settings.elements.title);
+  // @x-technical-debt: create element and re-enable commented part of following line
+  // boolean_chart_0X_title.innerHTML = chart_settings.fields.field_title;
   var boolean_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
 
   var boolean_chart_0X = dc.barChart(chart_settings.elements.d3_bar_chart, chart_settings.dc_chart_group);

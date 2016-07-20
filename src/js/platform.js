@@ -623,7 +623,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
              * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
              * @x-technical-debt do not hardcode root of chart tabs
              */
-            $('#charts .tab-content').append(tag_bar_chart_template({ chart_id: chart_id }));
+            $('#charts .tab-content').append(boolean_chart_template({ chart_id: chart_id }));
 
             layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
               layer_data.dataset,
@@ -636,7 +636,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 },
                 fields: {
                   field_name: layer_data.non_empty_variables.boolean[index],
-                  field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index])) ?
                     variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
                     layer_data.non_empty_variables.boolean[index]
                 },

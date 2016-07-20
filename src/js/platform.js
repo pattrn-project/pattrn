@@ -794,6 +794,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       );
 
       // For each data row, draw and manage event data
+      // @x-technical-debt: properly check for undefined values within
+      // non_empty_X_variables - or better yet, refactor this to a list as
+      // done for the rest of variable group data structures.
       layer_data.dataset.forEach(point_data.bind(undefined,
         config,
         instance_settings,
@@ -801,9 +804,15 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         data_source_type,
         variable_list,
         pattrn_data_sets, {
-          non_empty_integer_variables: layer_data.non_empty_variables.integer,
-          non_empty_tag_variables: layer_data.non_empty_variables.tag,
-          non_empty_boolean_variables: layer_data.non_empty_variables.boolean
+          non_empty_integer_variables: is_defined(layer_data.non_empty_variables.find(vt => vt.type === 'integer')) ?
+            layer_data.non_empty_variables.find(vt => vt.type === 'integer').names
+            : [],
+          non_empty_tag_variables: is_defined(layer_data.non_empty_variables.find(vt => vt.type === 'tag')) ?
+            layer_data.non_empty_variables.find(vt => vt.type === 'tag').names
+            : [],
+          non_empty_boolean_variables: is_defined(layer_data.non_empty_variables.find(vt => vt.type === 'boolean')) ?
+            layer_data.non_empty_variables.find(vt => vt.type === 'boolean').names
+            : []
         },
         markerChart
       ));

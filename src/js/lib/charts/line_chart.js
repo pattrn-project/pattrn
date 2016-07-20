@@ -77,7 +77,7 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
 
   var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
 
-  var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart);
+  var line_chart_0X = dc.lineChart(chart_settings.elements.d3_line_chart, chart_settings.dc_chart_group);
   var line_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
     return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
   });

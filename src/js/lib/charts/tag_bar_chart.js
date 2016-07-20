@@ -97,7 +97,7 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
   // @x-technical-debt: create element and re-enable following line
   // bar_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
   var bar_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
-  var bar_chart_0X = dc.barChart(chart_settings.elements.d3_bar_chart);
+  var bar_chart_0X = dc.barChart(chart_settings.elements.d3_bar_chart, chart_settings.dc_chart_group);
   var bar_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
     return d[tags_field_name_X];
   });

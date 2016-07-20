@@ -30,6 +30,7 @@ import {
 } from '../pattrn_data.js';
 
 var d3 = require('d3');
+var dc = require('dc');
 
 /**
  * handle tree charts. currently just a stub.

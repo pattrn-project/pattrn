@@ -499,6 +499,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
   pattrn_layer_groups.forEach((layer_group, group_index) => {
     layer_group.layers.forEach((layer_data, layer_index) => {
+      // group id used to group DC charts
+      let chart_group_id = `lg${group_index}_ly${layer_index}`;
 
       /**
        * @x-technical-debt: in legacy code, a variable for each chart was
@@ -534,7 +536,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             // @x-technical-debt: remove intermediate index_padded var and just
             // use index once done with refactoring to layer groups
             let index_padded = index;
-            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
+            let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
              * Create HTML fragment for chart tab
@@ -560,6 +562,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                     variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index]).name :
                     layer_data.non_empty_variables.integer[index]
                 },
+                dc_chart_group: chart_group_id,
                 scatterWidth: scatterWidth
               },
               {
@@ -574,7 +577,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
             // @x-technical-debt: remove intermediate index_padded var and just
             // use index once done with refactoring to layer groups
             let index_padded = index;
-            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
+            let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
              * Create HTML fragment for chart tab
@@ -598,6 +601,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                     variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index]).name :
                     layer_data.non_empty_variables.tag[index]
                 },
+                dc_chart_group: chart_group_id,
                 scatterWidth: scatterWidth
               },
               {
@@ -607,40 +611,51 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           });
         }
 
-        layer_data.non_empty_variables.boolean.forEach(function(item, index) {
-          // @x-technical-debt: get rid of this way of labelling elements by
-          // appending a left-0-padding to the index of each chart
-          var index_padded = '0' + (index + 1);
+        if(variable_group === 'boolean') {
+          layer_data.non_empty_variables.boolean.forEach(function(item, index) {
+            // @x-technical-debt: remove intermediate index_padded var and just
+            // use index once done with refactoring to layer groups
+            let index_padded = index;
+            let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
-          layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
-            layer_data.dataset,
-            {
-              elements: {
-                title: `boolean_chart_${index_padded}_title`,
-                chart_title: `boolean_chart_${index_padded}_chartTitle`,
-                d3_bar_chart: `#d3_boolean_chart_${index_padded}`,
-                aggregate_count_title: `agreggateCountTitle_${index_padded}`
+            /**
+             * Create HTML fragment for chart tab
+             * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
+             * @x-technical-debt do not hardcode root of chart tabs
+             */
+            $('#charts .tab-content').append(tag_bar_chart_template({ chart_id: chart_id }));
+
+            layer_data.dc_charts['boolean'].push(pattrn_boolean_bar_chart(index + 1,
+              layer_data.dataset,
+              {
+                elements: {
+                  title: `boolean_chart_${chart_id}_title`,
+                  chart_title: `boolean_chart_${chart_id}_chartTitle`,
+                  d3_bar_chart: `#d3_boolean_chart_${chart_id}`,
+                  aggregate_count_title: `agreggateCountTitle_${chart_id}`
+                },
+                fields: {
+                  field_name: layer_data.non_empty_variables.boolean[index],
+                  field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
+                    layer_data.non_empty_variables.boolean[index]
+                },
+                dc_chart_group: chart_group_id,
+                scatterWidth: scatterWidth
               },
-              fields: {
-                field_name: layer_data.non_empty_variables.boolean[index],
-                field_title: is_defined(variable_list.find(item => item.id === non_empty_boolean_variables[index])) ?
-                  variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
-                  layer_data.non_empty_variables.boolean[index]
-              },
-              scatterWidth: scatterWidth
-            },
-            {
-              xf: layer_data.crossfilter,
-              dispatch: dispatch
-            }));
-        });
+              {
+                xf: layer_data.crossfilter,
+                dispatch: dispatch
+              }));
+          });
+        }
 
         if(variable_group === 'tree') {
           layer_data.non_empty_variables.tree.forEach(function(item, index) {
             // @x-technical-debt: remove intermediate index_padded var and just
             // use index once done with refactoring to layer groups
             let index_padded = index;
-            let chart_id = `lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${index}`;
+            let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
              * Create HTML fragment for chart tab
@@ -677,6 +692,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                         variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index]).name :
                         layer_data.non_empty_variables.tree[index]
                     },
+                    dc_chart_group: chart_group_id,
                     scatterWidth: scatterWidth,
                     height: 600
                   },
@@ -806,18 +822,17 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       };
 
       // Execute markerChart function - assign marker dimension and group to the chart
-      markerChart = dc.markerChart(instance_settings.map.root_selector)
+      markerChart = dc.markerChart(instance_settings.map.root_selector, chart_group_id)
         .dimension(markerDimension)
         .group(markerGroup)
         .filterByBounds(true);
 
-      // dc.renderAll();
+      dc.renderAll(chart_group_id);
 
       return layer_data;
+
     });
   });
-
-  dc.renderAll();
 
   // Resize charts
   window.onresize = function(event) {

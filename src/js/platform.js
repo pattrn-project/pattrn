@@ -852,15 +852,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         Object.keys(layer.dc_charts).forEach((chart_group) => {
           layer.dc_charts[chart_group].forEach((chart) => {
             // @x-technical-debt: check performance issues and re-enable updating
-            // of chart width on viewport resize; for the moment we are only
-            // updating the width of event charts (subsuming the legacy code's)
-            // resizing of event_chart_01.
+            // of chart width on viewport resize.
             // Once performance is fixed, we can just remove the if around
             // chart.width(newscatterWidth)
-
-            if(chart_group === 'event') {
-              chart.width(newscatterWidth);
-            }
           });
         });
 

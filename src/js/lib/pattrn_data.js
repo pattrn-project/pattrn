@@ -25,7 +25,7 @@ export function count_rows_with_data(dataset, item) {
   }, 0);
 }
 
-export function replace_undefined_values (parameters, variable) {
+export function replace_undefined_values (variable, parameters) {
   if (!is_defined(parameters.row[variable]) || parameters.row[variable] === "") {
     parameters.dataset[parameters.index][variable] = parameters.empty_value;
   }

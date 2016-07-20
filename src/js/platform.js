@@ -349,33 +349,41 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * legacy variable types: integer, tag, boolean) will be now inferred without
        * the support of a metadata file.
        * @x-technical-debt: use a map over variable types
+       * @x-technical-debt: avoid hardcoding of event_count variable type; this
+       * should be not necessary once counts have been moved to use plain line
+       * charts, anyways.
+       * @x-technical-debt: check that layer_data.variables is defined before
+       * trying to get its keys.
        */
-      layer_data['variable_names'] = {
-        integer: (is_defined(layer_data.variables) && is_defined(layer_data.variables.integer)) ?
-          layer_data.variables.integer.map((item) => { return item.id; }) :
-          [],
-        tag: (is_defined(layer_data.variables) && is_defined(layer_data.variables.tag)) ?
-          layer_data.variables.tag.map((item) => { return item.id; }) :
-          [],
-        boolean: (is_defined(layer_data.variables) && is_defined(layer_data.variables.boolean)) ?
-          layer_data.variables.boolean.map((item) => { return item.id; }) :
-          [],
-        tree: (is_defined(layer_data.variables) && is_defined(layer_data.variables.tree)) ?
-          layer_data.variables.tree.map((item) => { return item.id; }) :
-          []
-      };
+      layer_data['variable_names'] = Object.keys(layer_data.variables).map((variable_type) => {
+        return {
+          type: variable_type,
+          names: layer_data.variables[variable_type].map((item) => { return item.id; })
+        };
+      });
+
+      /**
+       * @x-legacy-comment Make new column with eventID for the charts / markers
+       * Besides being used in some leftover legacy code, eventID is also used
+       * in Pattrn v2 as a fake variable against which number of events over
+       * time are plotted.
+       */
+      layer_data.dataset = layer_data.dataset.map((item, index) => {
+        item['eventID'] = index;
+        return item;
+      });
 
       /**
        * Drop all variables defined in metadata files if the dataset does not
        * actually contain any data for these.
        * @x-technical-debt: use a map over variable types
        */
-      layer_data['non_empty_variables'] = {
-        integer: layer_data.variable_names.integer.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
-        tag: layer_data.variable_names.tag.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
-        boolean: layer_data.variable_names.boolean.filter(is_column_not_empty.bind(undefined, layer_data.dataset)),
-        tree: layer_data.variable_names.tree.filter(is_column_not_empty.bind(undefined, layer_data.dataset))
-      }
+      layer_data['non_empty_variables'] = layer_data.variable_names.map((variable_type) => {
+        return {
+          type: variable_type.type,
+          names: variable_type.names.filter(is_column_not_empty.bind(undefined, layer_data.dataset))
+        };
+      });
 
       /**
        * Replace blanks and undefined values with zeros. This
@@ -389,34 +397,26 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * use maps here. If this hack cannot be removed altogether (see issue
        * #14 for different values of uncertainty of data).
        */
-      layer_data.dataset.forEach(function(row, index) {
-        // @x-legacy-comment Make new column with eventID for the charts / markers
-        layer_data.dataset[index]['eventID'] = index;
-
-        layer_data.non_empty_variables.integer.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_data.dataset,
-          row: row,
-          index: index,
-          empty_value: 0
-        }));
-        layer_data.non_empty_variables.tag.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_data.dataset,
-          row: row,
-          index: index,
-          empty_value: 'Unknown'
-        }));
-        layer_data.non_empty_variables.boolean.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_data.dataset,
-          row: row,
-          index: index,
-          empty_value: 'Unknown'
-        }));
-        layer_data.non_empty_variables.tree.forEach(replace_undefined_values.bind(undefined, {
-          dataset: layer_data.dataset,
-          row: row,
-          index: index,
-          empty_value: 'Unknown'
-        }));
+      layer_data.dataset.forEach((row, index) => {
+        layer_data.non_empty_variables.forEach(function(variable_type) {
+          variable_type.names.forEach((variable_name) => {
+            if(['integer'].indexOf(variable_type.type) >= 0) {
+              replace_undefined_values(variable_name, {
+                dataset: layer_data.dataset,
+                row: row,
+                index: index,
+                empty_value: 0
+              });
+            } else if(['tag', 'boolean', 'tree'].indexOf(variable_type.type) >= 0) {
+              replace_undefined_values(variable_name, {
+                dataset: layer_data.dataset,
+                row: row,
+                index: index,
+                empty_value: 0
+              });
+            }
+          });
+        });
       });
 
       return layer_data;
@@ -463,12 +463,12 @@ function consume_table(data_source_type, config, platform_settings, settings, da
          })
          .append('ul');
 
-       Object.keys(layer_data.non_empty_variables).forEach((variable_group, variable_group_index) => {
+       layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root
            .append('li')
            .append('ul')
            .selectAll('li')
-           .data(layer_data.non_empty_variables[variable_group]);
+           .data(variable_group.names);
 
          variable_group_menu_root
            .enter()
@@ -480,8 +480,20 @@ function consume_table(data_source_type, config, platform_settings, settings, da
              return `#lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${i}`;
            })
            .text((d,i) => {
-             // @x-technical-debt: check that variable exists before trying to read its name
-             return variable_list.find(variable => variable.id === d).name;
+             /**
+              * if variable is defined in metadata file, return its name
+              * otherwise return the variable id (column name)
+              * Variables should always be defined in metadata, but whilst
+              * transitioning from legacy event count charts to the Pattrn v2
+              * layer/layer group structure, the variable used for event counts
+              * (eventID, added at runtime) is used without it having to be
+              * defined in the metadata file. This should be the only edge case,
+              * and such it should be properly refactored to a non-edge setup
+              * as part of technical debt noted elsewhere.
+              */
+             let variable = variable_list.find(variable => variable.id === d)
+
+             return is_defined(variable) ? variable.name : d;
            });
        });
 
@@ -515,7 +527,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * more perfomant (e.g. do we need to repaint both visible and invisible
        * charts?).
        */
-      Object.keys(layer_data.non_empty_variables).forEach((variable_group, variable_group_index) => {
+      layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
 
         /**
          * @x-technical-debt: the HTML elements now hardcoded in the index.html
@@ -535,14 +547,15 @@ function consume_table(data_source_type, config, platform_settings, settings, da
          * forEach iterating over variable groups
          */
 
-        if(variable_group === 'integer') {
-          layer_data.non_empty_variables.integer.forEach(function(item, index) {
+        if(variable_group.type === 'integer') {
+          layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names.forEach(function(item, index) {
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
              * Create HTML fragment for chart tab
              * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
              * @x-technical-debt do not hardcode root of chart tabs
+             * @x-technical-debt spin off aggregate charts into own chart type and module
              */
             $('#charts .tab-content').append(line_chart_template({ chart_id: chart_id }));
 
@@ -558,10 +571,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                   slider_chart: `#SliderChart_${chart_id}`
                 },
                 fields: {
-                  field_name: layer_data.non_empty_variables.integer[index],
-                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index])) ?
-                    variable_list.find(item => item.id === layer_data.non_empty_variables.integer[index]).name :
-                    layer_data.non_empty_variables.integer[index]
+                  field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :
+                    layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]
                 },
                 dc_chart_group: chart_group_id,
                 scatterWidth: scatterWidth
@@ -573,8 +586,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           });
         }
 
-        if(variable_group === 'tag') {
-          layer_data.non_empty_variables.tag.forEach(function(item, index) {
+        if(variable_group.type === 'tag') {
+          layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names.forEach(function(item, index) {
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -594,10 +607,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                   aggregate_count_title: `agreggateCountTitle_${chart_id}`
                 },
                 fields: {
-                  field_name: layer_data.non_empty_variables.tag[index],
-                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index])) ?
-                    variable_list.find(item => item.id === layer_data.non_empty_variables.tag[index]).name :
-                    layer_data.non_empty_variables.tag[index]
+                  field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :
+                    layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]
                 },
                 dc_chart_group: chart_group_id,
                 scatterWidth: scatterWidth
@@ -609,8 +622,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           });
         }
 
-        if(variable_group === 'boolean') {
-          layer_data.non_empty_variables.boolean.forEach(function(item, index) {
+        if(variable_group.type === 'boolean') {
+          layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names.forEach(function(item, index) {
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -630,10 +643,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                   aggregate_count_title: `agreggateCountTitle_${chart_id}`
                 },
                 fields: {
-                  field_name: layer_data.non_empty_variables.boolean[index],
-                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index])) ?
-                    variable_list.find(item => item.id === layer_data.non_empty_variables.boolean[index]).name :
-                    layer_data.non_empty_variables.boolean[index]
+                  field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
+                  field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
+                    variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :
+                    layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]
                 },
                 dc_chart_group: chart_group_id,
                 scatterWidth: scatterWidth
@@ -645,8 +658,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
           });
         }
 
-        if(variable_group === 'tree') {
-          layer_data.non_empty_variables.tree.forEach(function(item, index) {
+        if(variable_group.type === 'tree') {
+          layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names.forEach(function(item, index) {
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -661,10 +674,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               .defer(d3.json, variables.tree[index].tree_data)
               .await(function(error, data) {
                 let tree_mids = d3.layout.tree().nodes(data).map((item) => { return item.mid; });
-                if(variables.tree.find(item => item.id === layer_data.non_empty_variables.tree[index])['data_from_tree']) {
+                if(variables.tree.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])['data_from_tree']) {
                   layer_data.dataset = layer_data.dataset.map((item) => {
                     // @x-hack add random position in binary tree
-                    item[layer_data.non_empty_variables.tree[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
+                    item[layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]] = tree_mids[Math.floor(Math.random() * tree_mids.length)];
                     return item;
                   });
                 }
@@ -679,10 +692,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                       aggregate_count_title: `agreggateCountTitle_${chart_id}`
                     },
                     fields: {
-                      field_name: layer_data.non_empty_variables.tree[index],
-                      field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index])) ?
-                        variable_list.find(item => item.id === layer_data.non_empty_variables.tree[index]).name :
-                        layer_data.non_empty_variables.tree[index]
+                      field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
+                      field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
+                        variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :
+                        layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]
                     },
                     dc_chart_group: chart_group_id,
                     scatterWidth: scatterWidth,

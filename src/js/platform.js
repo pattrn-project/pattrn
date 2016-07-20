@@ -834,6 +834,28 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .group(markerGroup)
         .filterByBounds(true);
 
+      /**
+       * Whole dataset toggle closure
+       */
+      function toggle_layer_group() {
+        var always_positive_dimension = layer_data.crossfilter.dimension(function(d) {
+          return d.eventID;
+        });
+
+        if(this.checked) {
+          always_positive_dimension.filterAll();
+        } else {
+          always_positive_dimension.filter(-1);
+        }
+        dc.redrawAll(chart_group_id);
+      }
+
+      /**
+       * Attach data toggle behaviour to layer check box
+       * @x-technical-debt: should be refactored out to own function
+       * @x-technical-debt: whole widget generation (<input> element) should be done here
+       */
+      d3.select(`${layer_data_count_selector} .layer-root input`).on('click', toggle_layer_group);
 
       // DC data counter for this layer
       d3.select(`${layer_data_count_selector} .layer-root`)

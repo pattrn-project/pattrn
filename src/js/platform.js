@@ -534,9 +534,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
         if(variable_group === 'integer') {
           layer_data.non_empty_variables.integer.forEach(function(item, index) {
-            // @x-technical-debt: remove intermediate index_padded var and just
-            // use index once done with refactoring to layer groups
-            let index_padded = index;
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -575,9 +572,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
         if(variable_group === 'tag') {
           layer_data.non_empty_variables.tag.forEach(function(item, index) {
-            // @x-technical-debt: remove intermediate index_padded var and just
-            // use index once done with refactoring to layer groups
-            let index_padded = index;
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -614,9 +608,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
         if(variable_group === 'boolean') {
           layer_data.non_empty_variables.boolean.forEach(function(item, index) {
-            // @x-technical-debt: remove intermediate index_padded var and just
-            // use index once done with refactoring to layer groups
-            let index_padded = index;
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**
@@ -653,9 +644,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
         if(variable_group === 'tree') {
           layer_data.non_empty_variables.tree.forEach(function(item, index) {
-            // @x-technical-debt: remove intermediate index_padded var and just
-            // use index once done with refactoring to layer groups
-            let index_padded = index;
             let chart_id = `${chart_group_id}_vg${variable_group_index}_var${index}`;
 
             /**

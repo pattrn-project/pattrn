@@ -37,7 +37,7 @@ import {
  * count) variables from the parent scope, we should really pass these in
  * as an object.
  */
-export function point_data(config, instance_settings, _map, data_source_type, pattrn_data_sets, non_empty_variables, markerChart, item, index) {
+export function point_data(config, instance_settings, _map, data_source_type, variable_list, pattrn_data_sets, non_empty_variables, markerChart, item, index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
     pattrn_data_sets[item.pattrn_data_set] :
@@ -94,10 +94,10 @@ export function point_data(config, instance_settings, _map, data_source_type, pa
     media: document.getElementById('media')
   };
 
-  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, _map, data_source_type, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
+  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
 }
 
-function point_data_click(config, instance_settings, _map, data_source_type, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
+function point_data_click(config, instance_settings, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';
@@ -216,7 +216,7 @@ function point_data_click(config, instance_settings, _map, data_source_type, non
     }
 
     non_empty_variables.non_empty_integer_variables.forEach(function(item, index) {
-      appendIntegerValueToTable(e, item);
+      appendIntegerValueToTable(e, item, variable_list);
     });
 
     non_empty_variables.non_empty_tag_variables.forEach(function(item, index) {
@@ -251,10 +251,14 @@ function point_data_click(config, instance_settings, _map, data_source_type, non
 }
 
 // Table content - generic functions
-function appendIntegerValueToTable(d, field_name) {
+function appendIntegerValueToTable(d, field_name, variable_list) {
   if (!is_defined(d[field_name])) return;
+
+  let variable = variable_list.find(variable => variable.id === field_name);
+  let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : field_name;
+
   $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
     "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
     "</p> </th> </tr>"
   );

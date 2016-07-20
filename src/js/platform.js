@@ -802,6 +802,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         instance_settings,
         _map,
         data_source_type,
+        variable_list,
         pattrn_data_sets, {
           non_empty_integer_variables: layer_data.non_empty_variables.integer,
           non_empty_tag_variables: layer_data.non_empty_variables.tag,

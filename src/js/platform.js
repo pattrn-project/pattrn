@@ -846,13 +846,20 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .filterByBounds(true);
 
       /**
-       * Whole dataset toggle closure
+       * Dimension used to filter whole layer in or out, against the eventID
+       * variable (which is always defined and always positive by construction)
        */
-      function toggle_layer_group() {
-        var always_positive_dimension = layer_data.crossfilter.dimension(function(d) {
-          return d.eventID;
-        });
+      var always_positive_dimension = layer_data.crossfilter.dimension(function(d) {
+        return d.eventID;
+      });
 
+      /**
+       * Toggle whole layer via toggle_layer closure
+       * This works by filtering on the eventID column: since this is a
+       * positive integer by construction, to remove all the events we filter
+       * for -1 (which leads to no matches).
+       */
+      function toggle_layer() {
         if(this.checked) {
           always_positive_dimension.filterAll();
         } else {
@@ -866,7 +873,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * @x-technical-debt: should be refactored out to own function
        * @x-technical-debt: whole widget generation (<input> element) should be done here
        */
-      d3.select(`${layer_data_count_selector} .layer-root input`).on('click', toggle_layer_group);
+      d3.select(`${layer_data_count_selector} .layer-root input`).on('click', toggle_layer);
 
       // DC data counter for this layer
       d3.select(`${layer_data_count_selector} .layer-root`)

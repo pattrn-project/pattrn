@@ -412,7 +412,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 dataset: layer_data.dataset,
                 row: row,
                 index: index,
-                empty_value: 0
+                empty_value: 'Unknown'
               });
             }
           });

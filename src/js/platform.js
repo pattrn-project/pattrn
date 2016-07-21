@@ -603,8 +603,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 elements: {
                   title: `bar_chart_${chart_id}_title`,
                   chart_title: `bar_chart_${chart_id}_chartTitle`,
-                  dc_chart: `#d3_bar_chart_${chart_id}`,
-                  aggregate_count_title: `agreggateCountTitle_${chart_id}`
+                  dc_chart: `#d3_bar_chart_${chart_id}`
                 },
                 fields: {
                   field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
@@ -687,8 +686,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                     elements: {
                       title: `tree_chart_${chart_id}_title`,
                       chart_title: `tree_chart_${chart_id}_chartTitle`,
-                      dc_chart: `#d3_tree_chart_${chart_id}`,
-                      aggregate_count_title: `agreggateCountTitle_${chart_id}`
+                      dc_chart: `#d3_tree_chart_${chart_id}`
                     },
                     fields: {
                       field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],

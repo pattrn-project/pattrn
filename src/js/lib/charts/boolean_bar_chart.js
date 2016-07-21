@@ -51,8 +51,10 @@ var dc = require('dc');
  *    * dc_chart: d3 element of line chart
  *  * fields:
  *    * field_name: the name of the field in the dataset
- * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
- * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
+ * @param {Object} pattrn_objects Pattrn objects from jumbo scope
+ *  * fields:
+ *    * dc: The main dc.js instance used in the app
+ *    * crossfilter: The main Crossfilter instance used in the app
  */
 export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
@@ -78,7 +80,7 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
   var boolean_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
 
   var boolean_chart_0X = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var boolean_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
+  var boolean_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
     return d[boolean_field_name_X];
   });
   var boolean_chart_0X_group = boolean_chart_0X_dimension.group().reduceCount();

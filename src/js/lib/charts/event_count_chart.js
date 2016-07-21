@@ -51,6 +51,9 @@ import dc from 'dc';
  *  * fields:
  *    * field_name: the name of the field in the dataset
  * @param {Object} pattrn_objects Pattrn objects from jumbo scope
+ *  * fields:
+ *    * dc: The main dc.js instance used in the app
+ *    * crossfilter: The main Crossfilter instance used in the app
  */
 export function pattrn_event_count_chart(index, dataset, chart_settings, pattrn_objects) {
   // default from legacy code, defined as chartHeight within the main consume_table() function

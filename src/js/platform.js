@@ -580,7 +580,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 scatterWidth: scatterWidth
               },
               {
-                xf: layer_data.crossfilter,
+                crossfilter: layer_data.crossfilter,
                 dispatch: dispatch
               }));
           });
@@ -615,7 +615,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 scatterWidth: scatterWidth
               },
               {
-                xf: layer_data.crossfilter,
+                crossfilter: layer_data.crossfilter,
                 dispatch: dispatch
               }));
           });
@@ -650,7 +650,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 scatterWidth: scatterWidth
               },
               {
-                xf: layer_data.crossfilter,
+                crossfilter: layer_data.crossfilter,
                 dispatch: dispatch
               }));
           });
@@ -699,7 +699,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                     height: 600
                   },
                   {
-                    xf: layer_data.crossfilter,
+                    crossfilter: layer_data.crossfilter,
                     dispatch: dispatch
                   },
                   {
@@ -744,7 +744,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                 scatterWidth: scatterWidth
               },
               {
-                xf: layer_data.crossfilter,
+                crossfilter: layer_data.crossfilter,
                 dispatch: dispatch
               }));
             })

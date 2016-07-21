@@ -51,8 +51,10 @@ var dc = require('dc');
  *    * dc_chart: d3 element of line chart
  *  * fields:
  *    * field_name: the name of the field in the dataset
- * @param {Object} dc The main dc.js instance used in the app [needs refactoring]
- * @param {Object} xf The main Crossfilter instance used in the app [needs refactoring]
+ * @param {Object} pattrn_objects Pattrn objects from jumbo scope
+ *  * fields:
+ *    * dc: The main dc.js instance used in the app
+ *    * crossfilter: The main Crossfilter instance used in the app
  */
 export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_objects) {
   /**

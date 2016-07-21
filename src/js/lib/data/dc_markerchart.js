@@ -61,10 +61,13 @@ export function marker_chart(parent, chartGroup, instance_settings, config, patt
 
     var overlaymaps = {};
 
-    pattrn_objects.L.control.layers(basemaps, overlaymaps, {
-      position: 'topleft'
-    }).addTo(pattrn_objects.map);
-
+    // Only add layer control once - on first iteration
+    if(['lg0_ly0', '', null].indexOf(chartGroup) >= 0) {
+      pattrn_objects.L.control.layers(basemaps, overlaymaps, {
+        position: 'topleft'
+      }).addTo(pattrn_objects.map);
+    }
+    
     // Create markercluster
     markercluster = new pattrn_objects.L.MarkerClusterGroup({
       disableClusteringAtZoom: instance_settings.map.disableClusteringAtZoom,

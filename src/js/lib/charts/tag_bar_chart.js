@@ -100,7 +100,7 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
   // bar_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
   var bar_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
   var bar_chart_0X = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var bar_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
+  var bar_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
     return d[tags_field_name_X];
   });
   var bar_chart_0X_group = bar_chart_0X_dimension.groupAll().reduce(reduceAddTarget_0X, reduceRemoveTarget_0X, reduceInitialTarget_0X).value();

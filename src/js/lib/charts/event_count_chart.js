@@ -62,7 +62,7 @@ export function pattrn_event_count_chart(index, dataset, chart_settings, pattrn_
   var event_chart_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
 
   var event_chart = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var event_chart_dimension = pattrn_objects.xf.dimension(function(d) {
+  var event_chart_dimension = pattrn_objects.crossfilter.dimension(function(d) {
     return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
   });
   var event_chart_group = event_chart_dimension.group().reduceCount(function(d) {

@@ -80,7 +80,7 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
   var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
 
   var line_chart_0X = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var line_chart_0X_dimension = pattrn_objects.xf.dimension(function(d) {
+  var line_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
     return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
   });
   var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
@@ -125,7 +125,7 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
   var agreggateCountTitle_0X = /* document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML =*/ "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
 
   var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
-  var aggregate_count_0X_dimension = pattrn_objects.xf.dimension(function(d) {
+  var aggregate_count_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
     return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
   });
   var aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
@@ -157,7 +157,7 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
     .group(aggregate_count_0X_group);
 
   var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
-  var SliderChart_0X_Dim = pattrn_objects.xf.dimension(function(d) {
+  var SliderChart_0X_Dim = pattrn_objects.crossfilter.dimension(function(d) {
     return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
   });
   var SliderChart_0X_Group = SliderChart_0X_Dim.group();

@@ -85,7 +85,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   var root;
 
   // crossfilter dimension and group
-  window.tree_dimension = pattrn_objects.xf.dimension((d) => {
+  window.tree_dimension = pattrn_objects.crossfilter.dimension((d) => {
     return is_defined(d[tree_data.field_name.id]) ? d[tree_data.field_name.id] : 0;
   });
   // @x-technical-debt: allow for scenarios where a count is defined (rather than just returning 1 for counts as in this first iteration)
@@ -411,10 +411,10 @@ function walk_tree(fn, base, children_members) {
 }
 
 function get_node_size(node) {
-  var xf_node = window.tree_group.all().find(function(item) {
+  var crossfilter_node = window.tree_group.all().find(function(item) {
     return item.key === node.mid;
   });
-  return is_defined(xf_node) ? xf_node.value : null;
+  return is_defined(crossfilter_node) ? crossfilter_node.value : null;
 }
 
 /**

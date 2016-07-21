@@ -211,7 +211,7 @@ function point_data_click(config, instance_settings, _map, data_source_type, var
           return !value.match(/^pattrn_[^_]{2,}/);
         })
         .forEach(function(value, index, array) {
-          if (is_defined(item.source_variables[value])) appendGeoJSONPropertyToTable(value, item.source_variables[value]);
+          if (is_defined(item.source_variables[value])) appendGeoJSONPropertyToTable(value, item.source_variables[value], variable_list);
         });
     }
 
@@ -220,11 +220,11 @@ function point_data_click(config, instance_settings, _map, data_source_type, var
     });
 
     non_empty_variables.non_empty_tag_variables.forEach(function(item, index) {
-      appendTagValueToTable(e, item);
+      appendTagValueToTable(e, item, variable_list);
     });
 
     non_empty_variables.non_empty_boolean_variables.forEach(function(item, index) {
-      appendTagValueToTable(e, item);
+      appendTagValueToTable(e, item, variable_list);
     });
   }
 
@@ -264,18 +264,25 @@ function appendIntegerValueToTable(d, field_name, variable_list) {
   );
 }
 
-function appendTagValueToTable(d, field_name) {
+function appendTagValueToTable(d, field_name, variable_list) {
   if (!is_defined(d[field_name])) return;
+
+  let variable = variable_list.find(variable => variable.id === field_name);
+  let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : field_name;
+
   $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + field_name +
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
     "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
     "</p> </th> </tr>"
   );
 }
 
-function appendGeoJSONPropertyToTable(key, value) {
+function appendGeoJSONPropertyToTable(key, value, variable_list) {
+  let variable = variable_list.find(variable => variable.id === key);
+  let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : key;
+
   $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
     "</p></th><th class='col-sm-6' ><p class='white'> " + value +
     "</p> </th> </tr>"
   );

@@ -33,7 +33,28 @@ var d3 = require('d3');
 var dc = require('dc');
 
 /**
- * handle tree charts. currently just a stub.
+ * Tree charts, aka hierarchical tag charts
+ * @x-modifies-dom
+ * @param {Number} index Index (integer) of this line chart within the set of line charts in use
+ * @param {Object} dataset The master dataset
+ * @param {Object} chart_settings Settings for this chart.
+ *  * scatterWidth: width of the chart (default: 300)
+ *    @x-technical-debt: switch to plain width parameter name
+ *  * height: height of the chart (default: 200)
+ *  * elements: DOM elements to update
+ *    * title: chart title
+ *    * chart_title: chart chart title (ehrm legacy code?)
+ *    * dc_chart: d3 element of line chart
+ *  * fields:
+ *    * field_name: the name of the field in the dataset
+ * @param {Object} pattrn_objects Pattrn objects from jumbo scope
+ *  * fields:
+ *    * dc: The main dc.js instance used in the app
+ *    * crossfilter: The main Crossfilter instance used in the app
+ * @param {Object} tree_data Tree nodes and dataset field that maps to tree
+ *  * fields:
+ *    * tree_data: The tree nodes and links
+ *    * field_name: The dataset field that maps to the tree
  */
 export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects, tree_data) {
   /**

@@ -25,7 +25,7 @@ let jade = require('pug');
  * from Pattrn v1.
  */
 let chart_template =
-`.tab-pane.fade.in.active(id = chart_id)
+`.tab-pane.fade.in.variable(id = chart_id)
   .col-sm-12.col-lg-12(id = 'd3_event_count_chart_' + chart_id)
     .col-sm-6.col-lg-6
       p.filterText

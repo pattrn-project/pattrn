@@ -871,6 +871,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     });
   });
 
+  // Set first generated variable tab as active
+  d3.select('.tab-pane.variable').classed('active', true);
+
   // Resize charts
   window.onresize = function(event) {
     var newscatterWidth = document.getElementById('charts').offsetWidth;

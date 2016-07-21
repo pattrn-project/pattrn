@@ -20,7 +20,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 let jade = require('pug');
 
 let chart_template =
-`.tab-pane.fade.in(id = chart_id)
+`.tab-pane.fade.in.variable(id = chart_id)
   .col-sm-12.col-lg-12(id = 'd3_line_chart_' + chart_id)
     .col-sm-6.col-lg-6
       p.filterText

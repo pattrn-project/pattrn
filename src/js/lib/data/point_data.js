@@ -215,15 +215,15 @@ function point_data_click(config, instance_settings, _map, data_source_type, var
         });
     }
 
-    non_empty_variables.non_empty_integer_variables.forEach(function(item, index) {
+    layer_data.non_empty_variables.find(vt => vt.type === 'integer').names.forEach(function(item, index) {
       appendIntegerValueToTable(e, item, variable_list);
     });
 
-    non_empty_variables.non_empty_tag_variables.forEach(function(item, index) {
+    layer_data.non_empty_variables.find(vt => vt.type === 'tag').names.forEach(function(item, index) {
       appendTagValueToTable(e, item, variable_list);
     });
 
-    non_empty_variables.non_empty_boolean_variables.forEach(function(item, index) {
+    layer_data.non_empty_variables.find(vt => vt.type === 'boolean').names.forEach(function(item, index) {
       appendTagValueToTable(e, item, variable_list);
     });
   }

@@ -511,10 +511,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Create charts and map layers/layer groups
    * @x-technical-debt: refactor out to separate function
    */
-  pattrn_layer_groups.forEach((layer_group, group_index) => {
+  pattrn_layer_groups.forEach((layer_group, layer_group_index) => {
     layer_group.layers.forEach((layer_data, layer_index) => {
       // group id used to group DC charts
-      let chart_group_id = `lg${group_index}_ly${layer_index}`;
+      let chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
       // selector for root of layer menu, used to append the DC data count widget
       let layer_data_count_selector = `.layer-root-${layer_data.id}`;
 
@@ -821,8 +821,22 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * @x-technical-debt Clean up closure and passing of variables from
        * current scope
        */
-      dc.markerChart = function(parent, chartGroup) {
-        return marker_chart(parent, chartGroup, instance_settings, config, { map: _map, L: L, dispatch: dispatch});
+      dc.markerChart = function(parent, chart_group_id) {
+        return marker_chart(
+          parent,
+          {
+            chart_group_id: chart_group_id,
+            layer_group_index: layer_group_index,
+            layer_index: layer_index
+          },
+          instance_settings,
+          config,
+          {
+            map: _map,
+            L: L,
+            dispatch: dispatch
+          }
+        );
       };
 
       // Execute markerChart function - assign marker dimension and group to the chart
@@ -875,10 +889,10 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   window.onresize = function(event) {
     var newscatterWidth = document.getElementById('charts').offsetWidth;
 
-    pattrn_layer_groups.forEach((layer_group, group_index) => {
+    pattrn_layer_groups.forEach((layer_group, layer_group_index) => {
       layer_group.forEach((layer, layer_index) => {
         // group id used to group DC charts
-        let chart_group_id = `lg${group_index}_ly${layer_index}`;
+        let chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
 
         Object.keys(layer.dc_charts).forEach((chart_group) => {
           layer.dc_charts[chart_group].forEach((chart) => {

@@ -28,7 +28,10 @@ var dc = require('dc');
 // Many thanks to Boyan Yurukov for his emails and help,
 // check out his project - dc-leaflet: https://github.com/yurukov/dc.leaflet.js
 
-export function marker_chart(parent, chartGroup, instance_settings, config, pattrn_objects) {
+/**
+ *
+ */
+export function marker_chart(parent, layer_metadata, instance_settings, config, pattrn_objects) {
   // Create an empty chart
   var _chart = dc.baseChart({});
   var markercluster;
@@ -62,12 +65,12 @@ export function marker_chart(parent, chartGroup, instance_settings, config, patt
     var overlaymaps = {};
 
     // Only add layer control once - on first iteration
-    if(['lg0_ly0', '', null].indexOf(chartGroup) >= 0) {
+    if(layer_metadata.layer_group_index === 0 && layer_metadata.layer_index === 0) {
       pattrn_objects.L.control.layers(basemaps, overlaymaps, {
         position: 'topleft'
       }).addTo(pattrn_objects.map);
     }
-    
+
     // Create markercluster
     markercluster = new pattrn_objects.L.MarkerClusterGroup({
       disableClusteringAtZoom: instance_settings.map.disableClusteringAtZoom,

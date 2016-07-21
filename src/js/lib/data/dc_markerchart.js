@@ -197,6 +197,6 @@ export function marker_chart(parent, layer_metadata, instance_settings, config, 
     }
   };
 
-  var cha = _chart.anchor(parent, chartGroup);
+  var cha = _chart.anchor(parent, layer_metadata.chart_group_id);
   return cha;
 }

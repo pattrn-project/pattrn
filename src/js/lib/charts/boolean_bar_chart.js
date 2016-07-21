@@ -35,6 +35,12 @@ var dc = require('dc');
  * manual code duplication and to allow an arbitrary number of charts of this
  * type to be used in the Pattrn frontend.
  * @x-modifies-dom
+ * @x-technical-debt Most of this function should be refactored into a base
+ * function (or class) on which specific kinds of charts can the be based (or
+ * from which they can inherit, in the case of a class). Namely, all the initial
+ * setup and creation of dimension and group could be abstracted to generic
+ * code, leaving only the chart building (chained on dc.chart()) as
+ * chart-specific.
  * @param {Number} index Index (integer) of this line chart within the set of line charts in use
  * @param {Object} dataset The master dataset (refactor - do we need this here?)
  * @param {Object} chart_settings Settings for this chart.
@@ -70,22 +76,18 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
   // charts 1 and 2
   var chart_transition_duration = chart_settings.transition_duration || 750;
 
-  // transition from legacy: assign first to scope variable - just use the
-  // chart_settings.fields.field_name var when refactoring
-  var boolean_field_name_X = chart_settings.fields.field_name;
-
-  var boolean_chart_0X_title = document.getElementById(chart_settings.elements.title);
+  var chart_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable commented part of following line
   // boolean_chart_0X_title.innerHTML = chart_settings.fields.field_title;
-  var boolean_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
+  var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
 
-  var boolean_chart_0X = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var boolean_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
-    return d[boolean_field_name_X];
+  var chart = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
+  var chart_dimension = pattrn_objects.crossfilter.dimension(function(d) {
+    return d[chart_settings.fields.field_name];
   });
-  var boolean_chart_0X_group = boolean_chart_0X_dimension.group().reduceCount();
+  var chart_group = chart_dimension.group().reduceCount();
 
-  boolean_chart_0X.width(chart_settings.scatterWidth)
+  chart.width(chart_settings.scatterWidth)
     .height(chart_height)
     .margins({
       top: 0,
@@ -93,8 +95,8 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
       bottom: 50,
       left: 50
     })
-    .dimension(boolean_chart_0X_dimension)
-    .group(boolean_chart_0X_group)
+    .dimension(chart_dimension)
+    .group(chart_group)
     .title(function(d) {
       return ('Total number of events: ' + d.value);
     })
@@ -111,7 +113,7 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
     .barPadding(0.1)
     .outerPadding(0.05);
 
-  boolean_chart_0X.yAxis().ticks(3);
+  chart.yAxis().ticks(3);
 
-  return boolean_chart_0X;
+  return chart;
 }

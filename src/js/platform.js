@@ -453,15 +453,18 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        let layer_menu_root = explore_menu_root
          .append('li')
          .classed('layer-menu-root', true)
-         .classed(`layer-root-${layer_data.id}`, true)
-         .html((d,i) => {
-           return jade.compile(layer_menu_template)(
-             {
-               layer_name: layer_data.name
-             }
-           );
-         })
-         .append('ul');
+         .classed(`layer-root-${layer_data.id}`, true);
+
+      layer_menu_root.append('span')
+        .classed('layer-root', true)
+        .style('color', (d, i) => { return is_defined(pattrn_data_sets[layer_data.id]) ? pattrn_data_sets[layer_data.id] : 'inherit'; })
+        .append('label')
+        .text(layer_data.name)
+        .append('input')
+        .attr('type', 'checkbox')
+        .attr('checked', 'true');
+
+      layer_menu_root.append('ul');
 
        layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root

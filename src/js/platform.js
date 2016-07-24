@@ -584,7 +584,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               },
               {
                 crossfilter: layer_data.crossfilter,
-                dispatch: dispatch
+                dispatch: dispatch,
+                layer_data: layer_data
               }));
           });
         }
@@ -619,7 +620,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               },
               {
                 crossfilter: layer_data.crossfilter,
-                dispatch: dispatch
+                dispatch: dispatch,
+                layer_data: layer_data
               }));
           });
         }
@@ -654,7 +656,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               },
               {
                 crossfilter: layer_data.crossfilter,
-                dispatch: dispatch
+                dispatch: dispatch,
+                layer_data: layer_data
               }));
           });
         }
@@ -703,7 +706,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                   },
                   {
                     crossfilter: layer_data.crossfilter,
-                    dispatch: dispatch
+                    dispatch: dispatch,
+                    layer_data: layer_data
                   },
                   {
                     tree_data: data,
@@ -748,7 +752,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
               },
               {
                 crossfilter: layer_data.crossfilter,
-                dispatch: dispatch
+                dispatch: dispatch,
+                layer_data: layer_data
               }));
             })
         }

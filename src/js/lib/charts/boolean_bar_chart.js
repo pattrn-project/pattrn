@@ -61,6 +61,7 @@ var dc = require('dc');
  *  * fields:
  *    * dc: The main dc.js instance used in the app
  *    * crossfilter: The main Crossfilter instance used in the app
+ *    * layer_data: Metadata of the layer for which this chart is being created
  */
 export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
@@ -79,7 +80,8 @@ export function pattrn_boolean_bar_chart(index, dataset, chart_settings, pattrn_
   var chart_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable commented part of following line
   // boolean_chart_0X_title.innerHTML = chart_settings.fields.field_title;
-  var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
+  var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+    .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
 
   var chart = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
   var chart_dimension = pattrn_objects.crossfilter.dimension(function(d) {

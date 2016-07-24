@@ -54,12 +54,14 @@ import dc from 'dc';
  *  * fields:
  *    * dc: The main dc.js instance used in the app
  *    * crossfilter: The main Crossfilter instance used in the app
+ *    * layer_data: Metadata of the layer for which this chart is being created
  */
 export function pattrn_event_count_chart(index, dataset, chart_settings, pattrn_objects) {
   // default from legacy code, defined as chartHeight within the main consume_table() function
   var chart_height = chart_settings.height || 200;
 
-  var event_chart_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
+  var event_chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+  .innerHTML = `${chart_settings.fields.field_title} over time (${pattrn_objects.layer_data.name})`;
 
   var event_chart = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
   var event_chart_dimension = pattrn_objects.crossfilter.dimension(function(d) {

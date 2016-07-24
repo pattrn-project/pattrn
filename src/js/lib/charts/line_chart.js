@@ -55,6 +55,7 @@ var dc = require('dc');
  *  * fields:
  *    * dc: The main dc.js instance used in the app
  *    * crossfilter: The main Crossfilter instance used in the app
+ *    * layer_data: Metadata of the layer for which this chart is being created
  */
 export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
@@ -77,7 +78,8 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
   var line_chart_0X_title = /*  document.getElementById(chart_settings.elements.title)
     .innerHTML = */ chart_settings.fields.field_title + " over time";
 
-  var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = chart_settings.fields.field_title + " over time";
+  var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+    .innerHTML = `${chart_settings.fields.field_title} over time (${pattrn_objects.layer_data.name})`;
 
   var line_chart_0X = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
   var line_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {

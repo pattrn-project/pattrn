@@ -51,6 +51,7 @@ var dc = require('dc');
  *  * fields:
  *    * dc: The main dc.js instance used in the app
  *    * crossfilter: The main Crossfilter instance used in the app
+ *    * layer_data: Metadata of the layer for which this chart is being created
  * @param {Object} tree_data Tree nodes and dataset field that maps to tree
  *  * fields:
  *    * tree_data: The tree nodes and links
@@ -73,7 +74,8 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
   var tree_chart_0X_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable following line
   // tree_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
-  var tree_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title).innerHTML = "Events by " + chart_settings.fields.field_title;
+  var tree_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+    .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
 
   var width = chart_width;
   var height = chart_height;

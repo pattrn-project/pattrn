@@ -37,7 +37,18 @@ import {
  * count) variables from the parent scope, we should really pass these in
  * as an object.
  */
-export function point_data(config, instance_settings, _map, data_source_type, variable_list, pattrn_data_sets, non_empty_variables, markerChart, item, index) {
+export function point_data(
+    config,
+    instance_settings,
+    layer_data,
+    _map,
+    data_source_type,
+    variable_list,
+    pattrn_data_sets,
+    non_empty_variables,
+    markerChart,
+    item,
+    index) {
   // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
   var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
     pattrn_data_sets[item.pattrn_data_set] :
@@ -94,10 +105,10 @@ export function point_data(config, instance_settings, _map, data_source_type, va
     media: document.getElementById('media')
   };
 
-  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
+  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, layer_data, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
 }
 
-function point_data_click(config, instance_settings, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
+function point_data_click(config, instance_settings, layer_data, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';

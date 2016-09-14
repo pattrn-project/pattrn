@@ -805,6 +805,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       layer_data.dataset.forEach(point_data.bind(undefined,
         config,
         instance_settings,
+        layer_data,
         _map,
         data_source_type,
         variable_list,

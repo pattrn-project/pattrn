@@ -40,6 +40,7 @@ import {
 export function point_data(
     config,
     instance_settings,
+    layer_group,
     layer_data,
     _map,
     data_source_type,
@@ -105,10 +106,25 @@ export function point_data(
     media: document.getElementById('media')
   };
 
-  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, layer_data, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
+  item.marker.on("click", point_data_click.bind(undefined, config, instance_settings, layer_group, layer_data, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index));
 }
 
-function point_data_click(config, instance_settings, layer_data, _map, data_source_type, variable_list, non_empty_variables, pattrn_data_sets, elements, content, markerChart, item, index, e) {
+function point_data_click(
+      config,
+      instance_settings,
+      layer_group,
+      layer_data,
+      _map,
+      data_source_type,
+      variable_list,
+      non_empty_variables,
+      pattrn_data_sets,
+      elements,
+      content,
+      markerChart,
+      item,
+      index,
+      e) {
   var image_html = document.getElementById("image_gallery").innerHTML = '';
   var video_html = document.getElementById("video_gallery").innerHTML = '';
   var summary_table = document.getElementById("summaryTable").innerHTML = '';
@@ -243,6 +259,14 @@ function point_data_click(config, instance_settings, layer_data, _map, data_sour
         appendTagValueToTable(e, item, variable_list);
       });
     }
+
+    /**
+     * diagnostic output in development mode
+     */
+    if(is_defined(instance_settings.environment) && instance_settings.environment === 'development') {
+      appendPropertyToTable('layer_group', layer_group.id);
+      appendPropertyToTable('layer_group', layer_data.id);
+    }
   }
 
   _map.on("popupclose", function(item) {
@@ -298,8 +322,19 @@ function appendGeoJSONPropertyToTable(key, value, variable_list) {
   let variable = variable_list.find(variable => variable.id === key);
   let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : key;
 
+  appendPropertyToTable(full_field_name, value);
+}
+
+/**
+ * Add property to the details table.
+ * Used by other (more specific) append[Something]ToTable() functions, or
+ * manually for generated properties.
+ * For example, while in development mode, this may be used to output the
+ * row's parent layer and layer group ids for diagnostic purposes.
+ */
+function appendPropertyToTable(key, value) {
   $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
+    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + key +
     "</p></th><th class='col-sm-6' ><p class='white'> " + value +
     "</p> </th> </tr>"
   );

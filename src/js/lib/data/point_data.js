@@ -298,11 +298,7 @@ function appendIntegerValueToTable(d, field_name, variable_list) {
   let variable = variable_list.find(variable => variable.id === field_name);
   let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : field_name;
 
-  $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
-    "</p></th> <th class='col-sm-6' ><p class='white'> " + d[field_name] +
-    "</p> </th> </tr>"
-  );
+  appendPropertyToTable(full_field_name, d[field_name]);
 }
 
 function appendTagValueToTable(d, field_name, variable_list) {
@@ -311,11 +307,7 @@ function appendTagValueToTable(d, field_name, variable_list) {
   let variable = variable_list.find(variable => variable.id === field_name);
   let full_field_name = is_defined(variable) && is_defined(variable.name) ? variable.name : field_name;
 
-  $('#summaryTable').append(
-    "<tr class='col-sm-12'><th class='col-sm-6'><p>" + full_field_name +
-    "</p></th><th class='col-sm-6' ><p class='white'> " + d[field_name].split(',').join(', ') +
-    "</p> </th> </tr>"
-  );
+  appendPropertyToTable(full_field_name, d[field_name].split(',').join(', '));
 }
 
 function appendGeoJSONPropertyToTable(key, value, variable_list) {

@@ -226,17 +226,23 @@ function point_data_click(config, instance_settings, layer_data, _map, data_sour
         });
     }
 
-    layer_data.non_empty_variables.find(vt => vt.type === 'integer').names.forEach(function(item, index) {
-      appendIntegerValueToTable(e, item, variable_list);
-    });
+    if(layer_data.non_empty_variables.find(vt => vt.type === 'integer')) {
+      layer_data.non_empty_variables.find(vt => vt.type === 'integer').names.forEach(function(item, index) {
+        appendIntegerValueToTable(e, item, variable_list);
+      });
+    }
 
-    layer_data.non_empty_variables.find(vt => vt.type === 'tag').names.forEach(function(item, index) {
-      appendTagValueToTable(e, item, variable_list);
-    });
+    if(layer_data.non_empty_variables.find(vt => vt.type === 'tag')) {
+      layer_data.non_empty_variables.find(vt => vt.type === 'tag').names.forEach(function(item, index) {
+        appendTagValueToTable(e, item, variable_list);
+      });
+    }
 
-    layer_data.non_empty_variables.find(vt => vt.type === 'boolean').names.forEach(function(item, index) {
-      appendTagValueToTable(e, item, variable_list);
-    });
+    if(layer_data.non_empty_variables.find(vt => vt.type === 'boolean')) {
+      layer_data.non_empty_variables.find(vt => vt.type === 'boolean').names.forEach(function(item, index) {
+        appendTagValueToTable(e, item, variable_list);
+      });
+    }
   }
 
   _map.on("popupclose", function(item) {

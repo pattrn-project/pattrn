@@ -91,6 +91,7 @@ export function pattrn() {
   var platform_settings = {
     "default": {
       "release_status": "beta",
+      "environment": "development",
       "title": "Pattrn",
       "subtitle": "A data-driven, participatory fact mapping platform",
       "about": "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",

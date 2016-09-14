@@ -44,6 +44,9 @@ export function process_settings(platform_settings, settings_from_config) {
    * validating settings_from_config against our settings schema (which needs
    * to be defined)
    */
+   if(is_defined(settings_from_config.environment)) {
+     instance_settings.environment = settings_from_config.environment;
+   }
   if(is_defined(settings_from_config.title)) {
     instance_settings.title = settings_from_config.title;
   }

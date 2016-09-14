@@ -235,7 +235,7 @@ function point_data_click(
     if ('geojson_file' === data_source_type) {
       Object.keys(item.source_variables)
         .filter(function(value) {
-          return !value.match(/^pattrn_[^_]{2,}/);
+          return value === 'pattrn_data_set' || !value.match(/^pattrn_[^_]{2,}/);
         })
         .forEach(function(value, index, array) {
           if (is_defined(item.source_variables[value])) appendGeoJSONPropertyToTable(value, item.source_variables[value], variable_list);

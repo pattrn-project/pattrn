@@ -33,6 +33,13 @@ var source = require('vinyl-source-stream');
 
 
 var config = require('./package.json').pattrn_configuration;
+
+/**
+ * @technical-debt: pattrn-data-config.json is not mandatory, as data can be
+ * pulled in in a number of different ways, so we should first check for its
+ * existence here, and handle this scenario in the install_data_package task
+ * accordingly.
+ */
 config.pattrn_data = require('./pattrn-data-config.json');
 
 /**

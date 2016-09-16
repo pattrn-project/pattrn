@@ -1,5 +1,114 @@
-/*
-Copyright (C) 2016 andrea rota <a@xelera.eu>
+/**
+ * @technical-debt: this should be imported directly from the npm package
+ * so that we don't have to deal with vendor files in the main tree and with
+ * the related licensing complications.
+ */
+@import 'patternfills';
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #a4afbb;
+    background-color: #2b323a;
+    margin-bottom: 0px;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+/* map container*/
+#chart-map {
+    width:100%;
+    padding:none;
+    margin: none;
+    background-color: #3e4651;
+    height:50vh;
+}
+
+.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-top:0px;
+}
+
+/*navbar*/
+.navbar{
+    background-color: black;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    border-bottom: none;
+}
+
+/*fonts*/
+h1 {
+    font-size: 16px;
+    font-weight:400;
+    color: white;
+    letter-spacing:24;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:5px;
+}
+
+h1.gray{
+    color: #cfd8dc !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px
+}
+
+h1.display{
+    padding-top:10px;
+}
+
+h1.nav{
+    padding-top:5px;
+    padding-left:10px;
+    /*text-align:center;*/
+}
+
+h2 {
+    font-size: 14px;
+    font-weight:100;
+    color: white;
+    letter-spacing:40;
+    margin-top:15px;
+}
+
+h4{
+    font-size: 12px;
+    font-weight:400;
+    color: white;
+    letter-spacing:40;
+    margin-top:15px;
+}
+
+p {
+    font-size: 12px;
+    font-weight:400;
+    color: #fff;;
+    letter-spacing:48;
+    line-height: 200%;
+}
+
+p.display{
+    padding-top:25px;
+}
+
+p.tableHeader {
+    font-size: 14px;
+    color: #fff;;
+}
+
+p.noMargin{
+    margin-bottom: 0px !important;
+    color:#cfd8dc;
+}
+
+p.summary{
+    color:#cfd8dc;
+}
 
 This file is part of Pattrn - http://pattrn.co/.
 

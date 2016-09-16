@@ -50,10 +50,10 @@ export function point_data(
     markerChart,
     item,
     index) {
-  // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-  var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
-    pattrn_data_sets[item.pattrn_data_set] :
-    instance_settings.map.markers.color;
+
+  // If data on source data set is available, set colour and fill pattern of
+  // markers accordingly, otherwise use defaults
+  let [ marker_color, marker_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
 
   item.i = index;
 
@@ -68,6 +68,7 @@ export function point_data(
     opacity: 0.9,
     fillOpacity: 0.8,
     clickable: true,
+    className: marker_class
   });
 
   item.marker.data = item;
@@ -270,10 +271,9 @@ function point_data_click(
   }
 
   _map.on("popupclose", function(item) {
-    // If data on source data set is available, set colour of markers accordingly, otherwise use defaults
-    var marker_color = is_defined(item.pattrn_data_set) && is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
-      pattrn_data_sets[item.pattrn_data_set] :
-      instance_settings.map.markers.color;
+    // If data on source data set is available, set colour and fill pattern of
+    // markers accordingly, otherwise use defaults
+    let [ marker_color, patternfills_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
 
     item.marker.setRadius(7);
     item.marker.setStyle({
@@ -330,4 +330,22 @@ function appendPropertyToTable(key, value) {
     "</p></th><th class='col-sm-6' ><p class='white'> " + value +
     "</p> </th> </tr>"
   );
+}
+
+function marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data) {
+  let marker_color =
+    is_defined(item.pattrn_data_set) &&
+    is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
+      pattrn_data_sets[item.pattrn_data_set] :
+      instance_settings.map.markers.color;
+
+  let marker_class = `${layer_group.id}__${layer_data.id}`;
+
+  marker_class +=
+    is_defined(layer_group) &&
+    is_defined(layer_group.patternfills_class) ?
+      ` ${layer_group.patternfills_class}` :
+      '';
+
+  return [ marker_color, marker_class ];
 }

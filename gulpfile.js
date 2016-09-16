@@ -77,6 +77,11 @@ gulp.task('watch', ['bundle'], function () {
 
 gulp.task('default', ['watch']);
 
+gulp.task('clean', [], () => {
+  return gulp.src(['src/config.json', 'src/data/**/*'], {read: false})
+    .pipe(clean());
+});
+
 gulp.task('jsonlint', function(){
       gulp.src('js/config.json')
         .pipe(jsonlint())

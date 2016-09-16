@@ -63,7 +63,7 @@ gulp.task('vendor-stylesheet-assets', function() {
     .pipe(gulp.dest(config.dest + '/fonts'));
 });
 
-gulp.task('bundle', function () {
+gulp.task('bundle', ['install_data_package'], function () {
     return browserify({entries: config.app_main, debug: true})
         .transform(babelify, {presets: ["es2015"]})
         .bundle()
@@ -101,6 +101,12 @@ gulp.task('sass', function () {
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(config.dest + '/css'));
 });
+
+gulp.task('install_data_package', [], () => {
+  return gulp.src('node_modules/' + config.pattrn_data.source_data_package + '/pattrn-data/**/*')
+    .pipe(gulp.dest('src'));
+  }
+);
 
 gulp.task('build', ['jsonlint', 'bundle', 'views', 'sass'], function() {
   gulp.src(['src/**/*'])

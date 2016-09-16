@@ -53,7 +53,7 @@ export function point_data(
 
   // If data on source data set is available, set colour and fill pattern of
   // markers accordingly, otherwise use defaults
-  let [ marker_color, marker_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
+  let [ marker_fill, marker_stroke, marker_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
 
   item.i = index;
 
@@ -64,7 +64,8 @@ export function point_data(
   item.marker = new L.circleMarker(new L.LatLng(item.latitude, item.longitude), {
     title: "",
     radius: 7,
-    color: marker_color,
+    fillColor: marker_fill,
+    color: marker_stroke,
     opacity: 0.9,
     fillOpacity: 0.8,
     clickable: true,
@@ -273,12 +274,12 @@ function point_data_click(
   _map.on("popupclose", function(item) {
     // If data on source data set is available, set colour and fill pattern of
     // markers accordingly, otherwise use defaults
-    let [ marker_color, patternfills_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
+    let [ marker_fill, marker_stroke, patternfills_class ] = marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data);
 
     item.marker.setRadius(7);
     item.marker.setStyle({
-      fillColor: marker_color,
-      color: marker_color,
+      fillColor: marker_fill,
+      color: marker_stroke,
       fillOpacity: instance_settings.map.markers.opacity
     });
     content.innerHTML = "<p style='padding-top:15px'>Please click a marker<br><br></p>";
@@ -333,19 +334,27 @@ function appendPropertyToTable(key, value) {
 }
 
 function marker_style(item, pattrn_data_sets, instance_settings, layer_group, layer_data) {
-  let marker_color =
+  let marker_fill =
     is_defined(item.pattrn_data_set) &&
     is_defined(pattrn_data_sets[item.pattrn_data_set]) ?
       pattrn_data_sets[item.pattrn_data_set] :
       instance_settings.map.markers.color;
 
+  let marker_stroke =
+    is_defined(layer_group) &&
+    is_defined(layer_group.style) &&
+    is_defined(layer_group.style.stroke) ?
+      ` ${layer_group.style.stroke}` :
+      null;
+
   let marker_class = `${layer_group.id}__${layer_data.id}`;
 
   marker_class +=
     is_defined(layer_group) &&
-    is_defined(layer_group.patternfills_class) ?
-      ` ${layer_group.patternfills_class}` :
+    is_defined(layer_group.style) &&
+    is_defined(layer_group.style.patternfills_class) ?
+      ` ${layer_group.style.patternfills_class}` :
       '';
 
-  return [ marker_color, marker_class ];
+  return [ marker_fill, marker_stroke, marker_class ];
 }

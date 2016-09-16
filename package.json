@@ -62,5 +62,37 @@
     "gulp-webserver": "^0.9.1",
     "http-server": "^0.8.5",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "pattrn_configuration": {
+    "app_main": "src/js/app.js",
+    "bundle": "js/main.js",
+    "src": "src",
+    "dest": "dist",
+    "vendor_stylesheets": [
+      {
+        "stylesheets": "node_modules/bootstrap/dist/css/bootstrap.css",
+        "assets": [
+          {
+            "src": "node_modules/bootstrap/dist/fonts/**/*",
+            "dest": "/fonts"
+          }
+        ]
+      },
+      {
+        "stylesheets": "node_modules/dc/dc.css"
+      },
+      {
+        "stylesheets": "node_modules/leaflet/dist/leaflet.css"
+      },
+      {
+        "stylesheets": "node_modules/lightgallery/dist/css/lightgallery.css",
+        "assets": [
+          {
+            "src": "node_modules/lightgallery/dist/fonts/**/*",
+            "dest": "/fonts"
+          }
+        ]
+      }
+    ]
   }
 }

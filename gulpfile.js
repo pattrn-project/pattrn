@@ -32,38 +32,8 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
 
-var config = {
-  app_main: 'src/js/app.js',
-  bundle: 'js/main.js',
-  src: 'src',
-  dest: 'dist',
-  vendor_stylesheets: [
-    {
-      stylesheets: 'node_modules/bootstrap/dist/css/bootstrap.css',
-      assets: [
-        {
-          src: 'node_modules/bootstrap/dist/fonts/**/*',
-          dest: '/fonts'
-        }
-      ]
-    },
-    {
-      stylesheets: 'node_modules/dc/dc.css'
-    },
-    {
-      stylesheets: 'node_modules/leaflet/dist/leaflet.css'
-    },
-    {
-      stylesheets: 'node_modules/lightgallery/dist/css/lightgallery.css',
-      assets: [
-        {
-          src: 'node_modules/lightgallery/dist/fonts/**/*',
-          dest: '/fonts'
-        }
-      ]
-    }
-  ]
-};
+var config = require('./package.json').pattrn_configuration;
+config.pattrn_data = require('./pattrn-data-config.json');
 
 /**
  * Copy over assets referenced from vendor stylesheets

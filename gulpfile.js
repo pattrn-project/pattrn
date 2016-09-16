@@ -78,7 +78,7 @@ gulp.task('watch', ['bundle'], function () {
 gulp.task('default', ['watch']);
 
 gulp.task('clean', [], () => {
-  return gulp.src(['src/config.json', 'src/data/**/*'], {read: false})
+  return gulp.src([config.src + '/config.json', config.src + '/data/**/*', config.dest + '/**/*'], {read: false})
     .pipe(clean());
 });
 

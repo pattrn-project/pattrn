@@ -63,7 +63,7 @@ gulp.task('vendor-stylesheet-assets', function() {
     .pipe(gulp.dest(config.dest + '/fonts'));
 });
 
-gulp.task('bundle', ['install_data_package'], function () {
+gulp.task('bundle', ['install_data_package', 'vendor-stylesheet-assets'], function () {
     return browserify({entries: config.app_main, debug: true})
         .transform(babelify, {presets: ["es2015"]})
         .bundle()

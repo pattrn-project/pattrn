@@ -29,8 +29,7 @@ let $ = require('jquery'),
     q = require('d3-queue'),
     dc = require('dc'),
     crossfilter = require('crossfilter2'),
-    range = require('lodash.range'),
-    jade = require('pug');
+    range = require('lodash.range');
 
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
@@ -438,10 +437,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    */
    pattrn_layer_groups.forEach((layer_group, group_index) => {
      let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
-     let layer_menu_template =
-`span.layer-root
-  input(type = 'checkbox', checked = "true")
-  = layer_name`;
 
      explore_menu_root
        .append('li')

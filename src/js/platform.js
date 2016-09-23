@@ -216,25 +216,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     document.getElementById('edit_event').style.display = 'none';
   }
 
-  /**
-   * If the pattrn_data_set variable is set for any of the observations,
-   * associate colours to each source data set, to be used when displaying
-   * markers.
-   */
   if (data_source_type === 'geojson_file') {
-    var data_source_column = dataset.map(function(value) {
-        return value.pattrn_data_set;
-      })
-      .reduce(function(p, c) {
-        if (p.indexOf(c) < 0) p.push(c);
-        return p;
-      }, []);
-
-    var fill = d3.scale.category10();
-
-    data_source_column.forEach(function(value, index, array) {
-      pattrn_data_sets[value] = fill(index);
-    });
+    pattrn_data_sets = colour_by_data_source(dataset);
   }
 
   // sync tree charts and dc.js charts via d3 dispatch

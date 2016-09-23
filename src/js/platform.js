@@ -118,23 +118,31 @@ export default function pattrn(platform_settings) {
     });
   });
 
+  /**
+   * Initial message for developer console output
+   */
   hello_devs_hello();
 
   // Load the json file with the local settings
-  /* global d3 */
-  d3.json("config.json", function(config) {
-    /**
-     * Add link to edit interface, if defined
-     */
-    if (config.script_url) {
-      $('#edit_dropdown').append(
-        "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
-      );
-    }
+  q.queue()
+    .defer(d3.json, 'config.json')
+    .await((error, config) => {
+      /**
+       * Add link to edit interface, if defined
+       */
+      if (config.script_url) {
+        $('#edit_dropdown').append(
+          "<li><a target='_blank' href=" + config.script_url + "new" + " class='noMargin'>Add a new event</a></li>"
+        );
+      }
 
-    // load data; legacy code wrapped this in jQuery's document.ready - is that really needed?
-    load_data(config, platform_settings);
-  });
+      /**
+       * Load data; legacy code used to wrap this in jQuery's document.ready()
+       * though this doesn't really seem to be needed - at least with the
+       * current code flow.
+       */
+      load_data(config, platform_settings);
+    })
 };
 
 /**
@@ -201,6 +209,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
   /**
    * Disable 'edit/add event' link for read-only data source types
+   * @x-technical-debt: do this gracefully via a class and related SASS style,
+   * at least
    */
   if (data_source_type === 'geojson_file') {
     document.getElementById('edit_event').style.display = 'none';

@@ -17,29 +17,26 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// require dependencies
-var jquery = require('jquery');
-
-// expose jquery as global.jQuery; this is needed for jQuery plugins
-global.jQuery = jquery;
-
-// require bootstrap (menus etc) - needs jQuery global
-require('bootstrap');
-
-// Leaflet:
-// main library (for global L)
-require('leaflet');
-// and leaflet.marketcluster plugin
-require('leaflet.markercluster');
-
-// lightgallery jQuery plugin
-require('lightgallery');
-
-// Default Pattrn settings
-import { platform_settings } from './pattrn-default-configuration.js';
-
-// Lastly, import the main pattrn() function
-import pattrn from './platform.js';
-
-// finally, invoke the actual monolithic pattrn() function
-pattrn(platform_settings);
+export const platform_settings = {
+  "default": {
+    "release_status": "beta",
+    "environment": "development",
+    "title": "Pattrn",
+    "subtitle": "A data-driven, participatory fact mapping platform",
+    "about": "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
+    "colour": "#f45656",
+    "map": {
+      "root_selector": "chart-map",
+      "markers": {
+        "color": "black",
+        "fillColor": "black",
+        "opacity": "0.8"
+      },
+      "zoom": {
+        "max": 14,
+        "min": 2
+      },
+      "disableClusteringAtZoom": 12
+    }
+  }
+};

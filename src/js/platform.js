@@ -98,32 +98,10 @@ array_equals();
  * functions (or classes and class methods, or whatever as the direction set
  * after the v2.0 release will be) would be out of scope for this first
  * refactor.
+ *
+ * @param Object platform_settings Default settings for the Pattrn platform.
  */
-export function pattrn() {
-  var platform_settings = {
-    "default": {
-      "release_status": "beta",
-      "environment": "development",
-      "title": "Pattrn",
-      "subtitle": "A data-driven, participatory fact mapping platform",
-      "about": "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",
-      "colour": "#f45656",
-      "map": {
-        "root_selector": "chart-map",
-        "markers": {
-          "color": "black",
-          "fillColor": "black",
-          "opacity": "0.8"
-        },
-        "zoom": {
-          "max": 14,
-          "min": 2
-        },
-        "disableClusteringAtZoom": 12
-      }
-    }
-  };
-
+export default function pattrn(platform_settings) {
   $(document).ready(function() {
 
     // Bug fix for dropdown sub-menu (CHECK - hack from legacy code)

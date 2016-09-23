@@ -86,6 +86,19 @@ import { template as aggregate_count_widget_template } from './lib/themes/pattrn
  */
 array_equals();
 
+/**
+ * Once upon a time, when Pattrn was young and its version was 1.0, all the
+ * Pattrn code was wrapped within a single IIFE whose name was pattrn():
+ * https://github.com/pattrn-project/pattrn/blob/v1.0/js/platform.js#L1
+ * While transitioning to Pattrn v2.0 and breaking things down into manageable
+ * modular code, we did things one bit at a time, bringing things out of
+ * pattrn() and into small functions and ES2015 modules. As we get ready to
+ * tag the v2.0 Pattrn release, pattrn() is still a very long function, as
+ * fully refactoring this and finishing extracting code to manageable
+ * functions (or classes and class methods, or whatever as the direction set
+ * after the v2.0 release will be) would be out of scope for this first
+ * refactor.
+ */
 export function pattrn() {
   var platform_settings = {
     "default": {

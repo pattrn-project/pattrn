@@ -260,7 +260,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     // actually populate variables configured to have their data populated
     // programmatically
     variables_from_mock_data.forEach((variable) => {
-      var plugin = pattrn_mock_data_plugins()[variable.data_from_plugin.plugin];
+      let plugin = pattrn_mock_data_plugins()[variable.data_from_plugin.plugin];
       if(plugin) item[variable.id] = plugin(variable.data_from_plugin.args)
     });
 

@@ -798,8 +798,8 @@ a.toggle-left {
     margin:none;
     margin-bottom: 0px;
     background-color:#2f363f;
-    min-height: 80vh;
-    max-height: 80vh;
+    min-height: 74vh;
+    max-height: 74vh;
     overflow: auto;
     margin-top:0px;
 }
@@ -958,6 +958,10 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 0px;
+    /* @x-technical-debt: fit stuff properly, without forcing overflow-x to not
+     * use scrollbars
+     */
+    overflow-x: hidden;
 }
 
 .chartTitle{

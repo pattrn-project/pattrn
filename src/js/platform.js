@@ -267,23 +267,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     return item;
   }).map(rename_pattrn_core_variables.bind(undefined, dataset_metadata));
 
-  // Parse time
-  var dateFormat = d3.time.format('%Y-%m-%dT%H:%M:%S');
-
-  // Remove rows with invalid dates
-  dataset = dataset.filter(function(d) {
-    try {
-      dateFormat.parse(d.date_time);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  });
-
-  // Add dd member to each case, holding a date object
-  dataset.forEach(function(d) {
-    d.dd = dateFormat.parse(d.date_time);
-  });
+  dataset = add_dateobject_to_rows(dataset);
 
   /**
    * get flat list of Pattrn (b/i/t/r) variables

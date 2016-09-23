@@ -57,6 +57,8 @@ import { load_google_sheets_data, consume_table_google_docs }  from "./lib/load_
  * data, later shapes, arcs, etc.
  */
 import { point_data } from './lib/data/point_data.js';
+import colour_by_data_source from './lib/data/colour_by_data_source.js';
+import add_dateobject_to_rows from './lib/data/add_dateobject_to_rows.js';
 
 /**
  * Pattrn chart types

@@ -74,5 +74,23 @@ export function process_settings(platform_settings, settings_from_config) {
     }
   }
 
+  /**
+   * Make configuration available as global object
+   * @x-technical-debt: yuck globals. better way to do this while keeping
+   * configuration readily available through the Pattrn code lifecycle without
+   * passing it around? Pattrn singleton class, i guess.
+   * Will have to be after v2.0.
+   */
+  window.Pattrn.configuration = instance_settings;
+
   return instance_settings;
+}
+
+/**
+ * Return active configuration, as combined from defaults and instance-specific
+ * configuration.
+ * @return Object The active Pattrn configuration object
+ */
+export function get_instance_configuration() {
+  return window.Pattrn.configuration;
 }

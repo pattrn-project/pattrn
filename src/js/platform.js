@@ -123,6 +123,15 @@ export default function pattrn(platform_settings) {
    */
   hello_devs_hello();
 
+  /**
+   * Create Pattrn global object (yuck); this is then currently used only by the
+   * /settings.js module to store a global (yuck) configuration object.
+   * @x-technical-debt: yuck, but until we refactor to use a singleton class
+   * this helps avoiding to pass around the configuration object across
+   * function calls)
+   */
+  window.Pattrn = {};
+  
   // Load the json file with the local settings
   q.queue()
     .defer(d3.json, 'config.json')

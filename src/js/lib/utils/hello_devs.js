@@ -31,3 +31,10 @@ String.raw`
 
 `);
 }
+
+export function log_dropped_row(row, reason) {
+  if(get_instance_configuration().environment !== 'production') {
+    console.log(`Removing row with event_ID ${row.event_ID} from active dataset: ${reason}.`);
+    console.log(row);
+  }
+}

@@ -51,6 +51,28 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
   @include panel-transition;
 }
 
+.layer-groups-root {
+  input.layer-group {
+    display: none;
+  }
+
+  input.layer-group:checked + .layer-group-container {
+    border-left: 0.25rem #f00 solid;
+    padding-left: 1.25rem;
+    background-color: rgba(100, 100, 100, 0.2);
+    transition: all 0.3s;
+    opacity: 1;
+  }
+
+  input.layer-group + .layer-group-container {
+    transition: all 0.3s;
+    display: block;
+    padding: 1rem;
+    font-weight: 300;
+    opacity: 0.3;
+  }
+}
+
 .layer-root label input {
   float: left;
   margin-right: 1rem;

@@ -414,7 +414,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   console.log(pattrn_layer_groups);
 
   /**
-   * Generale data layers menu for side panel
+   * Generate data layers menu for side panel
    */
   generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, variable_list)
 

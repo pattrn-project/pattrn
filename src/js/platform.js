@@ -440,28 +440,32 @@ function consume_table(data_source_type, config, platform_settings, settings, da
      let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
 
      explore_menu_root
-       .append('li')
+       .append('h2')
        .text(() => {
-         if(layer_group.type === 'intersection') return;
-         else return layer_group.name;
+         return layer_group.name;
        });
+     explore_menu_root
+       .append('ul');
 
      layer_group.layers.forEach((layer_data, layer_index) => {
        let layer_menu_root = explore_menu_root
+         .select('ul')
          .append('li')
          .classed('layer-menu-root', true)
          .classed(`layer-root-${layer_data.id}`, true);
 
-      layer_menu_root.append('span')
-        .classed('layer-root', true)
-        .style('color', (d, i) => { return is_defined(pattrn_data_sets[layer_data.id]) ? pattrn_data_sets[layer_data.id] : 'inherit'; })
-        .append('label')
-        .text(layer_data.name)
-        .append('input')
-        .attr('type', 'checkbox')
-        .attr('checked', 'true');
+       layer_menu_root.append('span')
+         .classed('layer-root', true)
+         .style('color', (d, i) => {
+           return is_defined(pattrn_data_sets[layer_data.id]) ? pattrn_data_sets[layer_data.id] : 'inherit';
+         })
+         .append('label')
+         .text(layer_data.name)
+         .append('input')
+         .attr('type', 'checkbox')
+         .attr('checked', 'true');
 
-      layer_menu_root.append('ul');
+       layer_menu_root.append('ul');
 
        layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root
@@ -479,7 +483,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
            .attr('href', (d, i) => {
              return `#lg${group_index}_ly${layer_index}_vg${variable_group_index}_var${i}`;
            })
-           .text((d,i) => {
+           .text((d, i) => {
              /**
               * if variable is defined in metadata file, return its name
               * otherwise return the variable id (column name)
@@ -500,11 +504,11 @@ function consume_table(data_source_type, config, platform_settings, settings, da
      });
 
      // append separator unless this is the last layer group
-     if(group_index < (pattrn_layer_groups.length - 1)) {
+     if (group_index < (pattrn_layer_groups.length - 1)) {
        explore_menu_root
          .append('li')
          .classed('divider', true);
-      }
+     }
    });
 
   /**

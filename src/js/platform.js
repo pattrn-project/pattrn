@@ -437,19 +437,47 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * @x-technical-debt: refactor out to separate function
    */
    pattrn_layer_groups.forEach((layer_group, group_index) => {
-     let explore_menu_root = d3.select('#myExploreTab .layer-groups-root');
+     let layer_group_root = d3
+       .select('#myExploreTab .layer-groups-root')
+       .append('div')
+       .classed('layer-group-root', true);
 
-     explore_menu_root
-       .append('h2')
+     let layer_group_element_id = `layer-group-selector-${layer_group.id}`;
+
+     let radio_el_attributes = {
+       id: layer_group_element_id,
+       type: 'radio',
+       name: 'layer_groups',
+       value: layer_group.id
+     };
+
+     if(group_index === 0) radio_el_attributes.checked = true;
+
+     layer_group_root
+       .append('input')
+         .classed('layer-group', true)
+         .attr(radio_el_attributes);
+
+     layer_group_root
+       .append('div')
+       .classed('layer-group-container', true);
+
+     layer_group_root
+       .select('.layer-group-container')
+       .append('label')
+       .attr({
+         for: layer_group_element_id
+       })
        .text(() => {
          return layer_group.name;
        });
-     explore_menu_root
+
+     layer_group_root = layer_group_root
+       .select('.layer-group-container')
        .append('ul');
 
      layer_group.layers.forEach((layer_data, layer_index) => {
-       let layer_menu_root = explore_menu_root
-         .select('ul')
+       let layer_menu_root = layer_group_root
          .append('li')
          .classed('layer-menu-root', true)
          .classed(`layer-root-${layer_data.id}`, true);

@@ -38,7 +38,7 @@ import { marker_chart } from './lib/data/dc_markerchart.js';
 import { parse_pattrn_layer_groups } from './lib/data/layers.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
-import { initialize_ui } from './lib/pattrn_ui.js';
+import { initialize_ui, activate_side_panels, activate_data_layers_toggle } from './lib/pattrn_ui.js';
 
 import { generate_data_layer_menu } from './lib/ui/menus.js';
 
@@ -259,28 +259,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   });
 
   /**
-   * When user clicks on the map, outside of any markers, set the #info and #data-layers panels
-   * to inactive (UX depends on theme); conversely, set #info panel to active
-   * when user clicks on it; same for #data-layers
-   * @x-technical-debt: this should be moved to a theme-specific layout
-   * setup function.
-   */
-  _map.on('click', () => {
-     $('#info').removeClass('active');
-     $('#data-layers').removeClass('active');
-     $('#charts').removeClass('info-panel-active');
-   });
-  $('#info').on('click', () => {
-    $('#info').addClass('active');
-    $('#data-layers').removeClass('active');
-    $('#charts').addClass('info-panel-active');
-  });
-  $('#data-layers').on('click', () => {
-    $('#data-layers').addClass('active');
-    $('#info').removeClass('active');
-  });
-
-  /**
    * from the list of variables defined in the instance's metadata, extract
    * those configured to have their data populated programmatically
    */
@@ -439,6 +417,16 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Generale data layers menu for side panel
    */
   generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, variable_list)
+
+  /**
+   * Activate events on data layers and info panels
+   */
+  activate_side_panels(_map);
+
+  /**
+   * Activate events on data layers toggles
+   */
+  activate_data_layers_toggle();
 
   /**
    * Create charts and map layers/layer groups

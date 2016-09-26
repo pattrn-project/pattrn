@@ -94,6 +94,7 @@ function bring_map_to_center() {
   $('#data-layers').removeClass('active');
   $('#charts').removeClass('info-panel-active');
 }
+
 /**
  * Attach events to data layers toggle, so that clicking anywhere on the div
  * of a layer group will toggle it

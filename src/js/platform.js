@@ -131,7 +131,7 @@ export default function pattrn(platform_settings) {
    * function calls)
    */
   window.Pattrn = {};
-  
+
   // Load the json file with the local settings
   q.queue()
     .defer(d3.json, 'config.json')
@@ -253,6 +253,28 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
   _map.on('moveend', function() {
     dispatch.filter();
+  });
+
+  /**
+   * When user clicks on the map, outside of any markers, set the #info and #data-layers panels
+   * to inactive (UX depends on theme); conversely, set #info panel to active
+   * when user clicks on it; same for #data-layers
+   * @x-technical-debt: this should be moved to a theme-specific layout
+   * setup function.
+   */
+  _map.on('click', () => {
+     $('#info').removeClass('active');
+     $('#data-layers').removeClass('active');
+     $('#charts').removeClass('info-panel-active');
+   });
+  $('#info').on('click', () => {
+    $('#info').addClass('active');
+    $('#data-layers').removeClass('active');
+    $('#charts').addClass('info-panel-active');
+  });
+  $('#data-layers').on('click', () => {
+    $('#data-layers').addClass('active');
+    $('#info').removeClass('active');
   });
 
   /**

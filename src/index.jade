@@ -70,12 +70,14 @@ html
               #aboutModalContent.modal-body
               .modal-footer
                 button.btn.btn-default(type='button', data-dismiss='modal') Close
-    .container-fluid
+    .container-fluid.visualization-container
+      // filters
+      include ./views/partials/data-layers.jade
       // Map & Charts
-      #charts.col-sm-8.col-lg-8(style='padding: 0px')
+      #charts.col-sm-12.col-lg-12
         #chart-map
-        #offGrayBar.col-sm-7.col-lg-7(style='padding: 0px; margin: 0px;')
-          include ./views/partials/explore-nav-root-only.jade
+        #offGrayBar.col-sm-7.col-lg-7
+          #button.popup-menu-root.col-sm-6.col-lg-6
           include ./views/partials/event-count-empty.jade
         include ./views/partials/text-search.jade
         include ./views/partials/search-button.jade

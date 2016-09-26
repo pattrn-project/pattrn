@@ -1,7 +1,15 @@
-#info.col-sm-4.col-lg-4(style='padding: 10px; overflow: auto;')
-  // Info section
-  include ./event-detail-key-facts.jade
-  // Tab panel
-  include ./event-detail-navigation.jade
-  // Tab panes
-  include ./event-detail-data.jade
+#info.col-sm-4.col-lg-4
+  #midGrayBar.info-heading.col-sm-12.col-lg-12
+    .col-sm-4.col-lg-4
+      h1.gray Event Details
+    #edit_event.col-xs-4.col-xs-offset-4
+      li.dropdown(style='margin-right:0px')
+        a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false', style='') Edit / Add Event
+        ul#edit_dropdown.dropdown-menu(role='menu')
+  .info-content
+    // Info section
+    include ./event-detail-key-facts.jade
+    // Tab panel
+    include ./event-detail-navigation.jade
+    // Tab panes
+    include ./event-detail-data.jade

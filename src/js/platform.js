@@ -530,13 +530,6 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        });
 
      });
-
-     // append separator unless this is the last layer group
-     if (group_index < (pattrn_layer_groups.length - 1)) {
-       explore_menu_root
-         .append('li')
-         .classed('divider', true);
-     }
    });
 
   /**

@@ -1,0 +1,77 @@
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+
+This file is part of Pattrn - http://pattrn.co/.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+.visualization-container {
+  position: relative;
+}
+
+.leaflet-control-container {
+  margin-left: 5rem;
+  position: relative;
+}
+
+#charts.info-panel-active {
+  transform: translate(-33%);
+  @include panel-transition;
+}
+
+#info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  // width: 6rem;
+  transform: translate(95%);
+  opacity: 0.6; // @x-technical-debt: define in panel mixin
+  background: $main-background;
+  @include panel-transition;
+
+  .info-content {
+    opacity: 0;
+  }
+
+/*
+  #midGrayBar {
+    transform: rotate(90deg);
+    transform-origin: 30px 30px;
+    z-index: 3;
+
+    transition: transform 0.2s;
+  }
+*/
+  &.active {
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
+    width: 33.33333333%;
+    opacity: 0.9; // @x-technical-debt: define in panel mixin
+    height: inherit;
+    transform: translate(0);
+    @include panel-transition;
+
+    .info-content {
+      opacity: 1;
+    }
+/*
+    #midGrayBar {
+      transform: none;
+
+      transition: transform 0.2s;
+    }
+*/
+  }
+}

@@ -18,18 +18,27 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * @technical-debt: this should be imported directly from the npm package
- * so that we don't have to deal with vendor files in the main tree and with
- * the related licensing complications.
+ * Tree charts
  */
-@import 'themes/pattrn-begins/palette';
-@import 'themes/pattrn-begins/typography';
-@import 'themes/pattrn-begins/transitions';
+.node{
+    cursor: pointer;
+}
 
-@import 'themes/pattrn-begins/base';
+.node circle{
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
 
-@import 'themes/pattrn-begins/legacy-v1';
+.link{
+    fill: none;
+    stroke: lightgray;
+    stroke-width: 1.5px;
+}
 
-@import 'themes/pattrn-begins/layout';
-@import 'themes/pattrn-begins/layer-groups';
-@import 'themes/pattrn-begins/patternfills';
+.pattrn_tree_chart text {
+  fill: white;
+}
+
+.pattrn_tree_chart text.inactive {
+  fill: #999;
+}

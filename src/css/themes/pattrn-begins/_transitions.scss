@@ -17,19 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * @technical-debt: this should be imported directly from the npm package
- * so that we don't have to deal with vendor files in the main tree and with
- * the related licensing complications.
- */
-@import 'themes/pattrn-begins/palette';
-@import 'themes/pattrn-begins/typography';
-@import 'themes/pattrn-begins/transitions';
-
-@import 'themes/pattrn-begins/base';
-
-@import 'themes/pattrn-begins/legacy-v1';
-
-@import 'themes/pattrn-begins/layout';
-@import 'themes/pattrn-begins/layer-groups';
-@import 'themes/pattrn-begins/patternfills';
+@mixin panel-transition {
+    transition-property: width, opacity, height, transform;
+    transition-duration: 0.5s;
+}

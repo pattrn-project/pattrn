@@ -1,0 +1,61 @@
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+
+This file is part of Pattrn - http://pattrn.co/.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @x-technical-debt: ad-hoc hack to fit larger popup menus in a desktop
+ * screen; this whole thing should be avoided by moving the menu to an
+ * off-canvas component
+ */
+#data-layers {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background: $main-background;
+  min-height: 100vh;
+  transform: translate(-95%); // @x-technical-debt: calculate this properly in SCSS
+  opacity: 0.6; // @x-technical-debt: define in panel mixin
+  @include panel-transition;
+
+  &.active {
+    min-height: 100vh;
+    // margin-left: inherit;
+    opacity: 0.9; // @x-technical-debt: define in panel mixin
+    transform: translate(0); // @x-technical-debt: calculate this properly in SCSS
+    @include panel-transition;
+  }
+}
+
+#charts {
+  @include panel-transition;
+}
+
+#data-layers.active + #charts {
+  transform: translate(25%);
+  @include panel-transition;
+}
+
+.layer-root label input {
+  float: left;
+  margin-right: 1rem;
+}
+
+.layer-menu-root {
+    margin-top: 1.5rem;
+}

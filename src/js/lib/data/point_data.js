@@ -135,6 +135,7 @@ function point_data_click(
   var highlightColour = instance_settings.colour;
 
   // make info panel active (actual UX depends on theme)
+  $('#data-layers').removeClass('active');
   $('#info').addClass('active');
   $('#charts').addClass('info-panel-active');
 

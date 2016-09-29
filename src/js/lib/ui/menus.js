@@ -89,6 +89,9 @@ export function generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, 
        layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
          let variable_group_menu_root = layer_menu_root
            .select('ul')
+           .append('li')
+           .append('ul')
+           .classed(`variable_group__${variable_group.type}`, true)
            .selectAll('li')
            .data(variable_group.names);
 

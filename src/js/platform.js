@@ -827,7 +827,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
     var newscatterWidth = document.getElementById('charts').offsetWidth;
 
     pattrn_layer_groups.forEach((layer_group, layer_group_index) => {
-      layer_group.forEach((layer, layer_index) => {
+      layer_group.layers.forEach((layer, layer_index) => {
         // group id used to group DC charts
         let chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
 

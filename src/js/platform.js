@@ -432,12 +432,14 @@ function consume_table(data_source_type, config, platform_settings, settings, da
    * Create charts and map layers/layer groups
    * @x-technical-debt: refactor out to separate function
    */
-  pattrn_layer_groups.forEach((layer_group, layer_group_index) => {
-    layer_group.layers.forEach((layer_data, layer_index) => {
-      // group id used to group DC charts
-      let chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
+  pattrn_layer_groups.forEach((layer_group, layer_group_index, layer_groups) => {
+    layer_group.layers = layer_group.layers.map((layer_data, layer_index) => {
       // selector for root of layer menu, used to append the DC data count widget
       let layer_data_count_selector = `.layer-root-${layer_data.id}`;
+
+      // group id used to group DC charts;
+      // add this to layer_data for uses outside of this function
+      let chart_group_id = layer_data.chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
 
       /**
        * @x-technical-debt: in legacy code, a variable for each chart was
@@ -777,7 +779,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * Dimension used to filter whole layer in or out, against the eventID
        * variable (which is always defined and always positive by construction)
        */
-      var always_positive_dimension = layer_data.crossfilter.dimension(function(d) {
+      layer_data.always_positive_dimension = layer_data.crossfilter.dimension(function(d) {
         return d.eventID;
       });
 

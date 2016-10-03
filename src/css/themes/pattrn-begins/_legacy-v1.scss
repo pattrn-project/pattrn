@@ -457,9 +457,15 @@ a.carousel-control{
 .dc-chart .axis text {
     font-family: 'Roboto', sans-serif;
     fill: white;
+    stroke: white;
     font-size:14px;
     font-weight:100;
     padding-top:100px;
+
+    &:hover {
+      fill: red;
+      stroke: red;
+    }
 }
 
 .dc-chart .axis path, .axis line {

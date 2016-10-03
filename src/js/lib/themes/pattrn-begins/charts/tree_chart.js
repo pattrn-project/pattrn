@@ -22,11 +22,11 @@ let jade = require('pug');
 let chart_template =
 `.tab-pane.fade.in.variable(id = chart_id)
   .col-sm-12.col-lg-12.pattrn_tree_chart(id = 'd3_tree_chart_' + chart_id)
-    .col-sm-6.col-lg-6
+    .col-sm-5.col-lg-5
       p.filterText
         | Current filter:
         span#highlightText.filter Ctrl-click/cmd-click on a node to toggle filtering on it and its children
-    .col-sm-6.col-lg-6
+    .col-sm-5.col-lg-5
       p.chartTitle(id = 'tree_chart_' + chart_id + '_chartTitle')`;
 
 /**

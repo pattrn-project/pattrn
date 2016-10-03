@@ -22,12 +22,14 @@ let jade = require('pug');
 let chart_template =
 `.tab-pane.fade.in.variable(id = chart_id)
   .col-sm-12.col-lg-12(id = 'd3_bar_chart_' + chart_id)
-    .col-sm-6.col-lg-6
+    .col-sm-5.col-lg-5
       p.filterText
         | Current filter:
         span#highlightText.filter No active filter: click/drag on charts to filter data
-    .col-sm-6.col-lg-6
-      p.chartTitle(id = 'bar_chart_' + chart_id + '_chartTitle')`;
+    .col-sm-5.col-lg-5
+      p.chartTitle(id = 'bar_chart_' + chart_id + '_chartTitle')
+    .col-sm-2.col-lg-2
+      p.downloadChartAsSVG Download chart`;
 
 /**
  * Compile template for chart markup

@@ -38,7 +38,7 @@ import { marker_chart } from './lib/data/dc_markerchart.js';
 import { parse_pattrn_layer_groups } from './lib/data/layers.js';
 import { geojson_to_pattrn_legacy_data_structure } from './lib/geojson_to_pattrn_legacy.js';
 
-import { initialize_ui, activate_side_panels, activate_data_layers_toggle } from './lib/pattrn_ui.js';
+import { initialize_ui, activate_side_panels, activate_data_layers_toggle, activate_chart_download_buttons } from './lib/pattrn_ui.js';
 
 import { generate_data_layer_menu } from './lib/ui/menus.js';
 
@@ -818,6 +818,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
 
     });
   });
+
+  activate_chart_download_buttons();
 
   // Set first generated variable tab as active
   d3.select('.tab-pane.variable').classed('active', true);

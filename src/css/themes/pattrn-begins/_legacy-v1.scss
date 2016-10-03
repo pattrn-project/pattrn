@@ -1011,12 +1011,11 @@ body {
     overflow-x: hidden;
 }
 
-.chartTitle{
+.chartTitle, .downloadChartAsSVG {
   text-align:right;
   margin-bottom: 0px;
   font-size: 14px;
   padding-top:10px;
-
 }
 
 #platformTitle span.pre-release {

@@ -25,6 +25,8 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 
 var $ = require('jquery');
 
+import d3 from 'd3';
+
 import {
   is_defined
 } from '../utils/is_defined.js';

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import d3 from 'd3';
 import { log_dropped_row } from '../utils/hello_devs.js';
 import { is_defined } from '../utils/is_defined.js';
 

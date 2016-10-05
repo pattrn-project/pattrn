@@ -22,3 +22,5 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 $main-background: rgb(47, 54, 63);
+$text-on-dark-background: white;
+$labels-on-dark-background: darken($text-on-dark-background, 20%);

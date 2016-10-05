@@ -124,7 +124,7 @@ p.summary{
 }
 
 a {
-    color: #a4afbb;
+    color: $text-on-dark-background;
     text-decoration: none;
 }
 
@@ -188,7 +188,7 @@ th, td {
 
 th > p{
     text-align:left;
-    color: #a4afbb;
+    color: $labels-on-dark-background;
     padding-top: 7px;
 }
 

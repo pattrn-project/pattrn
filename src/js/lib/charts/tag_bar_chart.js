@@ -23,8 +23,8 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var d3 = require('d3');
-var dc = require('dc');
+import d3 from 'd3';
+import dc from 'dc';
 
 /**
  * bar chart

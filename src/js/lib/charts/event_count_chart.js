@@ -1,4 +1,3 @@
-
 /*
 Copyright (C) 2016 andrea rota <a@xelera.eu>
 Copyright (C) 2015 Forensic Architecture

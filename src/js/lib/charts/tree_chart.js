@@ -29,8 +29,8 @@ import {
   list_tree_variable
 } from '../pattrn_data.js';
 
-var d3 = require('d3');
-var dc = require('dc');
+import d3 from 'd3';
+import dc from 'dc';
 
 /**
  * Tree charts, aka hierarchical tag charts

@@ -75,3 +75,28 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
   }
 }
+
+.panel-control {
+    z-index: 999;
+    color: white;
+    transform: none;
+    transition: transform 0.5s;
+    font-size: 4rem;
+
+    &::after {
+      content: '+';
+    }
+}
+
+.side-panel.active .panel-control {
+  transform: rotate(45deg);
+  transition: transform 0.5s;
+}
+
+.side-panel.left .panel-control {
+  float: right;
+}
+
+.side-panel.right .panel-control {
+  float: left;
+}

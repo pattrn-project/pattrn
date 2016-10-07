@@ -71,44 +71,40 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
   // charts 1 and 2
   //var chart_transition_duration = chart_settings.transition_duration || 750;
 
-  // transition from legacy: assign first to scope variable - just use the
-  // chart_settings.fields.field_name var when refactoring
-  var tags_field_name_X = chart_settings.fields.field_name;
-
   // REDUCE FUNCTION
-  function reduceAddTarget_0X(p, v) {
-    if (typeof v[tags_field_name_X] !== 'string') return p;
-    v[tags_field_name_X].split(',').forEach(function(val, idx) {
+  function reduceAddTarget(p, v) {
+    if (typeof v[chart_settings.fields.field_name] !== 'string') return p;
+    v[chart_settings.fields.field_name].split(',').forEach(function(val, idx) {
       p[val] = (p[val] || 0) + 1; //increment counts
     });
     return p;
   }
 
-  function reduceRemoveTarget_0X(p, v) {
-    if (typeof v[tags_field_name_X] !== 'string') return p;
-    v[tags_field_name_X].split(',').forEach(function(val, idx) {
+  function reduceRemoveTarget(p, v) {
+    if (typeof v[chart_settings.fields.field_name] !== 'string') return p;
+    v[chart_settings.fields.field_name].split(',').forEach(function(val, idx) {
       p[val] = (p[val] || 0) - 1; //decrement counts
     });
     return p;
   }
 
-  function reduceInitialTarget_0X() {
+  function reduceInitialTarget() {
     return {};
   }
 
-  var bar_chart_0X_title = document.getElementById(chart_settings.elements.title);
+  var chart_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable following line
   // bar_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
-  var bar_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+  var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
     .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
 
-  var bar_chart_0X = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var bar_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
-    return d[tags_field_name_X];
+  var chart = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
+  var chart_xf_dimension = pattrn_objects.crossfilter.dimension(function(d) {
+    return d[chart_settings.fields.field_name];
   });
-  var bar_chart_0X_group = bar_chart_0X_dimension.groupAll().reduce(reduceAddTarget_0X, reduceRemoveTarget_0X, reduceInitialTarget_0X).value();
+  var chart_xf_group = chart_xf_dimension.groupAll().reduce(reduceAddTarget, reduceRemoveTarget, reduceInitialTarget).value();
 
-  bar_chart_0X_group.all = function() {
+  chart_xf_group.all = function() {
     var newObject = [];
     for (var key in this) {
       /**
@@ -128,11 +124,11 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
     return newObject;
   };
 
-  bar_chart_0X
+  chart
     .width(chart_settings.scatterWidth)
     .height(chart_height)
-    .dimension(bar_chart_0X_dimension)
-    .group(bar_chart_0X_group)
+    .dimension(chart_xf_dimension)
+    .group(chart_xf_group)
     .title(function(d) {
       return ('Total number of events: ' + d.value);
     })
@@ -177,7 +173,7 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
     .barPadding(0.1)
     .outerPadding(0.05);
 
-  bar_chart_0X.yAxis().ticks(3);
+  chart.yAxis().ticks(3);
 
-  return bar_chart_0X;
+  return chart;
 }

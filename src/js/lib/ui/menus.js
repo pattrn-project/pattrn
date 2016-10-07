@@ -27,7 +27,7 @@ import { is_defined } from '../utils/is_defined.js';
  * @x-technical-debt: document parameters/return
  */
 export function generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, variable_list) {
-   pattrn_layer_groups.forEach((layer_group, group_index) => {
+   pattrn_layer_groups.forEach((layer_group, group_index, layer_group_array) => {
      let layer_group_root = d3
        .select('#myExploreTab .layer-groups-root')
        .append('div')
@@ -67,7 +67,7 @@ export function generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, 
        .select('.layer-group-container')
        .append('ul');
 
-     layer_group.layers.forEach((layer_data, layer_index) => {
+     layer_group.layers.forEach((layer_data, layer_index, layer_array) => {
        let layer_menu_root = layer_group_root
          .append('li')
          .classed('layer-menu-root', true)
@@ -77,12 +77,19 @@ export function generate_data_layer_menu(pattrn_layer_groups, pattrn_data_sets, 
          .classed('layer-root', true)
          .style('color', (d, i) => {
            return is_defined(pattrn_data_sets[layer_data.id]) ? pattrn_data_sets[layer_data.id] : 'inherit';
-         })
-         .append('label')
-         .text(layer_data.name)
-         .append('input')
-         .attr('type', 'checkbox')
-         .attr('checked', 'true');
+         });
+
+       /**
+        * Only output layer checkbox for layer groups with >1 layers
+        */
+       if(layer_array.length > 1) {
+         layer_menu_root
+           .append('label')
+           .text(layer_data.name)
+           .append('input')
+           .attr('type', 'checkbox')
+           .attr('checked', 'true');
+       }
 
        layer_menu_root.append('ul');
 

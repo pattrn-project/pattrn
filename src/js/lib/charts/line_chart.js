@@ -61,35 +61,31 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
   /**
    * Parameters passed in and defaults
    */
-  var slider_chart_color_scale = chart_settings.color_scale || d3.scale.category20c();
-  var turn_on_controls = chart_settings.turn_on_controls || false;
-  // default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
-  var chart_width = chart_settings.width || 300;
-  // default from legacy code, defined as chartHeight within the main consume_table() function
-  var chart_height = chart_settings.height || 200;
-  // legacy code uses 500ms for charts 3, 4 and 5 and doesn't override default for
-  // charts 1 and 2
-  var chart_transition_duration = chart_settings.transition_duration || 750;
+  let slider_chart_color_scale = chart_settings.color_scale || d3.scale.category20c(),
+      turn_on_controls = chart_settings.turn_on_controls || false,
+      // default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
+      chart_width = chart_settings.width || 300,
+      // default from legacy code, defined as chartHeight within the main consume_table() function
+      chart_height = chart_settings.height || 200,
+      // legacy code uses 500ms for charts 3, 4 and 5 and doesn't override default for
+      // charts 1 and 2
+      chart_transition_duration = chart_settings.transition_duration || 750,
 
-  // transition from legacy: assign first to scope variable - just use the
-  // chart_settings.fields.field_name var when refactoring
-  var number_field_name_X = chart_settings.fields.field_name;
+      chart_title = /*  document.getElementById(chart_settings.elements.title).innerHTML = */ chart_settings.fields.field_title + " over time",
 
-  var line_chart_0X_title = /*  document.getElementById(chart_settings.elements.title)
-    .innerHTML = */ chart_settings.fields.field_title + " over time";
+      chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+        .innerHTML = `${chart_settings.fields.field_title} over time (${pattrn_objects.layer_data.name})`;
 
-  var line_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
-    .innerHTML = `${chart_settings.fields.field_title} over time (${pattrn_objects.layer_data.name})`;
+      let chart = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
+      let chart_xf_dimension = pattrn_objects.crossfilter.dimension(function(d) {
+          return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
+        });
 
-  var line_chart_0X = dc.lineChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
-  var line_chart_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
-    return !Number.isNaN(+d3.time.day(d.dd)) ? +d3.time.day(d.dd) : null;
-  });
-  var line_chart_0X_group = line_chart_0X_dimension.group().reduceSum(function(d) {
-    return d[number_field_name_X];
-  });
+      let chart_xf_group = chart_xf_dimension.group().reduceSum(function(d) {
+          return d[chart_settings.fields.field_name];
+        });
 
-  line_chart_0X.width(chart_settings.scatterWidth)
+  chart.width(chart_settings.scatterWidth)
     .height(chart_height)
     .margins({
       top: 0,
@@ -97,8 +93,8 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
       bottom: 50,
       left: 50
     })
-    .dimension(line_chart_0X_dimension)
-    .group(line_chart_0X_group)
+    .dimension(chart_xf_dimension)
+    .group(chart_xf_group)
     .transitionDuration(chart_transition_duration)
     .title(function(d) {
       return ('Total number of events: ' + d.value);
@@ -108,7 +104,7 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
     })))
     .renderHorizontalGridLines(true)
     .renderVerticalGridLines(true)
-    .yAxisLabel("no. of" + line_chart_0X_title)
+    .yAxisLabel("no. of" + chart_title)
     .elasticY(true)
     .on("filtered", function(d) {
       // @x-technical-debt: do not hardcode the element id
@@ -117,28 +113,28 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
     .brushOn(true)
     .xAxis();
 
-  line_chart_0X.yAxis().ticks(3);
+  chart.yAxis().ticks(3);
   if (chart_settings.turn_on_controls === true) {
-    line_chart_0X.turnOnControls(true);
+    chart.turnOnControls(true);
   }
-  line_chart_0X.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
+  chart.xAxis().tickFormat(d3.time.format("%d-%m-%y"));
 
   // AGGREGATE COUNT CHART
-  var agreggateCountTitle_0X = /* document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML =*/ "Aggregate count in:" + "<br>" + "'" + number_field_name_X + "'";
+  var aggregateCountTitle = /* document.getElementById(chart_settings.elements.aggregate_count_title).innerHTML =*/ "Aggregate count in:" + "<br>" + "'" + chart_settings.fields.field_name + "'";
 
-  var aggregate_count_0X = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
-  var aggregate_count_0X_dimension = pattrn_objects.crossfilter.dimension(function(d) {
-    return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
+  var aggregate_count = dc.numberDisplay(chart_settings.elements.d3_aggregate_count);
+  var aggregate_count_xf_dimension = pattrn_objects.crossfilter.dimension(function(d) {
+    return ! Number.isNaN(+d[chart_settings.fields.field_name]) ? +d[chart_settings.fields.field_name] : null;
   });
-  var aggregate_count_0X_group = aggregate_count_0X_dimension.groupAll().reduce(
+  var aggregate_count_xf_group = aggregate_count_xf_dimension.groupAll().reduce(
     function(p, v) {
       ++p.n;
-      p.tot += parseInt(v[number_field_name_X]);
+      p.tot += parseInt(v[chart_settings.fields.field_name]);
       return p;
     },
     function(p, v) {
       --p.n;
-      p.tot -= parseInt(v[number_field_name_X]);
+      p.tot -= parseInt(v[chart_settings.fields.field_name]);
       return p;
     },
     function() {
@@ -149,25 +145,25 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
     }
   );
 
-  var average_0X = function(d) {
+  var average = function(d) {
     return d.n ? d.tot : 0;
   };
 
-  aggregate_count_0X
-    .valueAccessor(average_0X)
+  aggregate_count
+    .valueAccessor(average)
     .formatNumber(d3.format("d"))
-    .group(aggregate_count_0X_group);
+    .group(aggregate_count_xf_group);
 
-  var SliderChart_0X = dc.lineChart(chart_settings.elements.slider_chart);
-  var SliderChart_0X_Dim = pattrn_objects.crossfilter.dimension(function(d) {
-    return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
+  var SliderChart = dc.lineChart(chart_settings.elements.slider_chart);
+  var SliderChart_xf_dimension = pattrn_objects.crossfilter.dimension(function(d) {
+    return ! Number.isNaN(+d[chart_settings.fields.field_name]) ? +d[chart_settings.fields.field_name] : null;
   });
-  var SliderChart_0X_Group = SliderChart_0X_Dim.group();
-  var SliderChart_0X_Max_Value = d3.max(dataset, function(d) {
-    return ! Number.isNaN(+d[number_field_name_X]) ? +d[number_field_name_X] : null;
+  var SliderChart_xf_group = SliderChart_xf_dimension.group();
+  var SliderChart_xf_max_value = d3.max(dataset, function(d) {
+    return ! Number.isNaN(+d[chart_settings.fields.field_name]) ? +d[chart_settings.fields.field_name] : null;
   });
 
-  SliderChart_0X.width(125)
+  SliderChart.width(125)
     .height(chart_height / 3)
     .transitionDuration(500)
     .margins({
@@ -176,8 +172,8 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
       bottom: 30,
       left: 4
     })
-    .dimension(SliderChart_0X_Dim)
-    .group(SliderChart_0X_Group)
+    .dimension(SliderChart_xf_dimension)
+    .group(SliderChart_xf_group)
     .colors(slider_chart_color_scale)
     .on(`renderlet.${chart_settings.elements.title}`, function(chart) {
       // set svg background colour
@@ -189,11 +185,11 @@ export function pattrn_line_chart(index, dataset, chart_settings, pattrn_objects
       pattrn_objects.dispatch.filter();
       return document.getElementById("filterList").className = "glyphicon glyphicon-filter activeFilter";
     })
-    .x(d3.scale.linear().domain([0, (SliderChart_0X_Max_Value + 1)]));
+    .x(d3.scale.linear().domain([0, (SliderChart_xf_max_value + 1)]));
   // SliderChart_03 and SliderChart_05 in legacy code further concatenate a
   // call to .xAxis() here - likely spurious, but to be reviewed
 
-  SliderChart_0X.xAxis().ticks(3);
+  SliderChart.xAxis().ticks(3);
 
-  return line_chart_0X;
+  return chart;
 }

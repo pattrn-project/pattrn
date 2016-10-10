@@ -27,18 +27,17 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
   position: relative;
 }
 
+.tab-content {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
 #charts.info-panel-active {
   transform: translate(-33%);
   @include panel-transition;
 }
 
 #info {
-  position: absolute;
-  top: 0;
-  right: 0;
-  // width: 6rem;
-  transform: translate(95%);
-  opacity: 0.6; // @x-technical-debt: define in panel mixin
   background: $main-background;
   @include panel-transition;
 
@@ -46,33 +45,10 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
     opacity: 0;
   }
 
-/*
-  #midGrayBar {
-    transform: rotate(90deg);
-    transform-origin: 30px 30px;
-    z-index: 3;
-
-    transition: transform 0.2s;
-  }
-*/
   &.active {
-    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
-    width: 33.33333333%;
-    opacity: 0.9; // @x-technical-debt: define in panel mixin
-    height: inherit;
-    transform: translate(0);
-    @include panel-transition;
-
     .info-content {
       opacity: 1;
     }
-/*
-    #midGrayBar {
-      transform: none;
-
-      transition: transform 0.2s;
-    }
-*/
   }
 }
 
@@ -82,10 +58,47 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
     transform: none;
     transition: transform 0.5s;
     font-size: 4rem;
+    cursor: pointer;
+
+    &:hover {
+      color: $hover-highlight;
+    }
 
     &::after {
       content: '+';
     }
+}
+
+.side-panel {
+  padding: 0 1rem;
+  overflow: auto;
+  opacity: 0.6;
+  @include panel-transition;
+  position: absolute;
+  top: 0;
+
+  &.active {
+    min-height: 100vh;
+    transform: translate(0) !important; // @x-technical-debt: calculate this properly in SCSS
+    opacity: 0.9;
+    @include panel-transition;
+
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
+    width: 33.33333333%;
+    height: inherit;
+    transform: translate(0);
+
+  }
+}
+
+.side-panel.left {
+  transform: translate(-92%); // @x-technical-debt: calculate this properly in SCSS
+  left: 0;
+}
+
+.side-panel.right {
+  transform: translate(92%); // @x-technical-debt: calculate this properly in SCSS
+  right: 0;
 }
 
 .side-panel.active .panel-control {

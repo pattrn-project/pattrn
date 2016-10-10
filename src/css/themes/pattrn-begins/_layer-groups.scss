@@ -29,17 +29,6 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
   z-index: 1;
   background: $main-background;
   min-height: 100vh;
-  transform: translate(-95%); // @x-technical-debt: calculate this properly in SCSS
-  opacity: 0.6; // @x-technical-debt: define in panel mixin
-  @include panel-transition;
-
-  &.active {
-    min-height: 100vh;
-    // margin-left: inherit;
-    opacity: 0.9; // @x-technical-debt: define in panel mixin
-    transform: translate(0); // @x-technical-debt: calculate this properly in SCSS
-    @include panel-transition;
-  }
 }
 
 #charts {
@@ -57,7 +46,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
   }
 
   input.layer-group:checked + .layer-group-container {
-    border-left: 0.25rem #f00 solid;
+    border-left: 0.25rem $hover-highlight solid;
     padding-left: 1.25rem;
     background-color: rgba(100, 100, 100, 0.2);
     transition: all 0.3s;

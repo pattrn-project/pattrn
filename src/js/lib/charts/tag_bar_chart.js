@@ -94,7 +94,7 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
 
   var chart_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable following line
-  // bar_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
+  // chart_title.innerHTML = "Events by " + chart_settings.fields.field_title;
   var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
     .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
 

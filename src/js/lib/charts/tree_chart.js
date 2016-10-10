@@ -62,36 +62,31 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
    * Parameters passed in and defaults
    */
   // default from legacy code; originally hardcoded in each code snippet: 300, except line_chart_03 (150)
-  var chart_width = chart_settings.width || chart_settings.scatterWidth || 300;
-  // default from legacy code, defined as chartHeight within the main consume_table() function
-  var chart_height = chart_settings.height || 350;
-  var chart_transition_duration = chart_settings.transition_duration || 750;
+  let chart_width = chart_settings.width || chart_settings.scatterWidth || 300,
+      // default from legacy code, defined as chartHeight within the main consume_table() function
+      chart_height = chart_settings.height || 350,
+      chart_transition_duration = chart_settings.transition_duration || 750;
 
-  // transition from legacy: assign first to scope variable - just use the
-  // chart_settings.fields.field_name var when refactoring
-  // var tree_field_name_X = chart_settings.fields.field_name;
+  let chart_title = document.getElementById(chart_settings.elements.title),
+      // @x-technical-debt: create element and re-enable following line
+      // chart_title.innerHTML = "Events by " + chart_settings.fields.field_title;
+      tree_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
+        .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
 
-  var tree_chart_0X_title = document.getElementById(chart_settings.elements.title);
-  // @x-technical-debt: create element and re-enable following line
-  // tree_chart_0X_title.innerHTML = "Events by " + chart_settings.fields.field_title;
-  var tree_chart_0X_chartTitle = document.getElementById(chart_settings.elements.chart_title)
-    .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
-
-  var width = chart_width;
-  var height = chart_height;
-  var maxLabel = 150;
-  var duration = chart_transition_duration;
-  var radius = 5;
-
-  var i = 0;
-  var root;
+  let width = chart_width,
+      height = chart_height,
+      maxLabel = 150,
+      duration = chart_transition_duration,
+      radius = 5,
+      i = 0,
+      root;
 
   // crossfilter dimension and group
-  window.tree_dimension = pattrn_objects.crossfilter.dimension((d) => {
+  let chart_xf_dimension = pattrn_objects.crossfilter.dimension((d) => {
     return is_defined(d[tree_data.field_name.id]) ? d[tree_data.field_name.id] : 0;
   });
   // @x-technical-debt: allow for scenarios where a count is defined (rather than just returning 1 for counts as in this first iteration)
-  window.tree_group = tree_dimension.group().reduceSum((d) => {
+  let chart_xf_group = chart_xf_dimension.group().reduceSum((d) => {
     return 1;
   });
 
@@ -136,7 +131,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
     // calculate size of nodes
     root = walk_tree(
       (node) => {
-        var node_item = window.tree_group.all().find((item) => {
+        var node_item = chart_xf_group.all().find((item) => {
           return item.key === node.mid;
         });
         var node_size = is_defined(node_item) ? node_item.value : null;
@@ -287,7 +282,7 @@ export function pattrn_tree_chart(index, dataset, chart_settings, pattrn_objects
         [ '_children', 'children' ])
       );
 
-    window.tree_dimension.filter((data_row) => {
+    chart_xf_dimension.filter((data_row) => {
       var filtered = selected_nodes_mids.indexOf(data_row) >= 0;
       return filtered;
     });
@@ -413,7 +408,7 @@ function walk_tree(fn, base, children_members) {
 }
 
 function get_node_size(node) {
-  var crossfilter_node = window.tree_group.all().find(function(item) {
+  var crossfilter_node = chart_xf_group.all().find(function(item) {
     return item.key === node.mid;
   });
   return is_defined(crossfilter_node) ? crossfilter_node.value : null;

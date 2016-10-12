@@ -71,7 +71,6 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 
 .side-panel {
   padding: 0 1rem;
-  overflow: auto;
   opacity: 0.6;
   @include panel-transition;
   position: absolute;
@@ -83,8 +82,6 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
     opacity: 0.9;
     @include panel-transition;
 
-    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
-    width: 33.33333333%;
     height: inherit;
     transform: translate(0);
 
@@ -94,11 +91,21 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 .side-panel.left {
   transform: translate(-92%); // @x-technical-debt: calculate this properly in SCSS
   left: 0;
+
+  &.active {
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-3 col-lg-3)
+    width: 25%;
+  }
 }
 
 .side-panel.right {
   transform: translate(92%); // @x-technical-debt: calculate this properly in SCSS
   right: 0;
+
+  &.active {
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
+    width: 33.3333333333%;
+  }
 }
 
 .side-panel.active .panel-control {

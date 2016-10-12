@@ -679,6 +679,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         }
       });
 
+      // TOTAL EVENTS
+      var number_of_events = dc.dataCount("#number_total_events").dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
+
       // Define dimension of marker
       var markerDimension = layer_data.crossfilter.dimension(function(d) {
         return d.eventID;

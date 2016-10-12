@@ -794,11 +794,21 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        */
       function toggle_layer() {
         if(this.checked) {
-          always_positive_dimension.filterAll();
+          layer_data.always_positive_dimension.filterAll();
         } else {
-          always_positive_dimension.filter(-1);
+          layer_data.always_positive_dimension.filter(-1);
         }
         dc.redrawAll(chart_group_id);
+      }
+
+      /**
+       * On initial load, make only layers of first layer group active.
+       * @x-technical-debt: make this configurable via the metadats.json file,
+       * so a layer group other than the first one could be made active on
+       * initial load of the platform.
+       */
+      if(layer_group_index > 0) {
+        layer_data.always_positive_dimension.filter(-1);
       }
 
       /**
@@ -813,12 +823,34 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         .append('span')
         .classed('data-counter', true);
 
-      dc.dataCount(`${layer_data_count_selector} .layer-root .data-counter`, chart_group_id).dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
+      // dc.dataCount(`${layer_data_count_selector} .layer-root .data-counter`, chart_group_id).dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
 
       dc.renderAll(chart_group_id);
 
       return layer_data;
+    });
 
+    $(`#layer-group-selector-${layer_group.id}`).change(function() {
+      let all_layer_group_switches = $(this).parents('.layer-groups-root').find('input.layer-group');
+
+      all_layer_group_switches.each((lgi, lg) => {
+        let this_layer_group = pattrn_layer_groups.find((ilg) => {
+          let input_val = $(lg).val();
+          return ilg.id === input_val;
+        })
+
+        if($(lg).is(':checked')) {
+          this_layer_group.layers.forEach((layer_data) => {
+            layer_data.always_positive_dimension.filterAll();
+            dc.redrawAll(layer_data.chart_group_id);
+          });
+        } else {
+          this_layer_group.layers.forEach((layer_data) => {
+            layer_data.always_positive_dimension.filter(-1);
+            dc.redrawAll(layer_data.chart_group_id);
+          });
+        }
+      });
     });
   });
 

@@ -92,7 +92,11 @@ export function marker_chart(parent, layer_metadata, instance_settings, config, 
 
     markercluster.addLayers(markerList);
 
-    pattrn_objects.map.fitBounds(markercluster.getBounds());
+    try {
+      pattrn_objects.map.fitBounds(markercluster.getBounds());
+    } catch(e) {
+      console.log('calling fitBounds on already rendered map');
+    }
 
     _chart._postRender();
 

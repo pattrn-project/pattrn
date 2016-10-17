@@ -161,14 +161,27 @@ export function pattrn_bar_chart(index, dataset, chart_settings, pattrn_objects)
         .attr('transform', "translate(400, 250)");
     })
     .filterHandler(function(dimension, filters) {
-      dimension.filter(null);
-      dimension.filterFunction(function(d) {
-        for (var i = 0; i < filters.length; i++) {
-          if (d.indexOf(filters[i]) < 0) return false;
-        }
-        return true;
-      });
-      return filters;
+      /**
+       * @since 2.0.0beta1
+       * We now support union (logical OR) filters on categorial variables
+       * using bar charts. This may make sense as the default, but for the
+       * moment we just keep the Pattrn v1.0 default (intersection filter),
+       * letting users configure on a per-variable basis whether to use
+       * union filters instead.
+       * @x-technical-debt: there should be no assumption about the type of
+       * filter (union or intersection) to be used for each variable: except
+       * when loading Pattrn v1.0 configuration and data (for which the legacy
+       * behaviour of intersection filter type should be the only allowed),
+       * the type of filter must be configured for each filter.
+       * The if below should be changed accordingly (i.e. test for Pattrn v1.0
+       * behaviour, otherwise raise exception or discard variable if
+       * filter_type is not defined).
+       */
+      if(chart_settings.data.variable.filter_type === 'union') {
+        return filterHandlerUnion(dimension, filters);
+      } else {
+        return filterHandlerIntersection(dimension, filters);
+      }
     })
     .on("filtered", function(d) {
       // @x-technical-debt: switch to D3 v4 API
@@ -181,4 +194,51 @@ export function pattrn_bar_chart(index, dataset, chart_settings, pattrn_objects)
   chart.yAxis().ticks(3);
 
   return chart;
+}
+
+/**
+ * Crossfilter filter handler implementing union (logical OR) filter: given a
+ * set of selected values, return all data rows for which this variable is set
+ * to *any* of the values.
+ * @param Object dimension The current dimension
+ * @param Array filters The filter values currently selected on the bar chart
+ * @return Boolean Whether any of the filter values apply to the current datum
+ */
+function filterHandlerUnion(dimension, filters) {
+  dimension.filter(null);
+  if (filters.length === 0) {
+    dimension.filter(null);
+  } else {
+    dimension.filterFunction(function(d) {
+      for (var i = 0; i < filters.length; i++) {
+        var filter = filters[i];
+        if (filter.isFiltered && filter.isFiltered(d)) {
+          return true;
+        } else if (filter <= d && filter >= d) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+  return filters;
+}
+
+/**
+ * Crossfilter filter handler implementing intersection (logical AND) filter: given a
+ * set of selected values, return all data rows for which this variable is set
+ * to *any* of the values.
+ * @param Object dimension The current dimension
+ * @param Array filters The filter values currently selected on the bar chart
+ * @return Boolean Whether any of the filter values apply to the current datum
+ */
+function filterHandlerIntersection(dimension, filters) {
+  dimension.filter(null);
+  dimension.filterFunction(function(d) {
+    for (var i = 0; i < filters.length; i++) {
+      if (d.indexOf(filters[i]) < 0) return false;
+    }
+    return true;
+  });
+  return filters;
 }

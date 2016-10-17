@@ -78,16 +78,16 @@ export function pattrn_bar_chart(index, dataset, chart_settings, pattrn_objects)
 
   // REDUCE FUNCTION
   function reduceAddTarget(p, v) {
-    if (typeof v[chart_settings.fields.field_name] !== 'string') return p;
-    v[chart_settings.fields.field_name].split(',').forEach(function(val, idx) {
+    if (typeof v[chart_settings.data.field_name] !== 'string') return p;
+    v[chart_settings.data.field_name].split(',').forEach(function(val, idx) {
       p[val] = (p[val] || 0) + 1; //increment counts
     });
     return p;
   }
 
   function reduceRemoveTarget(p, v) {
-    if (typeof v[chart_settings.fields.field_name] !== 'string') return p;
-    v[chart_settings.fields.field_name].split(',').forEach(function(val, idx) {
+    if (typeof v[chart_settings.data.field_name] !== 'string') return p;
+    v[chart_settings.data.field_name].split(',').forEach(function(val, idx) {
       p[val] = (p[val] || 0) - 1; //decrement counts
     });
     return p;

@@ -35,6 +35,9 @@ import dc from 'dc';
  * manual code duplication and to allow an arbitrary number of charts of this
  * type to be used in the Pattrn frontend.
  * @x-modifies-dom
+ * @x-technical-debt: just pass in the variable and retrieve variable name and
+ * label (currently: data.field_name and data.field_title) here (via library
+ * function shared with other chart types)
  * @param {Number} index Index (integer) of this line chart within the set of line charts in use
  * @param {Object} dataset The master dataset (refactor - do we need this here?)
  * @param {Object} chart_settings Settings for this chart.
@@ -49,15 +52,17 @@ import dc from 'dc';
  *    * title: chart title
  *    * chart_title: chart chart title (ehrm legacy code?)
  *    * dc_chart: d3 element of line chart
- *  * fields:
+ *  * data:
+ *    * variable: the variable object
  *    * field_name: the name of the field in the dataset
+ *    * field_title: the label to display for this variable, if defined in the metadata
  * @param {Object} pattrn_objects Pattrn objects from jumbo scope
  *  * fields:
  *    * dc: The main dc.js instance used in the app
  *    * crossfilter: The main Crossfilter instance used in the app
  *    * layer_data: Metadata of the layer for which this chart is being created
  */
-export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_objects) {
+export function pattrn_bar_chart(index, dataset, chart_settings, pattrn_objects) {
   /**
    * Parameters passed in and defaults
    */
@@ -94,13 +99,13 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
 
   var chart_title = document.getElementById(chart_settings.elements.title);
   // @x-technical-debt: create element and re-enable following line
-  // chart_title.innerHTML = "Events by " + chart_settings.fields.field_title;
+  // chart_title.innerHTML = "Events by " + chart_settings.data.field_title;
   var chart_chartTitle = document.getElementById(chart_settings.elements.chart_title)
-    .innerHTML = `Events by ${chart_settings.fields.field_title} (${pattrn_objects.layer_data.name})`;
+    .innerHTML = `Events by ${chart_settings.data.field_title} (${pattrn_objects.layer_data.name})`;
 
   var chart = dc.barChart(chart_settings.elements.dc_chart, chart_settings.dc_chart_group);
   var chart_xf_dimension = pattrn_objects.crossfilter.dimension(function(d) {
-    return d[chart_settings.fields.field_name];
+    return d[chart_settings.data.field_name];
   });
   var chart_xf_group = chart_xf_dimension.groupAll().reduce(reduceAddTarget, reduceRemoveTarget, reduceInitialTarget).value();
 
@@ -142,7 +147,7 @@ export function pattrn_tag_bar_chart(index, dataset, chart_settings, pattrn_obje
     })
     .renderHorizontalGridLines(true)
     // for a rough sqrt scale:
-    // .y(d3.scale.sqrt().clamp(true).domain([0,dataset.length]))
+    .y(d3.scale.sqrt().clamp(true).domain([0,dataset.length]))
     .yAxisLabel("no. of events")
     .elasticY(true)
     .on(`renderlet.${chart_settings.elements.title}`, function(chart) {

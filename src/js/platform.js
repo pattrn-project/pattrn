@@ -529,7 +529,8 @@ function consume_table(data_source_type, config, platform_settings, settings, da
                   chart_title: `bar_chart_${chart_id}_chartTitle`,
                   dc_chart: `#d3_bar_chart_${chart_id}`
                 },
-                fields: {
+                data: {
+                  variable: variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]),
                   field_name: layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index],
                   field_title: is_defined(variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index])) ?
                     variable_list.find(item => item.id === layer_data.non_empty_variables.find(vt => vt.type === variable_group.type).names[index]).name :

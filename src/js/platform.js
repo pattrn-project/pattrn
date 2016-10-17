@@ -69,7 +69,7 @@ import add_dateobject_to_rows from './lib/data/add_dateobject_to_rows.js';
  */
 import { pattrn_event_count_chart } from './lib/charts/event_count_chart.js';
 import { pattrn_line_chart } from './lib/charts/line_chart.js';
-import { pattrn_tag_bar_chart } from './lib/charts/tag_bar_chart.js';
+import { pattrn_bar_chart } from './lib/charts/bar_chart.js';
 import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
 
@@ -81,7 +81,7 @@ import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
  */
 import { template as event_count_chart_template } from './lib/themes/pattrn-begins/charts/event_count_chart.js';
 import { template as line_chart_template } from './lib/themes/pattrn-begins/charts/line_chart.js';
-import { template as tag_bar_chart_template } from './lib/themes/pattrn-begins/charts/tag_bar_chart.js';
+import { template as bar_chart_template } from './lib/themes/pattrn-begins/charts/bar_chart.js';
 import { template as boolean_chart_template } from './lib/themes/pattrn-begins/charts/boolean_chart.js';
 import { template as tree_chart_template } from './lib/themes/pattrn-begins/charts/tree_chart.js';
 import { template as aggregate_count_widget_template } from './lib/themes/pattrn-begins/widgets/aggregate_count.js';
@@ -519,9 +519,9 @@ function consume_table(data_source_type, config, platform_settings, settings, da
              * @x-technical-debt switch from jQuery to D3 (or any future DOM library)
              * @x-technical-debt do not hardcode root of chart tabs
              */
-            $('#charts .tab-content').append(tag_bar_chart_template({ chart_id: chart_id }));
+            $('#charts .tab-content').append(bar_chart_template({ chart_id: chart_id }));
 
-            layer_data.dc_charts['tag'].push(pattrn_tag_bar_chart(index + 1,
+            layer_data.dc_charts['tag'].push(pattrn_bar_chart(index + 1,
               layer_data.dataset,
               {
                 elements: {

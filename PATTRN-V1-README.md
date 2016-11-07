@@ -1167,7 +1167,7 @@ Once you've joined, you'll be able to create new topics and post responses from 
 
 </br>       
 
-###10.2 Drop us an email or a Tweet
+###9.2 Drop us an email or a Tweet
 
 While sharing your question or issue on the PATTRN Google Group is the recommended way to get help, you can also contact us with ideas, suggestions, or questions by:
 

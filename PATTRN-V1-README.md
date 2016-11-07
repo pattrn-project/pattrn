@@ -27,7 +27,7 @@ Note: This documentation is also available for download in PDF format <a href="h
 
 1.4 Credits & Authors
 </br>
-### 2. How to set up a PATTRN Platform 
+### 2. How to set up a PATTRN Platform
 
 2.1 Pre-requisites
 
@@ -35,7 +35,7 @@ Note: This documentation is also available for download in PDF format <a href="h
 
 2.3 Setting up the PATTRN Platform
 </br>
-### 3. How to format your data for use with PATTRN 
+### 3. How to format your data for use with PATTRN
 
 3.1 Principles of PATTRN data structure
 
@@ -53,7 +53,7 @@ Note: This documentation is also available for download in PDF format <a href="h
 
 3.8 Data limits
 </br>
-### 4. How to use the PATTRN Platform 
+### 4. How to use the PATTRN Platform
 
 4.1 Introduction
 
@@ -67,7 +67,7 @@ Note: This documentation is also available for download in PDF format <a href="h
 
 4.6 Submitting New Data and Edits
 </br>
-### 5. How to use the PATTRN Editor 
+### 5. How to use the PATTRN Editor
 
 5.1 Editing Tab
 
@@ -75,13 +75,13 @@ Note: This documentation is also available for download in PDF format <a href="h
 
 5.3 Collaboration among multiple Editors
 </br>
-### 6. Privacy, security, anonymity 
+### 6. Privacy, security, anonymity
 
 6.1 Note about privacy, security, and anonymity
 
 6.2 Anonymous contributions
 </br>
-### 7. Contributing to the development of PATTRN 
+### 7. Contributing to the development of PATTRN
 
 7.1 Introduction
 

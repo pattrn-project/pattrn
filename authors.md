@@ -1,4 +1,4 @@
-### Authors
+# Pattrn - authors and contributors
 
 <br/>
 
@@ -10,6 +10,16 @@ a research consultancy undertaking spatial and media analysis for the investigat
 The PATTRN project was initiated thanks to a Proof-of-Concept Grant from the [European Research Council](https://erc.europa.eu/),
 awarded to Prof. Eyal Weizman, in the framework of Forensic Architecture (2015-2015).
 
+[All new contributors to the project will be duly credited.]
+
+## Pattrn v2.0
+
+Technical lead and data science: [andrea rota](https://github.com/hotzeplotz)
+
+Project manager: [Nick Axel](https://github.com/alucidwake)
+
+## Pattrn v1.0
+
 **Project Architect:**
 
 [FSBRG](https://twitter.com/fsbrg) (Francesco Sebregondi)
@@ -19,5 +29,3 @@ awarded to Prof. Eyal Weizman, in the framework of Forensic Architecture (2015-2
 [TEKJA Data](http://tekja.com/) (PATTRN Platform)
 
 [Digital Consolidation](http://www.digital-consolidation.co.uk/)  (PATTRN Editor)
-
-[All new contributors to the project will be duly credited.]

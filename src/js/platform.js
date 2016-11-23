@@ -451,11 +451,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
        * charts?).
        */
       layer_data.non_empty_variables.forEach((variable_group, variable_group_index) => {
-
         /**
-         * @x-technical-debt: the HTML elements now hardcoded in the index.html
-         * file need to be computationally generated to match the number of
-         * variables of tag type actually in use.
          * @x-technical-debt: in legacy code, a variable for each chart was
          * created in this scope, with its only effective use being in
          * window.onresize() to trigger a repaint of each chart affected. This

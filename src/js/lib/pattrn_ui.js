@@ -64,25 +64,42 @@ export function initialize_ui(instance_settings) {
 }
 
 /**
- * When user clicks on the map, outside of any markers, set the #info and #data-layers panels
- * to inactive (UX depends on theme); conversely, set #info panel to active
- * when user clicks on it; same for #data-layers
+ * This UX function deals with off-canvas layout of the left and right side
+ * panels:
+ * * these can be opened by clicking on the + button
+ * * ... and closed by clicking on the X button
+ * * when either side panel is closed, the main map+charts area is grayed out
+ * * ... and by clicking anywhere on the grayed-out map+charts area this is
+ *   brought back to centre position (hence both side panels are folded back
+ *   off-canvas) and the grayed-out effect is removed
+ * * when clicking on a map marker, the right side panel is folded out
+ *
  * @x-technical-debt: this should be moved to a theme-specific layout
- * setup function.
+ * setup function...
+ * @x-technical-debt: ... and therefore, all element selectors must be
+ * made configurable
  * @param Object _map The main Leaflet map object
  */
-export function activate_side_panels(_map) {
-  _map.on('click', bring_map_to_center);
-  $('#data-layers.active .panel-control').on('click', bring_map_to_center);
-  $('#info.active .panel-control').on('click', bring_map_to_center);
-  $('#info').on('click', () => {
-    $('#info').addClass('active');
-    $('#data-layers').removeClass('active');
-    $('#charts').addClass('info-panel-active');
+export function activate_side_panels() {
+  $('#charts .overlay').on('click', bring_map_to_center);
+
+  $('#info .panel-control').on('click', (e) => {
+    if($(e.currentTarget).parents('#info').hasClass('active')) {
+      bring_map_to_center();
+    } else {
+      $('#data-layers').removeClass('active');
+      $('#info').addClass('active');
+      $('#charts').addClass('info-panel-active');
+    }
   });
-  $('#data-layers').on('click', () => {
-    $('#data-layers').addClass('active');
-    $('#info').removeClass('active');
+
+  $('#data-layers .panel-control').on('click', (e) => {
+    if($(e.currentTarget).parents('#data-layers').hasClass('active')) {
+      bring_map_to_center();
+    } else {
+      $('#data-layers').addClass('active');
+      $('#info').removeClass('active');
+    }
   });
 }
 

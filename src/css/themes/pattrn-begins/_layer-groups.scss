@@ -26,7 +26,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   background: $main-background;
   min-height: 100vh;
 }
@@ -38,6 +38,17 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 #data-layers.active + #charts {
   transform: translate(25%);
   @include panel-transition;
+}
+
+#data-layers.active + #charts, #charts.info-panel-active {
+  .overlay {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: black;
+    opacity: 0.5;
+    position: fixed;
+  }
 }
 
 .layer-groups-root {

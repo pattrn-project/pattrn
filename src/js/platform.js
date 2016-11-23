@@ -74,6 +74,11 @@ import { pattrn_boolean_bar_chart } from './lib/charts/boolean_bar_chart.js';
 import { pattrn_tree_chart } from './lib/charts/tree_chart.js';
 
 /**
+ * dc.js widgets
+ */
+import activate_text_search_widget from './lib/widgets/text_search.js';
+
+/**
  * Pattrn theme views
  * This will need to be refactored into a proper pluggable and configurable
  * theme system, but the first iteration aims at feature parity with the
@@ -440,6 +445,27 @@ function consume_table(data_source_type, config, platform_settings, settings, da
       // group id used to group DC charts;
       // add this to layer_data for uses outside of this function
       let chart_group_id = layer_data.chart_group_id = `lg${layer_group_index}_ly${layer_index}`;
+
+      /**
+       * Activate text search widget for layer
+       * @x-technical-debt: this needs to be handled properly by using a
+       * distinct element for each layer; while layer groups are effectively
+       * limited to 1 the initial code below will work, but once full layer
+       * group functionality is usable the text search widget needs to be
+       * incorporated into each layer group's markup.
+       * The activate_text_search_widget() function already supports this:
+       * we just need to generate one text search widget HTML element per
+       * layer group and replace the hardcoded selector in the function
+       * call below ('#tableSearch') with the appropriate per-layer group
+       * selector.
+       */
+      activate_text_search_widget({
+        crossfilter: layer_data.crossfilter,
+        dc: dc,
+        non_empty_tag_variables: layer_data.non_empty_variables.find(vt => vt.type === 'tag').names,
+        chart_group_id: chart_group_id,
+        el: '#tableSearch'
+      });
 
       /**
        * @x-technical-debt: in legacy code, a variable for each chart was

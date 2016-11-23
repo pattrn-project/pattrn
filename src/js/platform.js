@@ -421,7 +421,7 @@ function consume_table(data_source_type, config, platform_settings, settings, da
   /**
    * Activate events on data layers and info panels
    */
-  activate_side_panels(_map);
+  activate_side_panels();
 
   /**
    * Activate events on data layers toggles

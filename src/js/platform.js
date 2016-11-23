@@ -702,8 +702,16 @@ function consume_table(data_source_type, config, platform_settings, settings, da
         }
       });
 
-      // TOTAL EVENTS
-      var number_of_events = dc.dataCount("#number_total_events").dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
+      /**
+       * data counter
+       * @x-technical-debt: a distinct element for the counter needs to be
+       * computationally generated for each layer group and its selector needs
+       * to be passed to dc.dataCount() instead of the hardcoded selector
+       * below. The current setup works when only one layer group is defined
+       * (which is the case until the layer group functionality is fully
+       * completed), but not for an arbitrary number of layer groups >1.
+       */
+      const number_of_events = dc.dataCount("#number_total_events", chart_group_id).dimension(layer_data.crossfilter).group(layer_data.crossfilter.groupAll());
 
       // Define dimension of marker
       var markerDimension = layer_data.crossfilter.dimension(function(d) {

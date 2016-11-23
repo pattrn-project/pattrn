@@ -1,6 +1,7 @@
 # Pattrn
 
-Pattrn is a web platform for data-driven, participatory fact mapping.
+[Pattrn](http://pattrn.co) is a web platform for data-driven,
+participatory fact mapping.
 Its focus is on rapid deployment in the following contexts:
 
 * conflict monitoring
@@ -61,3 +62,38 @@ You can now open the Pattrn app in a web browser; if no other service is using p
 8080 on the computer, the address to use will be `http://localhost:8080`.
 If the messages above include a number other than 8080 (e.g. 8081), change
 the address accordingly (e.g. `http://localhost:8081`).
+
+## Authors and contributors
+
+The PATTRN project was initiated thanks to a Proof-of-Concept Grant from the
+[European Research Council](https://erc.europa.eu/), awarded to
+Prof. Eyal Weizman, in the framework of
+[Forensic Architecture](http://forensic-architecture.org) (2014-2015).
+
+### Pattrn v2.0
+
+* Technical lead and data science: [andrea rota](https://github.com/hotzeplotz)
+* Project management: [Nick Axel](https://github.com/alucidwake)
+
+### Pattrn v1.0
+
+* Project Architect: [FSBRG](https://twitter.com/fsbrg) (Francesco Sebregondi)
+* Frontend development: [TEKJA Data](http://tekja.com/)
+* Pattrn editor development: [Digital Consolidation](http://www.digital-consolidation.co.uk/)
+
+All new contributors to the PATTRN project will be duly credited.
+
+## License
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.

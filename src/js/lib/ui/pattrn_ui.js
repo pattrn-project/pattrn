@@ -20,7 +20,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 var $ = require('jquery');
 var saveAs = require('file-saver');
 
-import { is_defined } from './utils/is_defined';
+import { is_defined } from '../utils/is_defined';
 
 /**
  * Initialize UI elements (title, subtitle, title area colours, about text)

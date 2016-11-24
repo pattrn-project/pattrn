@@ -119,7 +119,7 @@ export function pattrn_bar_chart(index, dataset, chart_settings, pattrn_objects)
        * loading the pattrn data to avoid NaNs in crossfilter dimensions (see
        * #14).
        */
-      if (this.hasOwnProperty(key) && key != "all" && key !== 'Unknown') {
+      if (this.hasOwnProperty(key) && key != "all" && (key !== 'Unknown' || chart_settings.data.variable.na_rm === false)) {
         newObject.push({
           key: key,
           value: this[key]

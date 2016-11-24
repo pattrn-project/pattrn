@@ -75,7 +75,6 @@ html
       include ./views/partials/data-layers.jade
       // Map & Charts
       #charts.col-sm-12.col-lg-12
-        .overlay
         #chart-map
         #offGrayBar.col-sm-7.col-lg-7
           #button.popup-menu-root.col-sm-6.col-lg-6
@@ -99,6 +98,7 @@ html
           include ./views/partials/data-widgets/sources.jade
           // Media chart
           include ./views/partials/data-widgets/media.jade
+        .overlay
       // event detail
       include ./views/partials/event-data.jade
     // Optional - Addthis code to be added here (it will populate the 'Share' button)

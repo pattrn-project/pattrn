@@ -24,19 +24,26 @@ Its focus is on rapid deployment in the following contexts:
 
 `npm install`
 
-* Download a sample Pattrn data package - for example, the ACLED Africa realtime 2016 dataset:
+* Modify the `source-data-packages.json` file (which is configured to use a
+  sample dataset) to instruct the Pattrn build script to download and use
+  the Pattrn data package configured; the content of this file should be as
+  in the following example (replace `pattrn-data-acled-africa-realtime-2016`
+  with the name of your Pattrn data package, if using a different one):
 
-`npm install https://gitlab.com/pattrn-data/pattrn-data-acled-africa-realtime-2016.git#pattrn-data`
+```
+{
+  "source_data_packages": [
+    {
+      "package": "pattrn-data-acled-africa-realtime-2016",
+      "source": "https://gitlab.com/pattrn-data/pattrn-data-acled-africa-realtime-2016.git#pattrn-data"
+    }
+  ]
+}
+```
 
-* Create a `pattrn-data-config.json` file to instruct the Pattrn build script
-  to use the Pattrn data package just downloaded; the content of this file
-  should be as in the following example (replace
-  `pattrn-data-acled-africa-realtime-2016` with the name of your Pattrn data
-  package, if using a different one):
-
-`{ "source_data_package": "pattrn-data-acled-africa-realtime-2016" }`
-
-* Build the Pattrn application, which includes the data package configured:
+* Build the Pattrn application: this will download and use the data package
+  configured in the previous step, and build all the assets needed for the
+  live Pattrn instance:
 
 `npm run gulp build`
 

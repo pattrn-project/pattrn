@@ -29,18 +29,31 @@ var webserver = require('gulp-webserver');
 
 var browserify = require('browserify');
 var babelify = require('babelify');
+const execSync = require('child_process').execSync;
 var source = require('vinyl-source-stream');
 
-
 var config = require('./package.json').pattrn_configuration;
+
+const source_data_packages_config_file = './source-data-packages.json';
 
 /**
  * @technical-debt: pattrn-data-config.json is not mandatory, as data can be
  * pulled in in a number of different ways, so we should first check for its
- * existence here, and handle this scenario in the install_data_package task
+ * existence here, and handle this scenario in the install_data_packages task
  * accordingly.
  */
-config.pattrn_data = require('./pattrn-data-config.json');
+try {
+   const data_config = require(source_data_packages_config_file);
+   config.source_data_packages = data_config.source_data_packages;
+} catch (error) {
+  util.log(
+`Data package not configured: no data package will be installed via npm.
+When not using an npm package for Pattrn source data, make sure source
+data for this Pattrn instance is manually copied to the \`src\` folder and
+that Pattrn is configured to use this data (in the \`src/config.json\` file).`
+);
+  config.source_data_packages = null;
+}
 
 /**
  * Copy over assets referenced from vendor stylesheets
@@ -63,7 +76,7 @@ gulp.task('vendor-stylesheet-assets', function() {
     .pipe(gulp.dest(config.dest + '/fonts'));
 });
 
-gulp.task('bundle', ['install_data_package', 'vendor-stylesheet-assets'], function () {
+gulp.task('bundle', ['install_data_packages', 'vendor-stylesheet-assets'], function () {
     return browserify({entries: config.app_main, debug: true})
         .transform(babelify, {presets: ["es2015"]})
         .bundle()
@@ -102,11 +115,31 @@ gulp.task('sass', function () {
     .pipe(gulp.dest(config.dest + '/css'));
 });
 
-gulp.task('install_data_package', [], () => {
-  return gulp.src('node_modules/' + config.pattrn_data.source_data_package + '/pattrn-data/**/*')
-    .pipe(gulp.dest('src'));
+/**
+ * Install npm package with source data and copy its `pattrn-data` folder
+ * to the `src` folder.
+ * 
+ * @x-technical-debt: config.source_data_packages is an array, but we only
+ * support a single data package at the moment (config.source_data_packages[0])
+ */
+gulp.task('install_data_packages', [], () => {
+  if(config.source_data_packages) {
+    const source_data_package = config.source_data_packages[0];
+
+    if(config.source_data_packages.length > 1) {
+      util.log(
+`${config.source_data_packages.length} source data packages have been configured in ${source_data_packages_config_file},
+but this version of Pattrn only supports one; installing and using the first one configured:\n
+${JSON.stringify(source_data_package, undefined, 2)}\n`);
+    }
+
+    util.log(`Installing Pattrn data package via npm: ${source_data_package.package} (${source_data_package.source})`);
+    const source_data_package_install = execSync('npm install ' + source_data_package.source);
+  
+    return gulp.src('node_modules/' + source_data_package.package + '/pattrn-data/**/*')
+      .pipe(gulp.dest('src'));
   }
-);
+});
 
 gulp.task('build', ['jsonlint', 'bundle', 'views', 'sass'], function() {
   gulp.src(['src/**/*'])

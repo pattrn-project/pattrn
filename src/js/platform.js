@@ -29,7 +29,8 @@ let $ = require('jquery'),
     q = require('d3-queue'),
     dc = require('dc'),
     crossfilter = require('crossfilter2'),
-    range = require('lodash.range');
+    range = require('lodash.range')
+    YAML = require('yamljs');
 
 import { process_settings } from './lib/settings.js';
 import { is_defined } from './lib/utils/is_defined.js';
@@ -945,8 +946,25 @@ function load_data(config, platform_settings) {
   var data_sources = config.data_sources;
 
   if(is_defined(data_sources.geojson_data) && is_defined(data_sources.geojson_data.data_url) && data_sources.geojson_data.data_url.length) {
+    
+    /**
+     * @since 2.0.0-rc1
+     * To improve onboarding of non-tech users, Pattrn v2.0 supports
+     * reading metadata files in YAML format. As this is meant to be
+     * the non-mainstream way to configure Pattrn dataset variables,
+     * we test whether the configured metadata file ends in .yaml or .yml
+     * and treat it as YAML if so, defaulting to trying to process it as
+     * JSON otherwise.
+     */
+    let metadata_read_fn;
+    if(/\.ya?ml$/.test(data_sources.geojson_data.metadata_url)) {
+      metadata_read_fn = d3.text;
+    } else {
+      metadata_read_fn = d3.json;
+    }
+
     q.queue().defer(d3.json, data_sources.geojson_data.data_url)
-      .defer(d3.json, data_sources.geojson_data.metadata_url)
+      .defer(metadata_read_fn, data_sources.geojson_data.metadata_url)
       .defer(d3.json, data_sources.geojson_data.settings_url)
       .await(load_geojson_data.bind(undefined, config, platform_settings));
   } else if(data_sources.json_file && data_sources.json_file.length) {

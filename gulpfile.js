@@ -76,7 +76,7 @@ gulp.task('vendor-stylesheet-assets', function() {
     .pipe(gulp.dest(config.dest + '/fonts'));
 });
 
-gulp.task('bundle', ['install_data_packages', 'vendor-stylesheet-assets'], function () {
+gulp.task('bundle', ['vendor-stylesheet-assets'], function () {
     return browserify({entries: config.app_main, debug: true})
         .transform(babelify, {presets: ["es2015"]})
         .bundle()
@@ -135,17 +135,28 @@ ${JSON.stringify(source_data_package, undefined, 2)}\n`);
 
     util.log(`Installing Pattrn data package via npm: ${source_data_package.package} (${source_data_package.source})`);
     const source_data_package_install = execSync('npm install ' + source_data_package.source);
-  
-    return gulp.src('node_modules/' + source_data_package.package + '/pattrn-data/**/*')
-      .pipe(gulp.dest('src'));
   }
+
+  return gulp.src('dist/');
 });
 
-gulp.task('build', ['jsonlint', 'bundle', 'views', 'sass'], function() {
+gulp.task('bundle_data_packages', ['populate_dist', 'install_data_packages'], () => {
+  if(config.source_data_packages) {
+    const source_data_package = config.source_data_packages[0];
+
+    gulp.src('node_modules/' + source_data_package.package + '/pattrn-data/**/*')
+      .pipe(gulp.dest('dist'));
+  }
+
+  return gulp.src('dist/')
+})
+
+gulp.task('populate_dist', ['jsonlint', 'bundle', 'views', 'sass'], function() {
   gulp.src(['src/**/*'])
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('build', ['bundle_data_packages']);
 
 gulp.task('webserver', function() {
   gulp.src('dist')

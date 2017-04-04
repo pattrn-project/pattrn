@@ -5,4 +5,4 @@ src/data
 src/config.json
 # TECHNICAL_DEBT: ignoring main.js is only needed until we properly create the browserify bundle via Gulp
 src/js/main.js
-pattrn-data-config.json
+source-data-packages.json

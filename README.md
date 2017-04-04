@@ -14,7 +14,7 @@ Its focus is on rapid deployment in the following contexts:
 
 ### For researchers and data scientists
 
-*This section is being written*.
+Please see the Pattrn user manual: https://docs.pattrn.co/getting-started/index.html
 
 ### For developers
 
@@ -27,15 +27,15 @@ Its focus is on rapid deployment in the following contexts:
 * Modify the `source-data-packages.json` file (which is configured to use a
   sample dataset) to instruct the Pattrn build script to download and use
   the Pattrn data package configured; the content of this file should be as
-  in the following example (replace `pattrn-data-acled-africa-realtime-2016`
+  in the following example (replace `pattrn-data-where-the-drones-strike`
   with the name of your Pattrn data package, if using a different one):
 
 ```
 {
   "source_data_packages": [
     {
-      "package": "pattrn-data-acled-africa-realtime-2016",
-      "source": "https://gitlab.com/pattrn-data/pattrn-data-acled-africa-realtime-2016.git#pattrn-data"
+      "package": "pattrn-data-where-the-drones-strike",
+      "source": "https://gitlab.com/pattrn-data/pattrn-data-where-the-drones-strike.git#pattrn-data"
     }
   ]
 }

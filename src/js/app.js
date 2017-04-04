@@ -36,10 +36,10 @@ require('leaflet.markercluster');
 require('lightgallery');
 
 // Default Pattrn settings
-import { platform_settings } from './pattrn-default-configuration.js';
+import { default_settings } from './pattrn-default-settings.js';
 
 // Lastly, import the main pattrn() function
 import pattrn from './platform.js';
 
 // finally, invoke the actual monolithic pattrn() function
-pattrn(platform_settings);
+pattrn(default_settings);

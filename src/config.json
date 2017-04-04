@@ -1,0 +1,16 @@
+{
+    "data_sources": {
+        "geojson_data" : {
+            "data_url" : "/data/data.geojson",
+            "settings_url" : "/data/settings.json",
+            "metadata_url" : "/data/metadata.yaml"
+        }
+    },
+    "script_url": "",
+    "base_layers": [
+        {
+            "name": "Earth view",
+            "url": "https://{s}.tiles.mapbox.com/v4/[USER_ID]/{z}/{x}/{y}.png?access_token=[ACCESS_TOKEN]"
+        }
+    ]
+}

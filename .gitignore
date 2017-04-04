@@ -2,7 +2,6 @@ node_modules
 dist
 docs/build
 src/data
-src/config.json
 # TECHNICAL_DEBT: ignoring main.js is only needed until we properly create the browserify bundle via Gulp
 src/js/main.js
 source-data-packages.json

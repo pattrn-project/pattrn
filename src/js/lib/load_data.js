@@ -18,6 +18,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var tabletop = require('tabletop');
+import { is_defined } from './utils/is_defined.js';
 
 /**
  * Load data
@@ -73,4 +74,50 @@ export function consume_table_google_docs(consume_table_callback, config, platfo
         settings = data.Settings.elements[0];  // settings are in the first data row - just get this
 
     consume_table_callback('google_docs', config, platform_settings, settings, dataset, dataset_metadata);
+}
+
+/**
+ * Make sure that dataset metadata contains at least a layer and layer group
+ * @since 2.0.0-rc1
+ * In order to improve onboarding of non-technical users, Pattrn supports
+ * dataset metadata files that only list variables (by type). In most simple
+ * scenarios, layers and layer groups are not needed (Pattrn v1.0 did not
+ * support layers or layer groups, so this is actually at feature parity with
+ * legacy Pattrn), so there is no point in forcing users to declare boilerplate
+ * layer and layer group: here we make sure that if none exists, boilerplate
+ * is added for the user.
+ * 
+ * @param Object dataset_metadata The dataset's metadata as parsed from user-supplied metadata.json/yaml file
+ * @param Object settings The instance settings as parsed from user-supplied settings.json file
+ */
+export function check_dataset_metadata(dataset_metadata, settings) {
+  if(!is_defined(dataset_metadata.layers) || !is_defined(dataset_metadata.layer_groups)) {
+    dataset_metadata.layers = [
+      {
+        id: 'single_data_set', // default_settings.single_data_set.id,
+        name: settings.title,
+        select: {
+          where: {
+            column: "pattrn_data_set",
+            in: [ 'single_data_set' ] // default_settings.single_data_set.id
+          }
+        },
+        variables: dataset_metadata.variables
+      }
+    ];
+
+    dataset_metadata.layer_groups = [
+      {
+        id: 'single_data_set', // default_settings.single_data_set.id,
+        name: 'All data', // default_settings.single_data_set.name,
+        type: 'intersection',
+        layers: [
+          'single_data_set', // default_settings.single_data_set.id
+        ],
+        variables: dataset_metadata.variables
+      }
+    ];
+  }
+
+  return dataset_metadata;
 }

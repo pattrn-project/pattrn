@@ -19,6 +19,7 @@ along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 
 import { bisect_features } from './utils/bisect.js';
 import { is_defined } from'./utils/is_defined.js';
+import default_settings from '../pattrn-default-settings.js';
 
 /**
  * Translate GeoJSON source data to the legacy format that

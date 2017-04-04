@@ -52,7 +52,7 @@ import {
   rename_pattrn_core_variables
  } from "./lib/pattrn_data";
 
-import { load_google_sheets_data, consume_table_google_docs }  from "./lib/load_data.js";
+import { check_dataset_metadata, load_google_sheets_data, consume_table_google_docs }  from "./lib/load_data.js";
 
 /**
  * Pattrn data mapping
@@ -968,10 +968,27 @@ function load_data(config, platform_settings) {
 
 function load_geojson_data(config, platform_settings, error, dataset, variables, settings) {
   if (error) throw error;
-  var data_trees = [];
-  var dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
-  var data_sources = config.data_sources;
+  let data_trees = [];
+  let dataset_in_legacy_format;
+  let data_sources = config.data_sources;
 
+  /**
+   * @since 2.0.0-rc1
+   * If variables metadata is in YAML format, parse it as such
+   */
+  if(/\.ya?ml$/.test(data_sources.geojson_data.metadata_url)) {
+    variables = YAML.parse(variables);
+  }
+
+  dataset_in_legacy_format = geojson_to_pattrn_legacy_data_structure(dataset, variables, config, settings);
+
+  /**
+   * @since 2.0.0-rc1
+   * Make sure that any boilerplate is added for metadata files that lack it,
+   * when only one layer and layer group are implied.
+   */
+  variables = check_dataset_metadata(variables, settings);
+  
   consume_table('geojson_file', config, platform_settings, settings, dataset_in_legacy_format, variables);
 }
 

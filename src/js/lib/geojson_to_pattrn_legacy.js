@@ -92,7 +92,7 @@ export function geojson_to_pattrn_legacy_data_structure(data, dataset_metadata, 
        * TECHNICAL_DEBT: do this only if applicable
        * add source_data_set as first tag variable
        */
-      data['source_data_set'] = is_defined(value.properties.pattrn_data_set) ? value.properties.pattrn_data_set : settings.single_data_set;
+      data['source_data_set'] = is_defined(value.properties.pattrn_data_set) ? value.properties.pattrn_data_set : 'single_data_set'; // default_settings.single_data_set.id
 
       /**
        * TECHNICAL_DEBT: limit this to 4 (5 minus the previous one) until
@@ -152,7 +152,7 @@ export function geojson_to_pattrn_legacy_data_structure(data, dataset_metadata, 
         });
       }
 
-      data['pattrn_data_set'] = value.properties.pattrn_data_set;
+      data['pattrn_data_set'] = data.source_data_set;
       data['source_variables'] = value.properties;
 
       return data;

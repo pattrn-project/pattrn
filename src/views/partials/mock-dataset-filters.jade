@@ -1,0 +1,29 @@
+li.dropdown-submenu.pull-left
+  a(role='menuitem', tabindex='-1', href='#', data-toggle='tab')
+    input(type = 'checkbox', checked = "true")
+    = source_dataset_name
+  ul.dropdown-menu
+    li
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-00', data-toggle='tab') Events by date
+    li
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-01', data-toggle='tab') Initiating actor
+    li
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-02', data-toggle='tab') Target group
+    li
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-03', data-toggle='tab') Target type
+    li.dropdown-submenu.pull-left
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-04', data-toggle='tab') Weaponry
+      ul.dropdown-menu
+        li
+          a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-05', data-toggle='tab') Weapon type
+        li
+          a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-06', data-toggle='tab') Banned weapon?
+    li.dropdown-submenu.pull-left
+      a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-07', data-toggle='tab') Victims
+      ul.dropdown-menu
+        li
+          a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-08', data-toggle='tab') Civilian
+        li
+          a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-09', data-toggle='tab') Female
+        li
+          a(role='menuitem', tabindex='-1', href='#sds-00-xfilter-10', data-toggle='tab') Child

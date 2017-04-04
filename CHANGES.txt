@@ -1,0 +1,98 @@
+pattrn (2.0.0)
+
+  This is an almost complete rewrite of the Pattrn codebase, adding new
+  analytical features and improving the app's UX.
+
+  Major new features for data editors:
+
+  * added support for GeoJSON data sources
+  * add new variable type: hierarchical tag trees
+  * an arbitrary number of variables of each type can now be used
+    (up from the previous hardcoded limit of five variables per type)
+  * updated UX:
+    * switched to off-canvas panel for chart lists
+    * switched to off-canvas panel for event details
+    * these changes allow to make the map wider for easier navigation
+  * metadata for variables can be used to set descriptive label
+    names (rather than displaying raw variable names)
+  * support for multiple origin sources of data:
+    * each Pattrn instance consumes a single GeoJSON file...
+    * ...but this can contain data from multiple sources
+    * different charts and filters can be configured for each
+      distinct origin source
+    * data points can be visually differentiated by using
+      a unique colour for each origin source
+  * tag and boolean filters are now operating as *or* filters
+    by default (rather than *and*, which is often less useful);
+    this can be reverted to *and* (for the moment only
+    instance-wide)
+  * multiple data validation and cleanup improvements to remove
+    invalid data
+  * support for bundling data packages via NPM
+  * major performance improvements (visualising
+    datasets of ~20,000 events is now practical: an improvement
+    of an order of magnitude over Pattrn v1)
+
+  The Google Sheets data source is still supported for the time being,
+  for users who wish to try Pattrn using the often familiar interface
+  of a spreadsheet to manage data, or who wish to use the prototype
+  Pattrn Editor (see documentation: https://docs.pattrn.co/pattrn-on-gapps/).
+  For advanced users, however, the GeoJSON source data format is
+  now the preferred format, as most of the new features above can
+  only be linked to the flexibility provided by GeoJSON.
+
+  As GeoJSON sources can be hosted on any HTTPS site, these could
+  be generated dynamically through applications similar to the
+  legacy Pattrn Editor, enabling to crowdsource event data.
+
+  Major new features for developers:
+
+  * legacy code has been almost completely rewritten and refactored
+  * except for minor data-related and UI-related logic, all the code
+    has been rewritten using ES2015 features
+  * the new code is organised into small modules
+  * HTML is generated from modular Pug templates
+  * CSS is generated from modular SCSS stylesheets (compiled via libsass)
+  * Gulp build pipeline
+  * Transpilation via Babel
+  * Bundling via Browserify
+  * local preview server for easy debugging
+  
+  The Pattrn user documentation has been vastly expanded, and is now
+  available at a dedicated site: https://docs.pattrn.co, with
+  content generated from a dedicated repository
+  (https://gitlab.com/pattrn/pattrn-docs).
+
+  Besides these changes, the Pattrn v2.0 release also builds upon
+  parallel work done to develop and improve best practices for the
+  preparation and packaging of data (see documentation:
+  https://docs.pattrn.co/pattrn-data-packages/)
+
+  We hope that both users who have experience with Pattrn v1.0 and
+  new users are as excited about this new release of Pattrn as the Pattrn
+  team at Forensic Architecture is.
+  
+  Although the list of new major new features is long, this release was
+  mainly meant to constitute a stage of stabilisation for the Pattrn
+  project, after the major undertaking of developing and releasing as
+  free software Pattrn v1.0, which was a timely and new major data
+  analytics platform for conflict monitoring, investigative journalism,
+  human rights, citizen science and research.
+
+  Pattrn v2.0 is a major new milestone of a long future journey, whose
+  next steps should hopefully rest on solid foundations thanks to the
+  major code rewriting and refactoring efforts undertaken during the
+  v2.0 development cycle.
+
+  We always welcome enquiries, critique, feature requests and
+  contributions to the documentation and to the source code: if you
+  use Pattrn, please also join the Pattrn discourse on Gitter
+  to stay in touch with the Pattrn team!
+
+ -- andrea rota <a@xelera.eu>  Tue, 4 Apr 2017 18:48:13 +0200
+
+pattrn (1.0)
+
+  * First release of the Pattrn app
+
+ -- Francesco Sebregondi <f.sebregondi@gold.ac.uk>  Mon, 11 Jan 2016 15:19:24 -0500

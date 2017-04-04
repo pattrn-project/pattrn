@@ -1,0 +1,20 @@
+#explore-button.col-sm-3.col-lg-3
+    ul#myExploreTab.nav.nav-pills.nav-justified
+        li.dropdown.dropup.customfontsize.layer-groups-root
+            a.dropdown-toggle.charts(data-toggle='dropdown', href='#')
+                h1.gray
+                    | Explore data
+                    span.caret
+            ul.dropdown-menu.multi-level(role='menu', aria-labelledby='dropdownMenu1')
+                each source_dataset_name in [ 'INSO', 'SNHR', 'PHR', 'Health Cluster', 'VDC', 'Airwars' ]
+                    include ./mock-dataset-filters.jade
+                li.divider
+                // AGGREGATE COUNTS
+                li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#aggregate_counts', data-toggle='tab') Counts over area
+                // SOURCE CHARTS
+                li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#d3_source_chart', data-toggle='tab') Events By Source
+                // MEDIA CHARTS
+                li.pull-left
+                    a(role='menuitem', tabindex='-1', href='#d3_media_chart', data-toggle='tab', style='padding-right:0px') Events By Media Available

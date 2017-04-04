@@ -1,0 +1,127 @@
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+
+This file is part of Pattrn - http://pattrn.co/.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+.visualization-container {
+  position: relative;
+}
+
+.leaflet-control-container {
+  margin-left: 5rem;
+  position: relative;
+}
+
+.tab-content {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+#charts.info-panel-active {
+  transform: translate(-33%);
+  @include panel-transition;
+}
+
+#info {
+  background: $main-background;
+  @include panel-transition;
+
+  .info-content {
+    margin-top: 5rem;
+    opacity: 0;
+  }
+
+  &.active {
+    .info-content {
+      opacity: 1;
+    }
+  }
+}
+
+.panel-control {
+    z-index: 999;
+    color: white;
+    transform: none;
+    transition: transform 0.5s;
+    font-size: 4rem;
+    cursor: pointer;
+
+    &:hover {
+      color: $hover-highlight;
+    }
+
+    &::after {
+      content: '+';
+    }
+}
+
+.side-panel {
+  padding: 0 1rem;
+  opacity: 0.6;
+  @include panel-transition;
+  position: absolute;
+  top: 0;
+
+  &.active {
+    min-height: 100vh;
+    transform: translate(0) !important; // @x-technical-debt: calculate this properly in SCSS
+    opacity: 0.9;
+    @include panel-transition;
+
+    height: inherit;
+    transform: translate(0);
+
+  }
+}
+
+.side-panel.left {
+  transform: translate(-92%); // @x-technical-debt: calculate this properly in SCSS
+  left: 0;
+
+  &.active {
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-3 col-lg-3)
+    width: 25%;
+  }
+}
+
+.side-panel.right {
+  transform: translate(92%); // @x-technical-debt: calculate this properly in SCSS
+  right: 0;
+
+  &.active {
+    // @x-technical-debt: set width using Bootstrap SCSS mixins (col-sm-4 col-lg-4)
+    width: 33.3333333333%;
+  }
+}
+
+.side-panel.active .panel-control {
+  transform: rotate(45deg);
+  transition: transform 0.5s;
+}
+
+.side-panel.left .panel-control {
+  float: right;
+}
+
+.side-panel.right .panel-control {
+  float: left;
+}
+
+.filter-count {
+  padding-right: 0.5rem;
+}

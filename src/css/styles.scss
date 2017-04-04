@@ -1,0 +1,37 @@
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+
+This file is part of Pattrn - http://pattrn.co/.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @technical-debt: this should be imported directly from the npm package
+ * so that we don't have to deal with vendor files in the main tree and with
+ * the related licensing complications.
+ */
+@import 'themes/pattrn-begins/palette';
+@import 'themes/pattrn-begins/typography';
+@import 'themes/pattrn-begins/transitions';
+
+@import 'themes/pattrn-begins/base';
+
+@import 'themes/pattrn-begins/legacy-v1';
+
+@import 'themes/pattrn-begins/layout';
+@import 'themes/pattrn-begins/layer-groups';
+@import 'themes/pattrn-begins/patternfills';
+
+@import 'themes/pattrn-begins/charts/tree_chart';

@@ -1,3 +1,23 @@
+/*
+Copyright (C) 2016 andrea rota <a@xelera.eu>
+Copyright (C) 2015 Forensic Architecture
+
+This file is part of Pattrn - http://pattrn.co/.
+
+Pattrn is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pattrn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 body {
     font-family: 'Roboto', sans-serif;
     color: #a4afbb;
@@ -104,7 +124,7 @@ p.summary{
 }
 
 a {
-    color: #a4afbb;
+    color: $text-on-dark-background;
     text-decoration: none;
 }
 
@@ -168,7 +188,7 @@ th, td {
 
 th > p{
     text-align:left;
-    color: #a4afbb;
+    color: $labels-on-dark-background;
     padding-top: 7px;
 }
 
@@ -410,6 +430,12 @@ a.carousel-control{
 }
 
 /* CHART STYLES */
+
+// pad charts on top to create some breathing space
+.dc-chart svg {
+  padding-top: 2rem;
+}
+
 /* BRUSH */
 .dc-chart .brush rect.extent {
     fill: #ffffff;
@@ -431,9 +457,15 @@ a.carousel-control{
 .dc-chart .axis text {
     font-family: 'Roboto', sans-serif;
     fill: white;
+    stroke: white;
     font-size:14px;
     font-weight:100;
     padding-top:100px;
+
+    &:hover {
+      fill: red;
+      stroke: red;
+    }
 }
 
 .dc-chart .axis path, .axis line {
@@ -813,8 +845,8 @@ a.toggle-left {
     margin:none;
     margin-bottom: 0px;
     background-color:#2f363f;
-    min-height: 80vh;
-    max-height: 80vh;
+    min-height: 74vh;
+    max-height: 74vh;
     overflow: auto;
     margin-top:0px;
 }
@@ -858,7 +890,7 @@ a.toggle-left {
     padding: 5px;
     margin: none;
 }
-#button{
+#button, .popup-menu-root {
     background-color: #4B5461;
     margin: none;
     min-height: 45px;
@@ -869,10 +901,6 @@ a.toggle-left {
 #number_total_events{
     padding-top:none;
     text-align:center;
-}
-
-#info{
-    padding: 0px !important;
 }
 
 #edit_event{
@@ -973,12 +1001,36 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 0px;
+    /* @x-technical-debt: fit stuff properly, without forcing overflow-x to not
+     * use scrollbars
+     */
+    overflow-x: hidden;
 }
 
-.chartTitle{
+.chartTitle, .downloadChartAsSVG {
   text-align:right;
   margin-bottom: 0px;
   font-size: 14px;
   padding-top:10px;
+  cursor: pointer;
+}
 
+#platformTitle span.pre-release {
+  margin-left: 1.5rem;
+  font-size: 0.90em;
+  font-style: italic;
+}
+
+/**
+ * The following styles were hardcoded in the index.html file as inline
+ * styles in Pattrn v1.0. Moving them here to remove inline styles as we
+ * transition to v2.0 and open the path to Pattrn themes.
+ */
+#charts {
+  padding: 0px;
+}
+
+#offGrayBar {
+  padding: 0px;
+  margin: 0px;
 }

@@ -1,0 +1,105 @@
+//-
+  Copyright (C) 2016 andrea rota <a@xelera.eu>
+  Copyright (C) 2015 Forensic Architecture
+
+  This file is part of Pattrn - http://pattrn.co/.
+
+  It includes code originally developed as part of version 1.0 of Pattrn and
+  distributed under the PATTRN-V1-LICENSE, with changes (licensed under AGPL-3.0)
+  adding new features and allowing integration of the legacy code with the
+  AGPL-3.0 Pattrn 2.0 distribution. All Pattrn 1.0 HTML code has been
+  turned into Pug code during the Pattrn 2.0 development cycle.
+
+  Pattrn is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Pattrn is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
+
+doctype html
+html
+  head
+    title Pattrn data analytics
+    meta(name='description', content='')
+    meta(http-equiv='content-type', content='text/html;charset=UTF-8')
+    // Fonts
+    link(href='//fonts.googleapis.com/css?family=Roboto:400,100,500', rel='stylesheet', type='text/css')
+    // Dependencies
+    script(type='text/javascript', src='/js/main.js')
+    link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='/css/dc.css')
+    link(rel='stylesheet', type='text/css', href='/css/leaflet.css')
+    link(rel='stylesheet', type='text/css', href='/css/lightgallery.css')
+    // Pattrn code
+    link(href='/css/styles.css', rel='stylesheet')
+  body
+    // Navbar
+    nav.navbar.navbar-fixed.navbar-inverse(role='navigation')
+      .container-fluid-navbar
+        #highlight.col-sm-2.col-lg-2.highlight
+          h1#platformTitle.nav(style='text-align:center')
+        .col-sm-6.col-lg-6
+          h1#platformSubtitle.display(style='padding-right: 50px; margin-bottom: 0px')
+      ul.nav.navbar-nav.navbar-right
+        li.dropdown(style='')
+          a.dropdown-toggle(href='#about_project', data-toggle='modal', role='button', aria-expanded='false', style='margin-top:5px; padding-bottom: 10px; padding-right:15px') ABOUT
+        li.dropdown(style='margin-right:5px')
+          a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false', style='margin-top:5px; padding-bottom: 10px;') SHARE
+          ul#chart_dropdown.dropdown-menu(role='menu')
+            li
+              .addthis_sharing_toolbox
+        li.footerSmall(style='color:#a4afbb; margin-bottom:0px; font-size: 11px')
+          a(style='padding-bottom: 0px;padding-top:18px; margin-right: 20px;', target='_blank', href='http://pattrn.co')
+            | Made with
+            img(src='images/pattrn-logo-white.png', style='max-height:30px')
+      #about_project.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .col-md-8.col-md-offset-2
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                  span(aria-hidden='true') ×
+                h4#myModalLabel.modal-title About this platform
+              #aboutModalContent.modal-body
+              .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+    .container-fluid.visualization-container
+      // filters
+      include ./views/partials/data-layers.jade
+      // Map & Charts
+      #charts.col-sm-12.col-lg-12
+        #chart-map
+        #offGrayBar.col-sm-7.col-lg-7
+          #button.popup-menu-root.col-sm-6.col-lg-6
+          include ./views/partials/event-count.jade
+        include ./views/partials/text-search.jade
+        include ./views/partials/search-button.jade
+        include ./views/partials/refresh-button.jade
+        // CHARTS
+        .tab-content
+          // TIMELINE
+          #aggregate_counts.tab-pane.fade.in
+            .row
+              .col-sm-12.col-lg-12
+                each widget_id, index in [ '01', '02', '03', '04', '05' ]
+                  include ./views/partials/data-widgets/aggregate-count.jade
+            .row
+              .col-sm-12.col-lg-12
+                p
+                  | Click and drag in the measuring bars to filter data by number of [selected variable] per individual event
+          // Source chart
+          include ./views/partials/data-widgets/sources.jade
+          // Media chart
+          include ./views/partials/data-widgets/media.jade
+        .overlay
+      // event detail
+      include ./views/partials/event-data.jade
+    // Optional - Addthis code to be added here (it will populate the 'Share' button)
+    script(type='text/javascript', src='', async='async')

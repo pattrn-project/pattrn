@@ -1,6 +1,6 @@
 {
   "name": "pattrn",
-  "version": "2.0.0beta1+hotzeplotz",
+  "version": "2.0.0rc1",
   "description": "Data-driven, participatory fact-mapping",
   "main": "index.js",
   "scripts": {

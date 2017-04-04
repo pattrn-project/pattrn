@@ -17,11 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with Pattrn.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export const platform_settings = {
+export const default_settings = {
   "default": {
     "release_status": "beta",
     "environment": "development",
-    "single_data_set": "single_data_set",
+    "single_data_set": {
+      "id": "single_data_set",
+      "name": "all_data"
+    },
     "title": "Pattrn",
     "subtitle": "A data-driven, participatory fact mapping platform",
     "about": "Pattrn is a tool to map complex events - such as conflicts, protests, or crises - as they unfold.",

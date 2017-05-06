@@ -3,3 +3,5 @@ node_js:
   - "node"
   - "7"
   - "6"
+dist: trusty
+sudo: false

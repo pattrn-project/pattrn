@@ -18,11 +18,23 @@ Please see the Pattrn user manual: https://docs.pattrn.co/getting-started/index.
 
 ### For developers
 
+Pattrn can be built via Gulp from its source tree; this allows to easily and
+automatically package together the Pattrn app and the data you wish to visualise,
+if this is packaged as a
+[Pattrn data package](https://docs.pattrn.co/pattrn-data-packages/).
+
+In order to build Pattrn from source, you will need Node.js (the current
+[Node.js LTS release](https://nodejs.org/en/download/) is recommended as
+Pattrn is mainly developed and tested with this version) and
+[Yarn](https://yarnpkg.com/en/docs/install).
+
+In order to build Pattrn:
+
 * Clone this repository or download a Pattrn v2.0 release as `zip` or `tar.gz` file
 
-* Install all the required NPM packages:
+* Install all the required Node packages:
 
-`npm install`
+`yarn install`
 
 * Modify the `source-data-packages.json` file (which is configured to use a
   sample dataset) to instruct the Pattrn build script to download and use
@@ -45,11 +57,16 @@ Please see the Pattrn user manual: https://docs.pattrn.co/getting-started/index.
   configured in the previous step, and build all the assets needed for the
   live Pattrn instance:
 
-`npm run gulp build`
+`yarn run gulp build`
+
+If you run into a build error related to the `node-sass` package, running
+`yarn install --force && yarn run gulp build` should fix the issue (see
+https://github.com/sass/node-sass/issues/1579#issuecomment-227663782 for
+details).
 
 * Start a local web server to test the Pattrn app:
 
-`npm start`
+`yarn start`
 
 This command will display some messages while the web server is started,
 such as:

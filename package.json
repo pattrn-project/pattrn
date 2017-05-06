@@ -4,7 +4,7 @@
   "description": "Data-driven, participatory fact-mapping",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "gulp build",
     "bundle": "browserify --debug src/js/app.js | exorcist src/js/main.js.map > src/js/main.js",
     "gulp": "gulp",
     "start": "http-server dist/"
